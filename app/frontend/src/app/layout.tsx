@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { JotaiProviders } from '@/components/JotaiProvider'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -28,7 +29,9 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<JotaiProviders>{children}</JotaiProviders>
+				<JotaiProviders>
+					<ThemeProvider>{children}</ThemeProvider>
+				</JotaiProviders>
 			</body>
 		</html>
 	)
