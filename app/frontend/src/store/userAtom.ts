@@ -1,15 +1,15 @@
 import { atom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
-const isAuthenticatedAtom = atom<boolean>(false)
-
-const tokenAtom = atom<string | null>(null)
+const tokenAtom = atomWithStorage<string | null>('user_token', null)
 
 const isLoadingAtom = atom<boolean>(false)
+
+const isAuthenticatedAtom = atom((get) => get(tokenAtom) !== null)
 
 const userAtom = atom<unknown | null>(null)
 
 const logoutAtom = atom(null, (get, set) => {
-	set(isAuthenticatedAtom, false)
 	set(tokenAtom, null)
 	set(userAtom, null)
 })

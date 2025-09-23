@@ -7,9 +7,11 @@ import type {
 } from '@/app/(auth)/_types/authForm.type'
 import useForm from '@/hooks/useForm'
 import { useUser } from '@/hooks/useUser'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 export default function LoginPage() {
+	const router = useRouter()
 	const { login } = useUser()
 
 	const validateLoginForm = (values: LoginFormValue) => {
@@ -33,7 +35,7 @@ export default function LoginPage() {
 	const loginUser = async (values: LoginFormValue) => {
 		await login(values.email, values.password)
 
-		// window.location.href = '/'
+		router.push('/')
 	}
 
 	const {

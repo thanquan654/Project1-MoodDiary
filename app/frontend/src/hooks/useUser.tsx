@@ -7,27 +7,30 @@ import {
 	tokenAtom,
 	userAtom,
 } from '@/store/userAtom'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomDevtools } from 'jotai-devtools'
 
 export function useUser() {
 	const [user, setUser] = useAtom(userAtom)
-	const setToken = useSetAtom(tokenAtom)
-	const [isAuthenticated, setAuthenticated] = useAtom(isAuthenticatedAtom)
+	const [token, setToken] = useAtom(tokenAtom)
+	const isAuthenticated = useAtomValue(isAuthenticatedAtom)
 	const performLogout = useSetAtom(logoutAtom)
+
+	useAtomDevtools(userAtom, { name: 'User' })
+	useAtomDevtools(tokenAtom, { name: 'Token' })
 
 	const login = async (email: string, password: string) => {
 		const response = await loginUserApi(email, password)
 
-		console.log('🚀 ~ response:', response)
-
 		if (response.ok) {
 			const body = await response.json()
 
-			console.log('🚀 ~ body:', body)
+			const { user: userFromApi, token } = body
 
-			setUser(body.user)
-			setToken(body.token)
-			setAuthenticated(true)
+			console.log('🚀 ~ user:', userFromApi)
+
+			setUser(userFromApi)
+			setToken(token)
 		}
 
 		return response
@@ -41,7 +44,6 @@ export function useUser() {
 
 			setUser(body.user)
 			setToken(body.token)
-			setAuthenticated(true)
 		}
 	}
 
@@ -51,6 +53,7 @@ export function useUser() {
 
 	return {
 		user,
+		token,
 		isAuthenticated,
 		login,
 		register,
