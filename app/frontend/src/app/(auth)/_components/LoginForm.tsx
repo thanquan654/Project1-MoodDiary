@@ -1,5 +1,11 @@
 'use client'
 
+import Link from 'next/link'
+import React, { useState } from 'react'
+import type {
+	LoginFormValue,
+	LoginFormError,
+} from '@/app/(auth)/_types/authForm.type'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -12,15 +18,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Mail, Lock, EyeOff, Eye } from 'lucide-react'
-import Link from 'next/link'
-import React, { useState } from 'react'
-import type {
-	LoginFormValue,
-	LoginFormError,
-} from '@/app/(auth)/_types/authForm.type'
 import { Separator } from '@/components/ui/separator'
 import GoogleButton from 'react-google-button'
-import { useTheme } from '@/components/ThemeProvider'
 
 export default function LoginForm({
 	values,
@@ -35,7 +34,6 @@ export default function LoginForm({
 	handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 	handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }) {
-	const { theme } = useTheme()
 	const [isShowPassword, setShowPassword] = useState<boolean>(false)
 
 	return (
@@ -153,7 +151,7 @@ export default function LoginForm({
 
 					<div className="flex items-center gap-2">
 						<GoogleButton
-							type={theme}
+							type="dark"
 							label="Đăng nhập với Google"
 							onClick={() => {
 								console.log('Google button clicked')

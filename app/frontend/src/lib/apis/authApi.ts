@@ -1,7 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
-console.log('🚀 ~ BASE_URL:', BASE_URL)
-
 const loginUserApi = async (email: string, password: string) => {
 	const response = await fetch(`${BASE_URL}/auth/login`, {
 		method: 'POST',
@@ -13,4 +11,19 @@ const loginUserApi = async (email: string, password: string) => {
 	return response
 }
 
-export { loginUserApi }
+const registerUserApi = async (
+	name: string,
+	email: string,
+	password: string,
+) => {
+	const response = await fetch(`${BASE_URL}/auth/register`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ fullName: name, email, password }),
+	})
+	return response
+}
+
+export { loginUserApi, registerUserApi }

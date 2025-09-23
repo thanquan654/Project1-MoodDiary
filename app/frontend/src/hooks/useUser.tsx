@@ -1,4 +1,6 @@
-import { loginUserApi } from '@/lib/apis/authApi'
+'use client'
+
+import { loginUserApi, registerUserApi } from '@/lib/apis/authApi'
 import {
 	isAuthenticatedAtom,
 	logoutAtom,
@@ -16,30 +18,31 @@ export function useUser() {
 	const login = async (email: string, password: string) => {
 		const response = await loginUserApi(email, password)
 
+		console.log('🚀 ~ response:', response)
+
 		if (response.ok) {
 			const body = await response.json()
+
+			console.log('🚀 ~ body:', body)
+
 			setUser(body.user)
 			setToken(body.token)
 			setAuthenticated(true)
 		}
 
 		return response
+	}
 
-		// FIXME: This is mock data
-		// const responeBody = {
-		// 	user: {
-		// 		id: 1,
-		// 		name: email,
-		// 		email: password,
-		// 	},
-		// 	token: 'saashdihasdhsahdiashda',
-		// }
+	const register = async (name: string, email: string, password: string) => {
+		const response = await registerUserApi(name, email, password)
 
-		// setUser(responeBody.user)
-		// setToken(responeBody.token)
-		// setAuthenticated(true)
+		if (response.ok) {
+			const body = await response.json()
 
-		// return responeBody
+			setUser(body.user)
+			setToken(body.token)
+			setAuthenticated(true)
+		}
 	}
 
 	const logout = () => {
@@ -50,6 +53,7 @@ export function useUser() {
 		user,
 		isAuthenticated,
 		login,
+		register,
 		logout,
 	}
 }

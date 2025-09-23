@@ -31,10 +31,9 @@ export default function LoginPage() {
 	}
 
 	const loginUser = async (values: LoginFormValue) => {
-		console.log('🚀 ~ values:', values)
-		const response = await login(values.email, values.password)
+		await login(values.email, values.password)
 
-		console.log('🚀 ~ response:', response)
+		// window.location.href = '/'
 	}
 
 	const {
