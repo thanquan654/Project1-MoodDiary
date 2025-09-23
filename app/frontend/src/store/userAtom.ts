@@ -8,4 +8,10 @@ const isLoadingAtom = atom<boolean>(false)
 
 const userAtom = atom<unknown | null>(null)
 
-export { isAuthenticatedAtom, tokenAtom, isLoadingAtom, userAtom }
+const logoutAtom = atom(null, (get, set) => {
+	set(isAuthenticatedAtom, false)
+	set(tokenAtom, null)
+	set(userAtom, null)
+})
+
+export { isAuthenticatedAtom, tokenAtom, isLoadingAtom, userAtom, logoutAtom }

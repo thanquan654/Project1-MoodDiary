@@ -34,11 +34,9 @@ const useForm = (initialState, validate, callback) => {
 
 		if (Object.keys(validationErrors).length === 0) {
 			setIsSubmitting(true)
-			callback()
+			callback(values)
 			setIsSubmitting(false)
 		}
-
-		console.log('values', values)
 	}
 
 	return {

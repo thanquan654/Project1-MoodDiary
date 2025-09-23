@@ -6,15 +6,35 @@ import type {
 	LoginFormValue,
 } from '@/app/(auth)/_types/authForm.type'
 import useForm from '@/hooks/useForm'
+import { useUser } from '@/hooks/useUser'
 import React from 'react'
 
 export default function LoginPage() {
+	const { login } = useUser()
+
 	const validateLoginForm = (values: LoginFormValue) => {
-		console.log(values)
+		const errors: LoginFormError = {}
+		if (!values.email) {
+			errors.email = 'Vui lòng nhập email của bạn.'
+		} else if (
+			!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+		) {
+			errors.email = 'Email không đúng định dạng. Vui lòng kiểm tra lại.'
+		}
+		if (!values.password) {
+			errors.password = 'Vui lòng nhập mật khẩu.'
+		} else if (values.password.length < 6) {
+			errors.password =
+				'Mật khẩu phải có ít nhất 6 ký tự. Vui lòng kiểm tra lại.'
+		}
+		return errors
 	}
 
 	const loginUser = async (values: LoginFormValue) => {
-		console.log(values)
+		console.log('🚀 ~ values:', values)
+		const response = await login(values.email, values.password)
+
+		console.log('🚀 ~ response:', response)
 	}
 
 	const {
@@ -31,7 +51,7 @@ export default function LoginPage() {
 		handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 	} = useForm(
 		{
-			email: 'qbD1M@example.com',
+			email: 'danhtien2k4@gmail.com',
 			password: '123456',
 		},
 		validateLoginForm,

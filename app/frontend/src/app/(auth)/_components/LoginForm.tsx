@@ -19,6 +19,8 @@ import type {
 	LoginFormError,
 } from '@/app/(auth)/_types/authForm.type'
 import { Separator } from '@/components/ui/separator'
+import GoogleButton from 'react-google-button'
+import { useTheme } from '@/components/ThemeProvider'
 
 export default function LoginForm({
 	values,
@@ -33,6 +35,7 @@ export default function LoginForm({
 	handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 	handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }) {
+	const { theme } = useTheme()
 	const [isShowPassword, setShowPassword] = useState<boolean>(false)
 
 	return (
@@ -149,20 +152,13 @@ export default function LoginForm({
 					<Separator />
 
 					<div className="flex items-center gap-2">
-						{/* <GoogleButton
+						<GoogleButton
 							type={theme}
 							label="Đăng nhập với Google"
 							onClick={() => {
 								console.log('Google button clicked')
 							}}
-						/> */}
-						<Button
-							onClick={() => {
-								console.log('Google button clicked')
-							}}
-						>
-							Đăng nhập với Google
-						</Button>
+						/>
 					</div>
 
 					<div className="text-center text-sm text-diary-text-secondary-light dark:text-diary-text-secondary-dark">
