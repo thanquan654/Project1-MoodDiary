@@ -24,9 +24,21 @@ type RegisterFormError = {
 	agreeToTerms?: string
 }
 
+type ResetPasswordFormValue = {
+	password: string
+	confirmPassword: string
+}
+
+type ResetPasswordFormError = {
+	password?: string
+	confirmPassword?: string
+}
+
 export type {
 	LoginFormValue,
 	LoginFormError,
 	RegisterFormValue,
 	RegisterFormError,
+	ResetPasswordFormValue,
+	ResetPasswordFormError,
 }

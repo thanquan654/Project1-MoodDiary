@@ -24,13 +24,13 @@ import GoogleButton from 'react-google-button'
 export default function LoginForm({
 	values,
 	errors,
-	isSubmitting,
+	isLoading,
 	handleChange,
 	handleSubmit,
 }: {
 	values: LoginFormValue
 	errors: LoginFormError
-	isSubmitting: boolean
+	isLoading: boolean
 	handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 	handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }) {
@@ -63,6 +63,7 @@ export default function LoginForm({
 							<Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-diary-text-secondary-light dark:text-diary-text-secondary-dark w-4 h-4" />
 							<Input
 								id="email"
+								tabIndex={1}
 								name="email"
 								type="text"
 								placeholder="your@email.com"
@@ -91,6 +92,7 @@ export default function LoginForm({
 							<Input
 								id="password"
 								name="password"
+								tabIndex={2}
 								type={isShowPassword ? 'text' : 'password'}
 								placeholder="••••••••"
 								value={values.password}
@@ -141,10 +143,11 @@ export default function LoginForm({
 				<CardFooter className="flex flex-col space-y-4">
 					<Button
 						type="submit"
+						tabIndex={3}
 						className="w-full bg-diary-accent hover:bg-diary-accent/90 text-white"
-						disabled={isSubmitting}
+						disabled={isLoading}
 					>
-						{isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
+						{isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
 					</Button>
 
 					<Separator />

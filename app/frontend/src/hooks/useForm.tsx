@@ -9,14 +9,14 @@ interface UseFormReturn<T> {
 	handleSubmit: (event: FormEvent<HTMLFormElement>) => void
 	values: T
 	errors: FormErrors
-	isSubmitting: boolean
+	isLoading: boolean
 }
 
 /**
  * @param {T} initialState initial state
  * @param {(values: T) => FormErrors} validate validation function
  * @param {(values: T) => void} callback callback function
- * @returns {UseFormReturn<T>} object with handleChange, handleSubmit, values, errors, isSubmitting
+ * @returns {UseFormReturn<T>} object with handleChange, handleSubmit, values, errors, isLoading
  */
 const useForm = <T extends object>(
 	initialState: T,
@@ -25,7 +25,7 @@ const useForm = <T extends object>(
 ): UseFormReturn<T> => {
 	const [values, setValues] = useState<T>(initialState)
 	const [errors, setErrors] = useState<FormErrors>({})
-	const [isSubmitting, setIsSubmitting] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name, value, type, checked } = event.target
@@ -49,9 +49,9 @@ const useForm = <T extends object>(
 		setErrors(validationErrors)
 
 		if (Object.keys(validationErrors).length === 0) {
-			setIsSubmitting(true)
+			setIsLoading(true)
 			callback(values)
-			setIsSubmitting(false)
+			setIsLoading(false)
 		}
 	}
 
@@ -60,7 +60,7 @@ const useForm = <T extends object>(
 		handleSubmit,
 		values,
 		errors,
-		isSubmitting,
+		isLoading,
 	}
 }
 
