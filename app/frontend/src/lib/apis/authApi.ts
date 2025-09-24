@@ -26,4 +26,14 @@ const registerUserApi = async (
 	return response
 }
 
-export { loginUserApi, registerUserApi }
+const loginWithGoogleApi = async () => {
+	const response = await fetch(`${BASE_URL}/auth/login/google`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	})
+	return response
+}
+
+export { loginUserApi, registerUserApi, loginWithGoogleApi }

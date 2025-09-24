@@ -1,6 +1,10 @@
 'use client'
 
 import RegisterForm from '@/app/(auth)/_components/RegisterForm'
+import {
+	RegisterFormError,
+	RegisterFormValue,
+} from '@/app/(auth)/_types/authForm.type'
 import useForm from '@/hooks/useForm'
 import { useUser } from '@/hooks/useUser'
 
@@ -53,7 +57,7 @@ export default function RegisterPage() {
 		return errors
 	}
 
-	const registerUser = async (values) => {
+	const registerUser = async (values: RegisterFormValue) => {
 		register(values.name, values.email, values.password)
 	}
 
@@ -64,8 +68,8 @@ export default function RegisterPage() {
 		handleChange,
 		handleSubmit,
 	}: {
-		values: RegisterForm
-		errors: FormError
+		values: RegisterFormValue
+		errors: RegisterFormError
 		isSubmitting: boolean
 		handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 		handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void

@@ -14,6 +14,10 @@ import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import GoogleButton from 'react-google-button'
 import { useState } from 'react'
+import {
+	RegisterFormError,
+	RegisterFormValue,
+} from '@/app/(auth)/_types/authForm.type'
 
 export default function RegisterForm({
 	values,
@@ -21,6 +25,12 @@ export default function RegisterForm({
 	isSubmitting,
 	handleChange,
 	handleSubmit,
+}: {
+	values: RegisterFormValue
+	errors: RegisterFormError
+	isSubmitting: boolean
+	handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+	handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }) {
 	const [showPassword, setShowPassword] = useState(false)
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false)

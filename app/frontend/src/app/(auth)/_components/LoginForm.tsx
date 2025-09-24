@@ -20,6 +20,7 @@ import { Label } from '@/components/ui/label'
 import { Mail, Lock, EyeOff, Eye } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import GoogleButton from 'react-google-button'
+import { loginWithGoogleApi } from '@/lib/apis/authApi'
 
 export default function LoginForm({
 	values,
@@ -150,13 +151,17 @@ export default function LoginForm({
 					<Separator />
 
 					<div className="flex items-center gap-2">
-						<GoogleButton
-							type="dark"
-							label="Đăng nhập với Google"
-							onClick={() => {
-								console.log('Google button clicked')
-							}}
-						/>
+						<Link
+							href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login/google`}
+						>
+							<GoogleButton
+								type="dark"
+								label="Đăng nhập với Google"
+								onClick={() => {
+									console.log('Google button clicked')
+								}}
+							/>
+						</Link>
 					</div>
 
 					<div className="text-center text-sm text-diary-text-secondary-light dark:text-diary-text-secondary-dark">
