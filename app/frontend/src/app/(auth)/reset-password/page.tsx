@@ -2,7 +2,7 @@
 
 import type React from 'react'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import ResetPasswordTokenInvalidCard from '@/app/(auth)/_components/ResetPasswordTokenInvalidCard'
 import ResetPasswordSuccessCard from '@/app/(auth)/_components/ResetPasswordSuccessCard'
@@ -13,7 +13,7 @@ import {
 	ResetPasswordFormValue,
 } from '@/app/(auth)/_types/authForm.type'
 
-export default function ResetPasswordPage() {
+function ResetPassword() {
 	const searchParams = useSearchParams()
 
 	const handleSubmitResetPassword = async (
@@ -100,5 +100,13 @@ export default function ResetPasswordPage() {
 				isLoading={isLoading}
 			/>
 		</div>
+	)
+}
+
+export default function ResetPasswordPage() {
+	return (
+		<Suspense>
+			<ResetPassword />
+		</Suspense>
 	)
 }

@@ -22,13 +22,13 @@ import {
 export default function RegisterForm({
 	values,
 	errors,
-	isSubmitting,
+	isLoading,
 	handleChange,
 	handleSubmit,
 }: {
 	values: RegisterFormValue
 	errors: RegisterFormError
-	isSubmitting: boolean
+	isLoading: boolean
 	handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 	handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }) {
@@ -231,11 +231,9 @@ export default function RegisterForm({
 					<Button
 						type="submit"
 						className="w-full bg-diary-accent hover:bg-diary-accent/90 text-white"
-						disabled={isSubmitting}
+						disabled={isLoading}
 					>
-						{isSubmitting
-							? 'Đang tạo tài khoản...'
-							: 'Tạo tài khoản'}
+						{isLoading ? 'Đang tạo tài khoản...' : 'Tạo tài khoản'}
 					</Button>
 
 					<Separator />

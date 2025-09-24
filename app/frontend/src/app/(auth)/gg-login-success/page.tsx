@@ -17,7 +17,7 @@ function LoginSuccess() {
 	return <div>Đăng nhập thành công, đang chuyển trang ...</div>
 }
 
-export default function GoogleLoginSuccess() {
+export default function GoogleLoginSuccessPage() {
 	return (
 		<Suspense fallback={<div>Loading...</div>}>
 			<LoginSuccess />
