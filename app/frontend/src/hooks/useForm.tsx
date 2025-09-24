@@ -1,17 +1,33 @@
-import { useState } from 'react'
+import { useState, ChangeEvent, FormEvent } from 'react'
+
+interface FormErrors {
+	[key: string]: string | undefined
+}
+
+interface UseFormReturn<T> {
+	handleChange: (event: ChangeEvent<HTMLInputElement>) => void
+	handleSubmit: (event: FormEvent<HTMLFormElement>) => void
+	values: T
+	errors: FormErrors
+	isSubmitting: boolean
+}
 
 /**
- * @param {unknown} initialState initial state
- * @param {function} validate validation function
- * @param {function} callback callback function
- * @returns object with handleChange, handleSubmit, values, errors, isSubmitting
+ * @param {T} initialState initial state
+ * @param {(values: T) => FormErrors} validate validation function
+ * @param {(values: T) => void} callback callback function
+ * @returns {UseFormReturn<T>} object with handleChange, handleSubmit, values, errors, isSubmitting
  */
-const useForm = (initialState, validate, callback) => {
-	const [values, setValues] = useState(initialState)
-	const [errors, setErrors] = useState({})
+const useForm = <T extends object>(
+	initialState: T,
+	validate: (values: T) => FormErrors,
+	callback: (values: T) => void,
+): UseFormReturn<T> => {
+	const [values, setValues] = useState<T>(initialState)
+	const [errors, setErrors] = useState<FormErrors>({})
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
-	const handleChange = (event) => {
+	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const { name, value, type, checked } = event.target
 		if (type === 'checkbox') {
 			setValues({
@@ -26,7 +42,7 @@ const useForm = (initialState, validate, callback) => {
 		}
 	}
 
-	const handleSubmit = (event) => {
+	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		if (event) event.preventDefault()
 
 		const validationErrors = validate(values)

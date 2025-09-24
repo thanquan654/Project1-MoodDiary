@@ -1,9 +1,9 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 
-export default function GoogleLoginSuccess() {
+function LoginSuccess() {
 	const router = useRouter()
 	const searchParams = useSearchParams()
 	const token = searchParams.get('token')
@@ -15,4 +15,12 @@ export default function GoogleLoginSuccess() {
 	}, [router, token])
 
 	return <div>Đăng nhập thành công, đang chuyển trang ...</div>
+}
+
+export default function GoogleLoginSuccess() {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<LoginSuccess />
+		</Suspense>
+	)
 }

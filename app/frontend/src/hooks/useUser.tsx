@@ -11,7 +11,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 export function useUser() {
 	const [user, setUser] = useAtom(userAtom)
-	const [token, setToken] = useAtom(tokenAtom)
+	const setToken = useSetAtom(tokenAtom)
 	const isAuthenticated = useAtomValue(isAuthenticatedAtom)
 	const performLogout = useSetAtom(logoutAtom)
 

@@ -20,7 +20,6 @@ import { Label } from '@/components/ui/label'
 import { Mail, Lock, EyeOff, Eye } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import GoogleButton from 'react-google-button'
-import { loginWithGoogleApi } from '@/lib/apis/authApi'
 
 export default function LoginForm({
 	values,
@@ -157,9 +156,6 @@ export default function LoginForm({
 							<GoogleButton
 								type="dark"
 								label="Đăng nhập với Google"
-								onClick={() => {
-									console.log('Google button clicked')
-								}}
 							/>
 						</Link>
 					</div>
