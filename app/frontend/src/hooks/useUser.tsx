@@ -18,16 +18,15 @@ export function useUser() {
 	const login = async (email: string, password: string) => {
 		const response = await loginUserApi(email, password)
 
+		const body = await response.json()
 		if (response.ok) {
-			const body = await response.json()
-
 			const { user: userFromApi, token } = body
 
 			setUser(userFromApi)
 			setToken(token)
 		}
 
-		return response
+		return body
 	}
 
 	const register = async (name: string, email: string, password: string) => {
