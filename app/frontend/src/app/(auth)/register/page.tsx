@@ -75,11 +75,11 @@ export default function RegisterPage() {
 		handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 	} = useForm(
 		{
-			name: 'Nguyen Van A',
-			email: 'abc@gmail.com',
-			password: '123456',
-			confirmPassword: '123456',
-			agreeToTerms: true,
+			name: '',
+			email: '',
+			password: '',
+			confirmPassword: '',
+			agreeToTerms: false,
 		},
 		validateRegisterForm,
 		registerUser,
