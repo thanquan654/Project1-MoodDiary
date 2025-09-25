@@ -36,4 +36,36 @@ const loginWithGoogleApi = async () => {
 	return response
 }
 
-export { loginUserApi, registerUserApi, loginWithGoogleApi }
+const requestForgotPasswordApi = async (email: string) => {
+	const response = await fetch(`${BASE_URL}/auth/forgot-password`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ email }),
+	})
+	return response
+}
+
+const resetPasswordApi = async (
+	token: string,
+	password: string,
+	confirmPassword: string,
+) => {
+	const response = await fetch(`${BASE_URL}/auth/reset-password`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ token, newPassword: password, confirmPassword }),
+	})
+	return response
+}
+
+export {
+	loginUserApi,
+	registerUserApi,
+	loginWithGoogleApi,
+	requestForgotPasswordApi,
+	resetPasswordApi,
+}
