@@ -32,12 +32,14 @@ export function useUser() {
 	const register = async (name: string, email: string, password: string) => {
 		const response = await registerUserApi(name, email, password)
 
-		if (response.ok) {
-			const body = await response.json()
+		const body = await response.json()
 
+		if (response.ok) {
 			setUser(body.user)
 			setToken(body.token)
 		}
+
+		return body
 	}
 
 	const logout = () => {

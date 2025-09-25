@@ -22,12 +22,14 @@ import {
 export default function RegisterForm({
 	values,
 	errors,
+	formError,
 	isSubmitting,
 	handleChange,
 	handleSubmit,
 }: {
 	values: RegisterFormValue
 	errors: RegisterFormError
+	formError: string
 	isSubmitting: boolean
 	handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 	handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
@@ -63,6 +65,7 @@ export default function RegisterForm({
 							<Input
 								name="name"
 								type="text"
+								tabIndex={1}
 								placeholder="Nguyễn Văn A"
 								value={values.name}
 								onChange={handleChange}
@@ -90,7 +93,7 @@ export default function RegisterForm({
 							<Input
 								id="email"
 								name="email"
-								type="email"
+								tabIndex={2}
 								placeholder="your@email.com"
 								value={values.email}
 								onChange={handleChange}
@@ -118,6 +121,7 @@ export default function RegisterForm({
 							<Input
 								id="password"
 								name="password"
+								tabIndex={3}
 								type={showPassword ? 'text' : 'password'}
 								placeholder="••••••••"
 								value={values.password}
@@ -157,6 +161,7 @@ export default function RegisterForm({
 							<Input
 								id="confirmPassword"
 								name="confirmPassword"
+								tabIndex={4}
 								type={showConfirmPassword ? 'text' : 'password'}
 								placeholder="••••••••"
 								value={values.confirmPassword}
@@ -192,6 +197,7 @@ export default function RegisterForm({
 								id="terms"
 								type="checkbox"
 								name="agreeToTerms"
+								tabIndex={5}
 								checked={values.agreeToTerms}
 								onChange={handleChange}
 								className="w-4 h-4 mt-1 bg-diary-bg-light dark:bg-diary-bg-dark border-diary-border-light dark:border-diary-border-dark text-diary-text-primary-light dark:text-diary-text-primary-dark"
@@ -228,21 +234,30 @@ export default function RegisterForm({
 				</CardContent>
 
 				<CardFooter className="flex flex-col space-y-4">
-					<Button
-						type="submit"
-						className="w-full bg-diary-accent hover:bg-diary-accent/90 text-white"
-						disabled={isSubmitting}
-					>
-						{isSubmitting
-							? 'Đang tạo tài khoản...'
-							: 'Tạo tài khoản'}
-					</Button>
+					<div className="w-full">
+						<Button
+							type="submit"
+							tabIndex={6}
+							className="w-full bg-diary-accent hover:bg-diary-accent/90 text-white"
+							disabled={isSubmitting}
+						>
+							{isSubmitting
+								? 'Đang tạo tài khoản...'
+								: 'Tạo tài khoản'}
+						</Button>
+						{formError && (
+							<p className="text-red-600 text-sm text-center">
+								{formError}
+							</p>
+						)}
+					</div>
 
 					<Separator />
 
 					<div className="flex items-center gap-2">
 						<GoogleButton
 							type="dark"
+							tabIndex={7}
 							label="Đăng nhập với Google"
 							onClick={() => {
 								console.log('Google button clicked')
