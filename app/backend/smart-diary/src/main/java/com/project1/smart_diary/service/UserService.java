@@ -6,6 +6,8 @@ import com.project1.smart_diary.dto.request.UserCreateRequest;
 import com.project1.smart_diary.dto.response.UserResponse;
 import com.project1.smart_diary.entity.UserEntity;
 import com.project1.smart_diary.enums.AuthProvider;
+import com.project1.smart_diary.exception.ApplicationException;
+import com.project1.smart_diary.exception.ErrorCode;
 import com.project1.smart_diary.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +25,7 @@ public class UserService {
 
     public UserResponse createUser(UserCreateRequest userCreateRequest) {
         if (userRepository.existsByEmail(userCreateRequest.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new ApplicationException(ErrorCode.EMAIL_EXISTED);
         }
         UserEntity userEntity = userConverter.convertToUserEntity(userCreateRequest);
 

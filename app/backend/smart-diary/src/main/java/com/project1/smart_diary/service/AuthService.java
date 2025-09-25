@@ -47,12 +47,12 @@ public class AuthService {
     public AuthenticationResponse authenticate(LoginRequest loginRequest) {
         UserEntity user = userRepository.findByEmail(loginRequest.getEmail());
         if (user == null) {
-            throw new ApplicationException(ErrorCode.USER_NOT_EXISTED);
+            throw new ApplicationException(ErrorCode.EMAIL_NOT_EXISTED);
         }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
         if (!authenticated) {
-            throw new ApplicationException(ErrorCode.UNAUTHENTICATED);
+            throw new ApplicationException(ErrorCode.PASSWORD_NOT_EXISTED);
         }
         String token = genToken(user);
         return AuthenticationResponse.builder()
@@ -64,7 +64,7 @@ public class AuthService {
     public AuthenticationResponse loginWithGoogle(LoginGoogleDTO loginGoogleDTO) {
         UserEntity user = userRepository.findByEmail(loginGoogleDTO.getEmail());
         if (user == null) {
-            throw new ApplicationException(ErrorCode.USER_NOT_EXISTED);
+            throw new ApplicationException(ErrorCode.EMAIL_NOT_EXISTED);
         }
 //        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 //        boolean authenticated = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
