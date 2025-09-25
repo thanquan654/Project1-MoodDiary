@@ -9,7 +9,7 @@ function LoginSuccess() {
 	const token = searchParams.get('token')
 
 	useEffect(() => {
-		if (token) localStorage.setItem('user-token', token)
+		if (token) localStorage.setItem('user_token', token)
 
 		router.push('/')
 	}, [router, token])

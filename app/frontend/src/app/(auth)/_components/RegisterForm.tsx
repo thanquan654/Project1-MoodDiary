@@ -255,14 +255,15 @@ export default function RegisterForm({
 					<Separator />
 
 					<div className="flex items-center gap-2">
-						<GoogleButton
-							type="dark"
-							tabIndex={7}
-							label="Đăng nhập với Google"
-							onClick={() => {
-								console.log('Google button clicked')
-							}}
-						/>
+						<Link
+							href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login/google`}
+						>
+							<GoogleButton
+								type="dark"
+								tabIndex={7}
+								label="Đăng nhập với Google"
+							/>
+						</Link>
 					</div>
 
 					<div className="text-center text-sm text-diary-text-secondary-light dark:text-diary-text-secondary-dark">
