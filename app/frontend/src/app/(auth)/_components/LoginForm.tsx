@@ -67,6 +67,7 @@ export default function LoginForm({
 								id="email"
 								name="email"
 								type="text"
+								tabIndex={1}
 								placeholder="your@email.com"
 								value={values.email}
 								onChange={handleChange}
@@ -93,6 +94,7 @@ export default function LoginForm({
 							<Input
 								id="password"
 								name="password"
+								tabIndex={2}
 								type={isShowPassword ? 'text' : 'password'}
 								placeholder="••••••••"
 								value={values.password}
@@ -144,6 +146,7 @@ export default function LoginForm({
 					<div className="space-y-2 w-full">
 						<Button
 							type="submit"
+							tabIndex={3}
 							className="w-full bg-diary-accent hover:bg-diary-accent/90 text-white"
 							disabled={isSubmitting}
 						>
