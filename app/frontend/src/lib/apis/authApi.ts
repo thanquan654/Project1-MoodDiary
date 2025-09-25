@@ -21,7 +21,7 @@ const registerUserApi = async (
 		headers: {
 			'Content-Type': 'application/json',
 		},
-		body: JSON.stringify({ fullname: name, email, password }),
+		body: JSON.stringify({ fullName: name, email, password }),
 	})
 	return response
 }
