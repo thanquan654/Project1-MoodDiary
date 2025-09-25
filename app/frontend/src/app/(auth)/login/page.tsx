@@ -52,8 +52,8 @@ export default function LoginPage() {
 		handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 	} = useForm(
 		{
-			email: 'danhtien2k4@gmail.com',
-			password: '123456',
+			email: '',
+			password: '',
 		},
 		validateLoginForm,
 		loginUser,
