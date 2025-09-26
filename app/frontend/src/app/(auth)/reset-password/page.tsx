@@ -12,9 +12,14 @@ import {
 	ResetPasswordFormError,
 	ResetPasswordFormValue,
 } from '@/app/(auth)/_types/authForm.type'
+import { resetPasswordApi } from '@/lib/apis/authApi'
 
 function ResetPassword() {
 	const searchParams = useSearchParams()
+	const token = searchParams.get('token')
+
+	const [isSuccess, setIsSuccess] = useState(false)
+	const [isValidToken, setIsValidToken] = useState(true)
 
 	const handleSubmitResetPassword = async (
 		values: ResetPasswordFormValue,
@@ -22,7 +27,14 @@ function ResetPassword() {
 		console.log('🚀 ~ values:', values)
 
 		//FIXME: Simulate password reset
-		await new Promise((resolve) => setTimeout(resolve, 2000))
+
+		const respone = await resetPasswordApi(
+			token || '',
+			values.password,
+			values.confirmPassword,
+		)
+
+		console.log('🚀 ~ respone:', respone)
 
 		setIsSuccess(true)
 	}
@@ -62,10 +74,6 @@ function ResetPassword() {
 		handleValidate,
 		handleSubmitResetPassword,
 	)
-	const [isSuccess, setIsSuccess] = useState(false)
-	const [isValidToken, setIsValidToken] = useState(true)
-
-	const token = searchParams.get('token')
 
 	useEffect(() => {
 		//FIXME: Simulate token validation

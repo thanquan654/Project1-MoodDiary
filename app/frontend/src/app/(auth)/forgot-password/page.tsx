@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/card'
 import { ArrowLeft, CheckCircle } from 'lucide-react'
 import ForgotPasswordEmailForm from '@/app/(auth)/_components/ForgotPasswordEmailForm'
+import { requestForgotPasswordApi } from '@/lib/apis/authApi'
 
 export default function ForgotPasswordPage() {
 	const [email, setEmail] = useState('')
@@ -27,7 +28,9 @@ export default function ForgotPasswordPage() {
 		setIsLoading(true)
 
 		// FIXME: Simulate sending reset email
-		await new Promise((resolve) => setTimeout(resolve, 2000))
+		const respone = await (await requestForgotPasswordApi(email)).json()
+
+		console.log('🚀 ~ respone:', respone)
 
 		setIsEmailSent(true)
 		setIsLoading(false)
