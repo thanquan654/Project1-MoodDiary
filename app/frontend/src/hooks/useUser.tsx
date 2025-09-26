@@ -54,13 +54,10 @@ export function useUser() {
 	}
 
 	const getUserInfo = async () => {
-		console.log('🚀 ~ getUserInfo ~ token:', token)
 		if (!token) return
 		const response = await getUserInfoApi(token)
 		if (response.ok) {
 			const body = await response.json()
-
-			console.log('🚀 ~ body:', body)
 
 			setUser(body)
 		}
