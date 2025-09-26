@@ -18,6 +18,9 @@ public enum ErrorCode {
     EMAIL_EXISTED(1002, "Email đã tồn tại", HttpStatus.BAD_REQUEST),
     EMAIL_NOT_EXISTED(1005, "Email không chính xác", HttpStatus.NOT_FOUND),
     PASSWORD_NOT_EXISTED(1005, "Mật khẩu không chính xác", HttpStatus.NOT_FOUND),
+    EMAIL_NOT_FOUND(1006, "Email không tồn tại", HttpStatus.NOT_FOUND),
+    PASSWORD_MISMATCH(1009, "Mật khẩu và xác nhận mật khẩu không khớp.", HttpStatus.BAD_REQUEST),
+    INVALID_RESET_TOKEN(1008, "Mã đặt lại không hợp lệ hoặc đã hết hạn.", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode httpStatusCode) {
