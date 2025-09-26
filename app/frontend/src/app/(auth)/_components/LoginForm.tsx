@@ -25,12 +25,14 @@ export default function LoginForm({
 	values,
 	errors,
 	isLoading,
+	formError,
 	handleChange,
 	handleSubmit,
 }: {
 	values: LoginFormValue
 	errors: LoginFormError
 	isLoading: boolean
+	formError: string
 	handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 	handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }) {
@@ -66,6 +68,7 @@ export default function LoginForm({
 								tabIndex={1}
 								name="email"
 								type="text"
+								tabIndex={1}
 								placeholder="your@email.com"
 								value={values.email}
 								onChange={handleChange}
@@ -141,14 +144,22 @@ export default function LoginForm({
 				</CardContent>
 
 				<CardFooter className="flex flex-col space-y-4">
-					<Button
-						type="submit"
-						tabIndex={3}
-						className="w-full bg-diary-accent hover:bg-diary-accent/90 text-white"
-						disabled={isLoading}
-					>
-						{isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-					</Button>
+
+					<div className="space-y-2 w-full">
+						<Button
+							type="submit"
+							tabIndex={3}
+							className="w-full bg-diary-accent hover:bg-diary-accent/90 text-white"
+							disabled={isSubmitting}
+						>
+							{isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
+						</Button>
+						{formError && (
+							<p className="text-red-600 text-sm text-center">
+								{formError}
+							</p>
+						)}
+					</div>
 
 					<Separator />
 

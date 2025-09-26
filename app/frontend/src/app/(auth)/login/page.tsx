@@ -14,6 +14,8 @@ export default function LoginPage() {
 	const router = useRouter()
 	const { login } = useUser()
 
+	const [formError, setFormError] = React.useState('')
+
 	const validateLoginForm = (values: LoginFormValue) => {
 		const errors: LoginFormError = {}
 		if (!values.email) {
@@ -33,8 +35,16 @@ export default function LoginPage() {
 	}
 
 	const loginUser = async (values: LoginFormValue) => {
-		await login(values.email, values.password)
+		const result = await login(values.email, values.password)
 
+		console.log('🚀 ~ result:', result)
+
+		if (result.status >= 400) {
+			setFormError(result.message)
+			return
+		}
+
+		// FIXME: Chuyển đến trang dashboard (theo đặc tả)
 		router.push('/')
 	}
 
@@ -52,8 +62,8 @@ export default function LoginPage() {
 		handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 	} = useForm(
 		{
-			email: 'danhtien2k4@gmail.com',
-			password: '123456',
+			email: '',
+			password: '',
 		},
 		validateLoginForm,
 		loginUser,
@@ -65,6 +75,7 @@ export default function LoginPage() {
 				values={values}
 				errors={errors}
 				isLoading={isLoading}
+				formError={formError}
 				handleChange={handleChange}
 				handleSubmit={handleSubmit}
 			/>

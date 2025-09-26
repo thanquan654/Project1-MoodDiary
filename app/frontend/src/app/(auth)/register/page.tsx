@@ -7,6 +7,8 @@ import {
 } from '@/app/(auth)/_types/authForm.type'
 import useForm from '@/hooks/useForm'
 import { useUser } from '@/hooks/useUser'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 type RegisterForm = {
 	name: string
@@ -26,6 +28,9 @@ type FormError = {
 
 export default function RegisterPage() {
 	const { register } = useUser()
+	const router = useRouter()
+
+	const [fromError, setFormError] = useState('')
 
 	const validateRegisterForm = (values: RegisterForm) => {
 		const errors: FormError = {}
@@ -58,7 +63,18 @@ export default function RegisterPage() {
 	}
 
 	const registerUser = async (values: RegisterFormValue) => {
-		register(values.name, values.email, values.password)
+		const result = await register(
+			values.name,
+			values.email,
+			values.password,
+		)
+
+		if (result.status >= 400) {
+			setFormError(result.message)
+			return
+		}
+
+		router.push('/login')
 	}
 
 	const {
@@ -75,11 +91,11 @@ export default function RegisterPage() {
 		handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 	} = useForm(
 		{
-			name: 'Nguyen Van A',
-			email: 'abc@gmail.com',
-			password: '123456',
-			confirmPassword: '123456',
-			agreeToTerms: true,
+			name: '',
+			email: '',
+			password: '',
+			confirmPassword: '',
+			agreeToTerms: false,
 		},
 		validateRegisterForm,
 		registerUser,
@@ -91,6 +107,7 @@ export default function RegisterPage() {
 				values={values}
 				errors={errors}
 				isLoading={isLoading}
+				formError={fromError}
 				handleChange={handleChange}
 				handleSubmit={handleSubmit}
 			/>
