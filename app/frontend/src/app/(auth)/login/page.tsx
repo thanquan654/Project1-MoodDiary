@@ -51,13 +51,13 @@ export default function LoginPage() {
 	const {
 		values,
 		errors,
-		isSubmitting,
+		isLoading,
 		handleChange,
 		handleSubmit,
 	}: {
 		values: LoginFormValue
 		errors: LoginFormError
-		isSubmitting: boolean
+		isLoading: boolean
 		handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 		handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 	} = useForm(
@@ -74,8 +74,8 @@ export default function LoginPage() {
 			<LoginForm
 				values={values}
 				errors={errors}
+				isLoading={isLoading}
 				formError={formError}
-				isSubmitting={isSubmitting}
 				handleChange={handleChange}
 				handleSubmit={handleSubmit}
 			/>

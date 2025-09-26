@@ -80,13 +80,13 @@ export default function RegisterPage() {
 	const {
 		values,
 		errors,
-		isSubmitting,
+		isLoading,
 		handleChange,
 		handleSubmit,
 	}: {
 		values: RegisterFormValue
 		errors: RegisterFormError
-		isSubmitting: boolean
+		isLoading: boolean
 		handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 		handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 	} = useForm(
@@ -106,8 +106,8 @@ export default function RegisterPage() {
 			<RegisterForm
 				values={values}
 				errors={errors}
+				isLoading={isLoading}
 				formError={fromError}
-				isSubmitting={isSubmitting}
 				handleChange={handleChange}
 				handleSubmit={handleSubmit}
 			/>

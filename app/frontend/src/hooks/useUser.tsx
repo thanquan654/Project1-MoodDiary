@@ -1,6 +1,11 @@
 'use client'
 
-import { loginUserApi, registerUserApi } from '@/lib/apis/authApi'
+import {
+	getUserInfoApi,
+	loginUserApi,
+	logoutApi,
+	registerUserApi,
+} from '@/lib/apis/authApi'
 import {
 	isAuthenticatedAtom,
 	logoutAtom,
@@ -11,7 +16,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 export function useUser() {
 	const [user, setUser] = useAtom(userAtom)
-	const setToken = useSetAtom(tokenAtom)
+	const [token, setToken] = useAtom(tokenAtom)
 	const isAuthenticated = useAtomValue(isAuthenticatedAtom)
 	const performLogout = useSetAtom(logoutAtom)
 
@@ -42,8 +47,20 @@ export function useUser() {
 		return body
 	}
 
-	const logout = () => {
+	const logout = async () => {
 		performLogout()
+
+		await logoutApi()
+	}
+
+	const getUserInfo = async () => {
+		if (!token) return
+		const response = await getUserInfoApi(token)
+		if (response.ok) {
+			const body = await response.json()
+
+			setUser(body)
+		}
 	}
 
 	return {
@@ -52,5 +69,6 @@ export function useUser() {
 		login,
 		register,
 		logout,
+		getUserInfo,
 	}
 }

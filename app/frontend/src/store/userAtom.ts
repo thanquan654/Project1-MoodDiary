@@ -7,7 +7,7 @@ const isLoadingAtom = atom<boolean>(false)
 
 const isAuthenticatedAtom = atom((get) => get(tokenAtom) !== null)
 
-const userAtom = atomWithStorage<unknown | null>('user', null)
+const userAtom = atom<unknown | null>(null)
 
 const logoutAtom = atom(null, (get, set) => {
 	set(tokenAtom, null)

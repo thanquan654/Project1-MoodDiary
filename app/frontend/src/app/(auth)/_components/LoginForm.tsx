@@ -24,15 +24,15 @@ import GoogleButton from 'react-google-button'
 export default function LoginForm({
 	values,
 	errors,
+	isLoading,
 	formError,
-	isSubmitting,
 	handleChange,
 	handleSubmit,
 }: {
 	values: LoginFormValue
 	errors: LoginFormError
+	isLoading: boolean
 	formError: string
-	isSubmitting: boolean
 	handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 	handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
 }) {
@@ -65,9 +65,9 @@ export default function LoginForm({
 							<Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-diary-text-secondary-light dark:text-diary-text-secondary-dark w-4 h-4" />
 							<Input
 								id="email"
+								tabIndex={1}
 								name="email"
 								type="text"
-								tabIndex={1}
 								placeholder="your@email.com"
 								value={values.email}
 								onChange={handleChange}
@@ -148,9 +148,9 @@ export default function LoginForm({
 							type="submit"
 							tabIndex={3}
 							className="w-full bg-diary-accent hover:bg-diary-accent/90 text-white"
-							disabled={isSubmitting}
+							disabled={isLoading}
 						>
-							{isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
+							{isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
 						</Button>
 						{formError && (
 							<p className="text-red-600 text-sm text-center">
