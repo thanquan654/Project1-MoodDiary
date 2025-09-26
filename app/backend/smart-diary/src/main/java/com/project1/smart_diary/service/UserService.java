@@ -29,8 +29,6 @@ public class UserService {
         }
         UserEntity userEntity = userConverter.convertToUserEntity(userCreateRequest);
 
-//        UserEntity userEntity = new UserEntity();
-//        userEntity.setEmail(userCreateRequest.getEmail());
         userEntity.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
         userEntity.setProvider(AuthProvider.LOCAL);
         return userConverter.convertToUserResponse(userRepository.save(userEntity));

@@ -43,17 +43,13 @@ public class AuthService {
     private UserRepository userRepository;
     @Autowired
     private UserConverter  userConverter;
-//    @Autowired
-//    private InvalidatedTokenRepository invalidatedTokenRepository;
+
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String Signer_Key;
     @NonFinal
     @Value("${jwt.valid-duration}")
     protected long Valid_Duration;
-//    @NonFinal
-//    @Value("${jwt.refreshable-duration}")
-//    protected long Refresh_Duration;
 
     public AuthenticationResponse authenticate(LoginRequest loginRequest) {
         UserEntity user = userRepository.findByEmail(loginRequest.getEmail());
@@ -77,11 +73,7 @@ public class AuthService {
         if (user == null) {
             throw new ApplicationException(ErrorCode.EMAIL_NOT_EXISTED);
         }
-//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-//        boolean authenticated = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
-//        if (!authenticated) {
-//            throw new ApplicationException(ErrorCode.UNAUTHENTICATED);
-//        }
+
         String token = genToken(user);
         return AuthenticationResponse.builder()
                 .token(token)
@@ -115,13 +107,13 @@ public class AuthService {
         SignedJWT signedJWT = SignedJWT.parse(token);
 
         Date expiryTime;
-        if (isRefresh) {  // Nếu là Refresh Token
+        if (isRefresh) {
             expiryTime = new Date(signedJWT.getJWTClaimsSet().getIssueTime().toInstant()
                     .plus(Refresh_Duration, ChronoUnit.SECONDS).toEpochMilli());
-        } else {  // Access Token
+        } else {
             expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         }
-        boolean verified = signedJWT.verify(verifier); // check chữ ký
+        boolean verified = signedJWT.verify(verifier);
         if (!(verified && expiryTime.after(new Date()))) {
             throw new ApplicationException(ErrorCode.UNAUTHENTICATED);
         }
@@ -132,7 +124,7 @@ public class AuthService {
         return signedJWT;
     }
 
-    //---------RefreshToken
+
     public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) throws ParseException, JOSEException {
         var signJWT = verifyToken(refreshTokenRequest.getToken(), true);
         var jit = signJWT.getJWTClaimsSet().getJWTID();

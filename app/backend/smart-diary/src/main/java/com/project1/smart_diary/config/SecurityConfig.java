@@ -56,9 +56,7 @@ public class SecurityConfig {
                 //
                 .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("/auth/login/google", true) // redirect sau khi login thành công
                         .failureUrl("/login?error=true"))
-                //
-                // .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                //
+
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .decoder(jwtDecoder())

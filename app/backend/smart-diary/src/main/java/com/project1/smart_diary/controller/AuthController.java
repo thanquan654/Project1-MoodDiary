@@ -41,9 +41,7 @@ public class AuthController {
         return ResponseEntity.ok(userResponse);
     }
 
-    //http://localhost:8080/oauth2/authorization/google
-    //https://lavona-nonproficient-roxana.ngrok-free.dev/oauth2/authorization/google
-    //https://lavona-nonproficient-roxana.ngrok-free.dev/auth/login/google
+
     @GetMapping("/login/google")
     public void loginGoogle(@AuthenticationPrincipal OAuth2User principal, HttpServletResponse response) throws IOException {
         Map<String, Object> attributes = principal.getAttributes();
@@ -59,8 +57,8 @@ public class AuthController {
         loginGoogleDTO.setCreatedAt(LocalDateTime.now());
         loginGoogleDTO.setProviderId(sub);
         userService.createUserWithGoogle(loginGoogleDTO);
-        //
-        // return ResponseEntity.ok(authService.LoginWithGoogle(loginGoogleDTO));
+
+
         AuthenticationResponse authResponse = authService.loginWithGoogle(loginGoogleDTO);
         String token = authResponse.getToken();
         String frontendUrl = "https://real-unlikely-mastiff.ngrok-free.app/gg-login-success?token=" + token;

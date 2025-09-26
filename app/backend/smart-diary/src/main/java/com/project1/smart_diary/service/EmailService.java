@@ -27,7 +27,7 @@ public class EmailService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(email);
-            message.setSubject("Reset Password - Smart Diary");
+            message.setSubject("Đặt lại mật khẩu - Smart Diary");
 
             String resetUrl = Fontend_Url_public + "/reset-password?token=" + token;
             String emailBody = String.format("""
@@ -51,11 +51,11 @@ public class EmailService {
             message.setText(emailBody);
 
             mailSender.send(message);
-            log.info("Reset password email sent to: {}", email);
+            log.info("Email đặt lại mật khẩu đã được gửi đến: {}", email);
 
         } catch (Exception e) {
-            log.error("Failed to send reset password email to: {}", email, e);
-            throw new RuntimeException("Failed to send email");
+            log.error("Không thể gửi email đặt lại mật khẩu đến: {}", email, e);
+            throw new RuntimeException("Gửi email không thành công.");
         }
     }
 }

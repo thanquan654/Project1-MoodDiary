@@ -13,9 +13,9 @@ public class ResetPasswordRequest {
     @NotBlank(message = "Token not null")
     private String token;
 
-    @NotBlank(message = "Password not null")
-    @Size(min = 6, message = "Password must be at least 6 characters")
+    @NotBlank(message = "Mật khẩu không được để trống.")
+    @Size(min = 6, message = "Mật khẩu phải có ít nhất 6 ký tự.")
     private String newPassword;
-    @NotBlank(message = "Confirm password not null")
+    @NotBlank(message = "Xác nhận mật khẩu không được để trống.")
     private String confirmPassword;
 }

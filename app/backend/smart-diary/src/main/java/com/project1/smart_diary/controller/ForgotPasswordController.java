@@ -22,7 +22,7 @@ public class ForgotPasswordController {
         forgotPasswordService.sendResetPasswordEmail(request);
 
         return ResponseEntity.ok(Map.of(
-                "message", "If the email exists, a password reset link has been sent"
+                "message", "Nếu email tồn tại, một liên kết đặt lại mật khẩu đã được gửi."
         ));
     }
 
@@ -31,7 +31,7 @@ public class ForgotPasswordController {
         forgotPasswordService.resetPassword(request);
 
         return ResponseEntity.ok(Map.of(
-                "message", "Password has been reset successfully"
+                "message", "Mật khẩu đã được đặt lại thành công."
         ));
     }
 }
