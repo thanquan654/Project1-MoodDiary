@@ -1,7 +1,9 @@
 package com.project1.smart_diary.controller;
 
+import com.nimbusds.jose.JOSEException;
 import com.project1.smart_diary.dto.LoginGoogleDTO;
 import com.project1.smart_diary.dto.request.LoginRequest;
+import com.project1.smart_diary.dto.request.RefreshTokenRequest;
 import com.project1.smart_diary.dto.request.UserCreateRequest;
 import com.project1.smart_diary.dto.response.AuthenticationResponse;
 import com.project1.smart_diary.dto.response.UserResponse;
@@ -16,6 +18,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -64,4 +67,9 @@ public class AuthController {
         response.sendRedirect(frontendUrl);
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthenticationResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) throws ParseException, JOSEException {
+        var res = authService.refreshToken(refreshTokenRequest);
+        return ResponseEntity.ok(res);
+    }
 }
