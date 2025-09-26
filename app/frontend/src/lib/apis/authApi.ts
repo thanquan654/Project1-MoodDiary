@@ -62,10 +62,34 @@ const resetPasswordApi = async (
 	return response
 }
 
+const logoutApi = async () => {
+	const response = await fetch(`${BASE_URL}/auth/logout`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	})
+	return response
+}
+
+const getUserInfoApi = async (token: string) => {
+	const response = await fetch(`${BASE_URL}/users/my-info`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+			'ngrok-skip-browser-warning': 'true',
+		},
+	})
+	return response
+}
+
 export {
 	loginUserApi,
 	registerUserApi,
 	loginWithGoogleApi,
+	logoutApi,
 	requestForgotPasswordApi,
 	resetPasswordApi,
+	getUserInfoApi,
 }
