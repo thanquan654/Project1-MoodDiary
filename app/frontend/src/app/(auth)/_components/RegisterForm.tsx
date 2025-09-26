@@ -234,15 +234,14 @@ export default function RegisterForm({
 				</CardContent>
 
 				<CardFooter className="flex flex-col space-y-4">
-
 					<div className="w-full">
 						<Button
 							type="submit"
 							tabIndex={6}
 							className="w-full bg-diary-accent hover:bg-diary-accent/90 text-white"
-							disabled={isSubmitting}
+							disabled={isLoading}
 						>
-							{isSubmitting
+							{isLoading
 								? 'Đang tạo tài khoản...'
 								: 'Tạo tài khoản'}
 						</Button>
@@ -252,7 +251,6 @@ export default function RegisterForm({
 							</p>
 						)}
 					</div>
-
 
 					<Separator />
 
