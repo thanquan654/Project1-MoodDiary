@@ -16,6 +16,7 @@ import com.project1.smart_diary.exception.ApplicationException;
 import com.project1.smart_diary.exception.ErrorCode;
 import com.project1.smart_diary.repository.InvalidatedTokenRepository;
 import com.project1.smart_diary.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.time.temporal.ChronoUnit;
@@ -145,6 +147,28 @@ public class AuthService {
                 .authenticated(true)
                 .user(userConverter.convertToUserResponse(user))
                 .build();
+
+    }
+    @Transactional
+    public void logout(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new ApplicationException(ErrorCode.UNAUTHENTICATED);
+        }
+        String token = authHeader.substring(7);
+        try {
+            SignedJWT signedJWT = verifyToken(token, false);
+            String jti = signedJWT.getJWTClaimsSet().getJWTID();
+            Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+            InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                    .jti(jti)
+                    .expiryTime(expiryTime)
+                    .build();
+            invalidatedTokenRepository.save(invalidatedToken);
+            log.info("Token with jti={} invalidated until {}", jti, expiryTime);
+        } catch (ParseException | JOSEException e) {
+            throw new ApplicationException(ErrorCode.UNAUTHENTICATED);
+        }
 
     }
 }
