@@ -8,9 +8,9 @@ app:
 
 spring:
   datasource:
-    url: "${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3307/MoodDiary}"
+    url: "${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/mood_diary}"
     username: ${SPRING_DATASOURCE_USERNAME:root}
-    password: ${SPRING_DATASOURCE_PASSWORD:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
   jpa:
     hibernate:
       #ddl-auto: create-drop
@@ -43,10 +43,10 @@ spring:
           auth: true
           starttls:
             enable: true
-  data:
-    redis:
-      host: localhost
-      port: 6379
+    data:
+      redis:
+        host: localhost
+        port: 6379
 jwt:
   signerKey: ${JWT_SIGNER_KEY}
   valid-duration: 86400

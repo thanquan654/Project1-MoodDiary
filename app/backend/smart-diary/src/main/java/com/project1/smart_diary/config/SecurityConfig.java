@@ -1,5 +1,7 @@
 package com.project1.smart_diary.config;
 
+import com.project1.smart_diary.repository.InvalidatedTokenRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +34,8 @@ public class SecurityConfig {
 
     @Value("${jwt.signerKey}")
     protected String Signer_Key;
-
+    @Autowired
+    private InvalidatedTokenRepository invalidatedTokenRepository;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -80,6 +83,9 @@ public class SecurityConfig {
                 .withSecretKey(secretKeySpec)
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
+        OAuth2TokenValidator<Jwt> defaultValidator = JwtValidators.createDefault();
+        OAuth2TokenValidator<Jwt> blacklistValidator = new InvalidatedJwtValidator(invalidatedTokenRepository);
+        decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(defaultValidator, blacklistValidator));
         return decoder;
     }
 }

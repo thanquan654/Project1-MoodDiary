@@ -9,6 +9,7 @@ import com.project1.smart_diary.dto.response.AuthenticationResponse;
 import com.project1.smart_diary.dto.response.UserResponse;
 import com.project1.smart_diary.service.AuthService;
 import com.project1.smart_diary.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,5 +70,11 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) throws ParseException, JOSEException {
         var res = authService.refreshToken(refreshTokenRequest);
         return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        authService.logout(request);
+        return ResponseEntity.ok("Logout successful");
     }
 }
