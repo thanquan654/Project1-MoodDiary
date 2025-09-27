@@ -3,6 +3,7 @@ package com.project1.smart_diary.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -44,17 +45,18 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 //
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/register",
-                                        "/auth/login"
+                                        "/auth/login",
+                                        "/auth/forgot-password",
+                                        "/auth/reset-password"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 //
                 .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("/auth/login/google", true) // redirect sau khi login thành công
                         .failureUrl("/login?error=true"))
-                //
-                // .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                //
+
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .decoder(jwtDecoder())
