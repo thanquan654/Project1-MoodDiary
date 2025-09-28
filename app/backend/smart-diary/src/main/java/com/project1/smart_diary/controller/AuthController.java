@@ -12,7 +12,9 @@ import com.project1.smart_diary.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -30,6 +32,9 @@ public class AuthController {
     private UserService userService;
     @Autowired
     private AuthService authService;
+    @NonFinal
+    @Value("${app.ngrok.fontend-url-public}")
+    protected String Fontend_Url_public;
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest) {
@@ -62,7 +67,7 @@ public class AuthController {
 
         AuthenticationResponse authResponse = authService.loginWithGoogle(loginGoogleDTO);
         String token = authResponse.getToken();
-        String frontendUrl = "https://real-unlikely-mastiff.ngrok-free.app/gg-login-success?token=" + token;
+        String frontendUrl = Fontend_Url_public + "/gg-login-success?token=" + token;
         response.sendRedirect(frontendUrl);
     }
 
