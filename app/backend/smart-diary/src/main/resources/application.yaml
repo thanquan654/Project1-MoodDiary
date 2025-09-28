@@ -9,8 +9,8 @@ app:
 spring:
   datasource:
     url: "${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/mood_diary}"
-    username: ${SPRING_DATASOURCE_USERNAME:root}
-    password: ${SPRING_DATASOURCE_PASSWORD:123456}
+    username: "${SPRING_DATASOURCE_USERNAME:root}"
+    password: "${SPRING_DATASOURCE_PASSWORD:123456}"
   jpa:
     hibernate:
       #ddl-auto: create-drop
@@ -22,8 +22,8 @@ spring:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
+            client-id: "${GOOGLE_CLIENT_ID}"
+            client-secret: "${GOOGLE_CLIENT_SECRET}"
             scope: profile,email
             redirect-uri: "{baseUrl}/login/oauth2/code/google"
         provider:
@@ -45,10 +45,12 @@ spring:
             enable: true
     data:
       redis:
-        host: localhost
-        port: 6379
+        url: "${SPRING_REDIS_URL:redis://default:QjJaLtUgFTqzaMwTXjwGuRORiIllWCje@interchange.proxy.rlwy.net:34181}"
+        host: "${SPRING_REDIS_HOST:localhost}"
+        port: "${SPRING_REDIS_PORT:6379}"
+        password: "${SPRING_REDIS_PASSWORD:QjJaLtUgFTqzaMwTXjwGuRORiIllWCje}"
 jwt:
-  signerKey: ${JWT_SIGNER_KEY}
+  signerKey: "${JWT_SIGNER_KEY}"
   valid-duration: 86400
   refreshable-duration: 3000000
 
