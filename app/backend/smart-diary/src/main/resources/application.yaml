@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8080}
+  port: "${PORT:8080}"
   forward-headers-strategy: framework
 app:
   fontend-url: "${FRONTEND_URL:http://localhost:3000}"
