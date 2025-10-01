@@ -15,7 +15,7 @@ public class EmailService {
     @Value("${app.ngrok.fontend-url-public}")
     private String Fontend_Url_public;
 
-    @Value("${spring.mail.username}")
+    @Value("${spring.mail.from}")
     private String fromEmail;
 
     public EmailService(JavaMailSender mailSender) {

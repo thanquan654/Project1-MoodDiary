@@ -8,9 +8,9 @@ app:
 
 spring:
   datasource:
-    url: "${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/mood_diary}"
+    url: "${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3307/MoodDiary}"
     username: "${SPRING_DATASOURCE_USERNAME:root}"
-    password: "${SPRING_DATASOURCE_PASSWORD:123456}"
+    password: "${SPRING_DATASOURCE_PASSWORD:root}"
   jpa:
     hibernate:
       #ddl-auto: create-drop
@@ -33,16 +33,17 @@ spring:
             user-info-uri: "https://www.googleapis.com/oauth2/v3/userinfo"
             user-name-attribute: "sub"
   mail:
-    host: smtp.gmail.com
+    host: smtp.sendgrid.net
     port: 587
-    username: ${EMAIL_USERNAME}
-    password: ${EMAIL_PASSWORD}
+    username: apikey
+    password: ${SENDGRID_API_KEY}
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+    from: "${APP_MAIL_FROM}"
   data:
     redis:
       url: "${SPRING_REDIS_URL:redis://default:QjJaLtUgFTqzaMwTXjwGuRORiIllWCje@interchange.proxy.rlwy.net:34181}"
