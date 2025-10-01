@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8080}
+  port: "${PORT:8080}"
   forward-headers-strategy: framework
 app:
   fontend-url: "${FRONTEND_URL:http://localhost:3000}"
@@ -36,7 +36,7 @@ spring:
     host: smtp.sendgrid.net
     port: 587
     username: apikey
-    password: ${SENDGRID_API_KEY}
+    password: "${SENDGRID_API_KEY}"
     properties:
       mail:
         smtp:
