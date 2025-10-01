@@ -2,6 +2,7 @@ package com.project1.smart_diary.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter
@@ -11,11 +12,12 @@ import lombok.*;
 @AllArgsConstructor
 public class UserCreateRequest {
 
-    @NotBlank(message = "Email not null")
-    @Email(message = "Email is not in correct format")
+    @NotBlank(message = "Email không được để trống")
+    @Email(message = "Email không đúng định dạng ")
     private String email;
-    @NotBlank(message = "Password not null")
+    @NotBlank(message = "Mật khẩu không được để trống")
+    @Size(min = 8, message = "Mật khẩu phải có ít nhất 8 ký tự.")
     private String password;
-    @NotBlank(message = "Fullname not null")
+    @NotBlank(message = "Họ tên không được để trống")
     private String fullname;
 }
