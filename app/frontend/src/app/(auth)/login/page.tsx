@@ -27,7 +27,7 @@ export default function LoginPage() {
 		}
 		if (!values.password) {
 			errors.password = 'Vui lòng nhập mật khẩu.'
-		} else if (values.password.length < 6) {
+		} else if (values.password.length < 8) {
 			errors.password =
 				'Mật khẩu phải có ít nhất 8 ký tự. Vui lòng kiểm tra lại.'
 		}
@@ -42,8 +42,7 @@ export default function LoginPage() {
 			return
 		}
 
-		// FIXME: Chuyển đến trang dashboard (theo đặc tả)
-		router.push('/')
+		router.push('/dashboard')
 	}
 
 	const {
