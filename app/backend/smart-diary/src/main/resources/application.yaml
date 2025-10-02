@@ -47,9 +47,7 @@ spring:
   data:
     redis:
       url: "${SPRING_REDIS_URL:redis://default:QjJaLtUgFTqzaMwTXjwGuRORiIllWCje@interchange.proxy.rlwy.net:34181}"
-      host: "${SPRING_REDIS_HOST:localhost}"
-      port: "${SPRING_REDIS_PORT:6379}"
-      password: "${SPRING_REDIS_PASSWORD:QjJaLtUgFTqzaMwTXjwGuRORiIllWCje}"
+      
 jwt:
   signerKey: "${JWT_SIGNER_KEY}"
   valid-duration: 86400
