@@ -32,7 +32,10 @@ function ResetPassword() {
 			values.confirmPassword,
 		)
 
-		console.log('🚀 ~ respone:', respone)
+		if (respone.status >= 400) {
+			setIsValidToken(false)
+			return
+		}
 
 		setIsSuccess(true)
 	}
@@ -45,8 +48,8 @@ function ResetPassword() {
 			errors.confirmPassword = 'Mật khẩu xác nhận không khớp!'
 		}
 
-		if (values.password.length < 6) {
-			errors.password = 'Mật khẩu phải có ít nhất 6 ký tự!'
+		if (values.password.length < 8) {
+			errors.password = 'Mật khẩu phải có ít nhất 8 ký tự!'
 		}
 
 		return errors
