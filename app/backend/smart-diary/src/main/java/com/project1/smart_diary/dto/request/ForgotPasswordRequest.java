@@ -2,6 +2,7 @@ package com.project1.smart_diary.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Getter
@@ -11,6 +12,9 @@ import lombok.*;
 @AllArgsConstructor
 public class ForgotPasswordRequest {
     @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không đúng định dạng")
+    @Pattern(
+            regexp = "^[A-Za-z0-9._%+-]+@gmail\\.com$",
+            message = "Email không đúng định dạng -> example@gmail.com"
+    )
     private String email;
 }
