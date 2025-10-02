@@ -53,7 +53,7 @@ public class AuthService {
     @Value("${jwt.valid-duration}")
     protected long Valid_Duration;
 
-    public AuthenticationResponse authenticate(LoginRequest loginRequest) {
+    public AuthenticationResponse login(LoginRequest loginRequest) {
         UserEntity user = userRepository.findByEmail(loginRequest.getEmail());
         if (user == null) {
             throw new ApplicationException(ErrorCode.EMAIL_NOT_EXISTED);

@@ -53,13 +53,13 @@ public class AuthController {
                             schema = @Schema(implementation = AuthenticationResponse.class)
                     )
             ),
-            @ApiResponse(responseCode = "400", description = "Email sai định dạng, hoặc Email và mật khẩu rỗng"),
-            @ApiResponse(responseCode = "401", description = "Emai hoăcj mật khẩu không đúng"),
+            @ApiResponse(responseCode = "400", description = "Email sai định dạng hoặc Email và mật khẩu rỗng"),
+            @ApiResponse(responseCode = "401", description = "Emai hoặc mật khẩu không đúng"),
             @ApiResponse(responseCode = "500", description = "Lỗi server khi xác thực, không thể xử lý yêu cầu")
     })
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(authService.authenticate(loginRequest));
+    public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.login(loginRequest));
     }
 
 
