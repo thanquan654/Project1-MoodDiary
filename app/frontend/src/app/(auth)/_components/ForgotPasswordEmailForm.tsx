@@ -15,11 +15,15 @@ import Link from 'next/link'
 export default function ForgotPasswordEmailForm({
 	email,
 	setEmail,
+	emailError,
 	isLoading,
+	formError,
 	handleSubmit,
 }: {
 	email: string
 	setEmail: React.Dispatch<React.SetStateAction<string>>
+	emailError: string
+	formError: string
 	isLoading: boolean
 	handleSubmit: (e: React.FormEvent<Element>) => Promise<void>
 }) {
@@ -50,14 +54,15 @@ export default function ForgotPasswordEmailForm({
 							<Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-diary-text-secondary-light dark:text-diary-text-secondary-dark w-4 h-4" />
 							<Input
 								id="email"
-								type="email"
 								placeholder="your@email.com"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 								className="pl-10 bg-diary-bg-light dark:bg-diary-bg-dark border-diary-border-light dark:border-diary-border-dark text-diary-text-primary-light dark:text-diary-text-primary-dark"
-								required
 							/>
 						</div>
+						{emailError && (
+							<p className="text-red-500 text-sm">{emailError}</p>
+						)}
 					</div>
 
 					<div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
@@ -76,6 +81,12 @@ export default function ForgotPasswordEmailForm({
 					>
 						{isLoading ? 'Đang gửi...' : 'Gửi hướng dẫn'}
 					</Button>
+
+					{formError && (
+						<p className="text-red-500 text-sm text-center">
+							{formError}
+						</p>
+					)}
 
 					<Link href="/login" className="w-full">
 						<Button
