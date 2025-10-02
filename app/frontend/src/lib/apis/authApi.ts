@@ -62,11 +62,13 @@ const resetPasswordApi = async (
 	return response
 }
 
-const logoutApi = async () => {
+const logoutApi = async (token: string) => {
 	const response = await fetch(`${BASE_URL}/auth/logout`, {
-		method: 'GET',
+		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+			'ngrok-skip-browser-warning': 'true',
 		},
 	})
 	return response

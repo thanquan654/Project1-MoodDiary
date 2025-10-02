@@ -50,7 +50,8 @@ export function useUser() {
 	const logout = async () => {
 		performLogout()
 
-		await logoutApi()
+		if (!token) return
+		await logoutApi(token)
 	}
 
 	const getUserInfo = async () => {
