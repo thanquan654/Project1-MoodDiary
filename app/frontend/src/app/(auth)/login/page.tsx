@@ -29,7 +29,7 @@ export default function LoginPage() {
 			errors.password = 'Vui lòng nhập mật khẩu.'
 		} else if (values.password.length < 6) {
 			errors.password =
-				'Mật khẩu phải có ít nhất 6 ký tự. Vui lòng kiểm tra lại.'
+				'Mật khẩu phải có ít nhất 8 ký tự. Vui lòng kiểm tra lại.'
 		}
 		return errors
 	}
