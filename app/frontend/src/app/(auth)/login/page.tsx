@@ -19,7 +19,7 @@ export default function LoginPage() {
 	const validateLoginForm = (values: LoginFormValue) => {
 		const errors: LoginFormError = {}
 		if (!values.email) {
-			errors.email = 'Vui lòng nhập email của bạn.'
+			errors.email = 'Email không đúng định dạng. Vui lòng kiểm tra lại.'
 		} else if (
 			!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
 		) {
@@ -27,9 +27,9 @@ export default function LoginPage() {
 		}
 		if (!values.password) {
 			errors.password = 'Vui lòng nhập mật khẩu.'
-		} else if (values.password.length < 6) {
+		} else if (values.password.length < 8) {
 			errors.password =
-				'Mật khẩu phải có ít nhất 6 ký tự. Vui lòng kiểm tra lại.'
+				'Mật khẩu phải có ít nhất 8 ký tự. Vui lòng kiểm tra lại.'
 		}
 		return errors
 	}
@@ -37,15 +37,12 @@ export default function LoginPage() {
 	const loginUser = async (values: LoginFormValue) => {
 		const result = await login(values.email, values.password)
 
-		console.log('🚀 ~ result:', result)
-
 		if (result.status >= 400) {
 			setFormError(result.message)
 			return
 		}
 
-		// FIXME: Chuyển đến trang dashboard (theo đặc tả)
-		router.push('/')
+		router.push('/dashboard')
 	}
 
 	const {

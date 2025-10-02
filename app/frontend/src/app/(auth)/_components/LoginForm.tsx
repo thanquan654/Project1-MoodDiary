@@ -72,7 +72,6 @@ export default function LoginForm({
 								value={values.email}
 								onChange={handleChange}
 								className="pl-10 bg-diary-bg-light dark:bg-diary-bg-dark border-diary-border-light dark:border-diary-border-dark text-diary-text-primary-light dark:text-diary-text-primary-dark"
-								required
 							/>
 						</div>
 						{errors.email && (
@@ -100,7 +99,6 @@ export default function LoginForm({
 								value={values.password}
 								onChange={handleChange}
 								className="pl-10 pr-10 bg-diary-bg-light dark:bg-diary-bg-dark border-diary-border-light dark:border-diary-border-dark text-diary-text-primary-light dark:text-diary-text-primary-dark"
-								required
 							/>
 							<span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-diary-text-secondary-light dark:text-diary-text-secondary-dark hover:text-diary-text-primary-light dark:hover:text-diary-text-primary-dark">
 								<Input

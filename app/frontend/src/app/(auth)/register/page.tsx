@@ -9,6 +9,7 @@ import useForm from '@/hooks/useForm'
 import { useUser } from '@/hooks/useUser'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 type RegisterForm = {
 	name: string
@@ -46,9 +47,9 @@ export default function RegisterPage() {
 		}
 		if (!values.password) {
 			errors.password = 'Vui lòng nhập mật khẩu của bạn.'
-		} else if (values.password.length < 6) {
+		} else if (values.password.length < 8) {
 			errors.password =
-				'Mật khẩu phải có ít nhất 6 ký tự. Vui lòng kiểm tra lại.'
+				'Mật khẩu phải có ít nhất 8 ký tự. Vui lòng kiểm tra lại.'
 		}
 		if (!values.confirmPassword) {
 			errors.confirmPassword = 'Vui lòng xác nhận mật khẩu của bạn.'
@@ -74,7 +75,11 @@ export default function RegisterPage() {
 			return
 		}
 
-		router.push('/login')
+		toast.success('Đăng ký thành công')
+
+		setTimeout(() => {
+			router.push('/login')
+		}, 2000)
 	}
 
 	const {

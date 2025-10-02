@@ -27,7 +27,7 @@ export default function ResetPasswordTokenInvalidCard() {
 			<CardFooter className="flex flex-col space-y-2">
 				<Link href="/forgot-password" className="w-full">
 					<Button className="w-full bg-diary-primary hover:bg-diary-primary/90 text-white">
-						Yêu cầu liên kết mới
+						Gửi lại yêu cầu
 					</Button>
 				</Link>
 				<Link href="/login" className="w-full">

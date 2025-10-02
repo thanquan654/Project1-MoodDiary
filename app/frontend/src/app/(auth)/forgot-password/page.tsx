@@ -20,17 +20,37 @@ import { requestForgotPasswordApi } from '@/lib/apis/authApi'
 
 export default function ForgotPasswordPage() {
 	const [email, setEmail] = useState('')
+	const [emailError, setEmailError] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
+	const [formError, setFormError] = useState('')
 	const [isEmailSent, setIsEmailSent] = useState(false)
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		setIsLoading(true)
 
-		// FIXME: Simulate sending reset email
-		const respone = await (await requestForgotPasswordApi(email)).json()
+		if (!email) {
+			setEmailError('Vui lòng nhập email của bạn.')
+			setIsLoading(false)
+			return
+		}
 
-		console.log('🚀 ~ respone:', respone)
+		if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
+			setEmailError('Email không hợp lệ. Vui lòng kiểm tra lại.')
+			setIsLoading(false)
+			return
+		}
+
+		const respone = await requestForgotPasswordApi(email)
+
+		const body = await respone.json()
+		console.log('🚀 ~ respone:', body)
+
+		if (respone.status >= 400) {
+			setFormError(body.message)
+			setIsLoading(false)
+			return
+		}
 
 		setIsEmailSent(true)
 		setIsLoading(false)
@@ -95,6 +115,8 @@ export default function ForgotPasswordPage() {
 		<div className="min-h-screen bg-diary-bg-light dark:bg-diary-bg-dark flex items-center justify-center p-4">
 			<ForgotPasswordEmailForm
 				email={email}
+				emailError={emailError}
+				formError={formError}
 				setEmail={setEmail}
 				isLoading={isLoading}
 				handleSubmit={handleSubmit}

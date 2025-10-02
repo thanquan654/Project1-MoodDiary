@@ -67,7 +67,6 @@ export default function ResetPasswordForm({
 								tabIndex={1}
 								onChange={handleInputChange}
 								className="pl-10 pr-10 bg-diary-bg-light dark:bg-diary-bg-dark border-diary-border-light dark:border-diary-border-dark text-diary-text-primary-light dark:text-diary-text-primary-dark"
-								required
 							/>
 							<button
 								type="button"
@@ -106,7 +105,6 @@ export default function ResetPasswordForm({
 								value={formData.confirmPassword}
 								onChange={handleInputChange}
 								className="pl-10 pr-10 bg-diary-bg-light dark:bg-diary-bg-dark border-diary-border-light dark:border-diary-border-dark text-diary-text-primary-light dark:text-diary-text-primary-dark"
-								required
 							/>
 							<button
 								type="button"
