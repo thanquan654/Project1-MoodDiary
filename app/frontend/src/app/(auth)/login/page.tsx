@@ -19,7 +19,7 @@ export default function LoginPage() {
 	const validateLoginForm = (values: LoginFormValue) => {
 		const errors: LoginFormError = {}
 		if (!values.email) {
-			errors.email = 'Vui lòng nhập email của bạn.'
+			errors.email = 'Email không đúng định dạng. Vui lòng kiểm tra lại.'
 		} else if (
 			!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
 		) {
@@ -36,8 +36,6 @@ export default function LoginPage() {
 
 	const loginUser = async (values: LoginFormValue) => {
 		const result = await login(values.email, values.password)
-
-		console.log('🚀 ~ result:', result)
 
 		if (result.status >= 400) {
 			setFormError(result.message)
