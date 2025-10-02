@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { JotaiProviders } from '@/components/JotaiProvider'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { Toaster } from '@/components/ui/sonner'
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -31,6 +32,7 @@ export default function RootLayout({
 			>
 				<JotaiProviders>
 					<ThemeProvider>{children}</ThemeProvider>
+					<Toaster />
 				</JotaiProviders>
 			</body>
 		</html>

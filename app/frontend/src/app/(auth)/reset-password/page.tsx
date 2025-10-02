@@ -26,8 +26,6 @@ function ResetPassword() {
 	) => {
 		console.log('🚀 ~ values:', values)
 
-		//FIXME: Simulate password reset
-
 		const respone = await resetPasswordApi(
 			token || '',
 			values.password,
@@ -76,7 +74,6 @@ function ResetPassword() {
 	)
 
 	useEffect(() => {
-		//FIXME: Simulate token validation
 		if (!token) {
 			setIsValidToken(false)
 		}

@@ -70,6 +70,7 @@ export default function RegisterForm({
 								value={values.name}
 								onChange={handleChange}
 								className="pl-10 bg-diary-bg-light dark:bg-diary-bg-dark border-diary-border-light dark:border-diary-border-dark text-diary-text-primary-light dark:text-diary-text-primary-dark"
+								required
 							/>
 						</div>
 
@@ -97,6 +98,7 @@ export default function RegisterForm({
 								value={values.email}
 								onChange={handleChange}
 								className="pl-10 bg-diary-bg-light dark:bg-diary-bg-dark border-diary-border-light dark:border-diary-border-dark text-diary-text-primary-light dark:text-diary-text-primary-dark"
+								required
 							/>
 						</div>
 
@@ -125,6 +127,7 @@ export default function RegisterForm({
 								value={values.password}
 								onChange={handleChange}
 								className="pl-10 pr-10 bg-diary-bg-light dark:bg-diary-bg-dark border-diary-border-light dark:border-diary-border-dark text-diary-text-primary-light dark:text-diary-text-primary-dark"
+								required
 							/>
 							<button
 								type="button"
@@ -164,6 +167,7 @@ export default function RegisterForm({
 								value={values.confirmPassword}
 								onChange={handleChange}
 								className="pl-10 pr-10 bg-diary-bg-light dark:bg-diary-bg-dark border-diary-border-light dark:border-diary-border-dark text-diary-text-primary-light dark:text-diary-text-primary-dark"
+								required
 							/>
 							<button
 								type="button"
