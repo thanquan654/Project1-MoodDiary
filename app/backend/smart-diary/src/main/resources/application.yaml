@@ -1,6 +1,7 @@
 server:
   port: "${PORT:8080}"
   forward-headers-strategy: framework
+
 app:
   fontend-url: "${FRONTEND_URL:http://localhost:3000}"
   ngrok:
@@ -11,12 +12,13 @@ spring:
     url: "${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3307/MoodDiary}"
     username: "${SPRING_DATASOURCE_USERNAME:root}"
     password: "${SPRING_DATASOURCE_PASSWORD:root}"
+
   jpa:
     hibernate:
-      #ddl-auto: create-drop
       ddl-auto: update
     show-sql: true
     open-in-view: true
+
   security:
     oauth2:
       client:
@@ -32,24 +34,12 @@ spring:
             token-uri: "https://oauth2.googleapis.com/token"
             user-info-uri: "https://www.googleapis.com/oauth2/v3/userinfo"
             user-name-attribute: "sub"
-  mail:
-    host: smtp.sendgrid.net
-    port: 587
-    username: apikey
-    password: "${SENDGRID_API_KEY}"
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-    from: "${APP_MAIL_FROM}"
+
   data:
     redis:
       url: "${SPRING_REDIS_URL:redis://default:QjJaLtUgFTqzaMwTXjwGuRORiIllWCje@interchange.proxy.rlwy.net:34181}"
-      
+
 jwt:
   signerKey: "${JWT_SIGNER_KEY}"
   valid-duration: 86400
   refreshable-duration: 3000000
-
