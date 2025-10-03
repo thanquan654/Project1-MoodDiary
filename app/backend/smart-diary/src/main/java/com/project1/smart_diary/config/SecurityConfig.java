@@ -57,7 +57,8 @@ public class SecurityConfig {
                                 "/auth/reset-password",
                                 "/v3/api-docs",
                                 "/swagger-ui.html",
-                                "/v3/api-docs.yaml"
+                                "/v3/api-docs.yaml",
+                                "/diaries"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
