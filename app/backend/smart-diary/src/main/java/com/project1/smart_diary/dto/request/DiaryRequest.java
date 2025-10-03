@@ -9,7 +9,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@Data
 public class DiaryRequest {
     private String title;
     private String content;

@@ -61,12 +61,7 @@ public class DiaryService {
     }
 
     private UserEntity getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new ApplicationException(ErrorCode.UNAUTHENTICATED);
-        }
-
-        String email = authentication.getName();
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
             throw new ApplicationException(ErrorCode.EMAIL_NOT_EXISTED);
@@ -75,18 +70,12 @@ public class DiaryService {
     }
 
     private void validateDiaryRequest(DiaryRequest request) {
-        //validate title
         if (request.getTitle() == null || request.getTitle().trim().isEmpty()) {
             throw new ApplicationException(ErrorCode.DIARY_TITLE_REQUIRED);
         }
-
-
-        // Validate nội dung
         if (request.getContent() == null || request.getContent().trim().isEmpty()) {
             throw new ApplicationException(ErrorCode.DIARY_CONTENT_REQUIRED);
         }
-
-        // 🔥 SỬA LẠI: Validate số lượng ảnh - báo lỗi cụ thể
         if (request.getNewImages() != null && request.getNewImages().size() > 5) {
             throw new ApplicationException(ErrorCode.MAX_IMAGES_EXCEEDED);
         }
