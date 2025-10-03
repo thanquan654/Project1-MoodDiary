@@ -33,8 +33,7 @@ public class UserController {
                             schema = @Schema(implementation = UserResponse.class)
                     )
             ),
-            @ApiResponse(responseCode = "401", description = "Chưa đăng nhập hoặc token không hợp lệ"),
-            @ApiResponse(responseCode = "403", description = "Không có quyền truy cập")
+            @ApiResponse(responseCode = "401", description = "Chưa đăng nhập hoặc token không hợp lệ")
     })
     @GetMapping("/my-info")
     public ResponseEntity<UserResponse> getUser() {
