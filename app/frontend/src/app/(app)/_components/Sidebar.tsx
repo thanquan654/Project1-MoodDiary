@@ -5,6 +5,7 @@ import { useTheme } from '@/components/ThemeProvider'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import SideBarDiaryList from '@/app/(app)/_components/SidebarDiaryList'
 
 export default function Sidebar() {
 	const { toggleTheme, theme } = useTheme()
@@ -59,9 +60,7 @@ export default function Sidebar() {
 
 			{/* Diary List */}
 			{getActiveTab() !== 'diaries' ? (
-				<div className="flex-1 p-6 overflow-y-auto border-t border-border">
-					Diary list
-				</div>
+				<SideBarDiaryList />
 			) : (
 				<div className="flex-1 p-6 overflow-y-auto">Carlendar</div>
 			)}
