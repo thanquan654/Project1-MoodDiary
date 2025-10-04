@@ -1,6 +1,7 @@
 package com.project1.smart_diary.converter;
 
 import com.project1.smart_diary.dto.response.DiaryResponse;
+import com.project1.smart_diary.dto.response.MediaResponse;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.DiaryMedia;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,13 @@ public class DiaryConverter {
             return null;
         }
         DiaryResponse response = modelMapper.map(diary, DiaryResponse.class);
-        List<String> mediaUrls = diary.getMedia().stream()
-                .map(DiaryMedia::getMediaUrl)
+        List<MediaResponse> mediaResponses = diary.getMedia().stream()
+                .map(media -> MediaResponse.builder()
+                        .id(media.getId())
+                        .mediaUrl(media.getMediaUrl())
+                        .build())
                 .collect(Collectors.toList());
-        response.setMediaUrls(mediaUrls);
+        response.setMedia(mediaResponses);
         return response;
     }
 
