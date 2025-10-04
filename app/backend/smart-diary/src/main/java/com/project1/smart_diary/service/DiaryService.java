@@ -164,7 +164,7 @@ public class DiaryService {
 
     public List<DiaryResponse> searchDiaryByEmotion(String inpEmotion) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (inpEmotion == null) {
+        if (inpEmotion.equals("")) {
             throw new ApplicationException(ErrorCode.EMOTION_NULL);
         }
         Emotion emotion = fromDescription(inpEmotion);
