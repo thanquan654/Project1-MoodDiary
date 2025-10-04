@@ -153,12 +153,22 @@ public class DiaryService {
         return res;
     }
 
+    private Emotion fromDescription(String value) {
+        for (Emotion e : Emotion.values()) {
+            if (e.getDescription().equalsIgnoreCase(value.trim())) {
+                return e;
+            }
+        }
+        throw new ApplicationException(ErrorCode.INVALID_EMOTION);
+    }
+
     public List<DiaryResponse> searchDiaryByEmotion(String inpEmotion) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         if (inpEmotion == null) {
             throw new ApplicationException(ErrorCode.EMOTION_NULL);
         }
-        List<DiaryEntity> diaries = diaryRepository.findByUser_EmailAndEmotion(email, inpEmotion);
+        Emotion emotion = fromDescription(inpEmotion);
+        List<DiaryEntity> diaries = diaryRepository.findByUser_EmailAndEmotion(email, emotion);
         if (diaries == null || diaries.isEmpty()) {
             throw new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
         }
