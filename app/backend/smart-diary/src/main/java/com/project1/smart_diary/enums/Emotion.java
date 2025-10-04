@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 public enum Emotion {
     HAPPY("Vui"),
     SAD("Buồn"),
-    NEUTRAL("Bình thường"),
+    NEUTRAL("Trung tính"),
     ANXIOUS("Lo lắng"),
     ANGRY("Tức giận");
 
