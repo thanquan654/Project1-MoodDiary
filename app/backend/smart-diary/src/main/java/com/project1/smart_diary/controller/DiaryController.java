@@ -10,11 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/diaries")
 @RequiredArgsConstructor
 public class DiaryController {
     private final DiaryService diaryService;
 
-    @PostMapping("/diaries")
+    @PostMapping
     public ResponseEntity<ApiResponse<DiaryResponse>> createDiary(@ModelAttribute DiaryRequest request) {
         DiaryResponse response = diaryService.createDiary(request);
         ApiResponse<DiaryResponse> apiResponse = ApiResponse.<DiaryResponse>builder()
