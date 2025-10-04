@@ -6,6 +6,7 @@ import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.DiaryMedia;
 import com.project1.smart_diary.entity.UserEntity;
+import com.project1.smart_diary.enums.Emotion;
 import com.project1.smart_diary.exception.ApplicationException;
 import com.project1.smart_diary.exception.ErrorCode;
 import com.project1.smart_diary.repository.DiaryRepository;
