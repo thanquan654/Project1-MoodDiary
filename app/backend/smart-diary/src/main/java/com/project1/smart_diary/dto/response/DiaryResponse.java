@@ -21,7 +21,7 @@ public class DiaryResponse {
     private String content;
     private String advice;
     private Emotion emotion;
-    private List<String> mediaUrls;
+    private List<MediaResponse> media;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
