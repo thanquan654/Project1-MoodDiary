@@ -177,4 +177,10 @@ public class DiaryService {
                 .toList();
     }
 
+    public List<DiaryResponse> getUserDiaries() {
+        UserEntity currentUser = getCurrentUser();
+        List<DiaryEntity> diaries = diaryRepository.findByUser_EmailOrderByCreatedAtDesc(currentUser.getEmail());
+        return diaryConverter.toResponseList(diaries);
+    }
+
 }

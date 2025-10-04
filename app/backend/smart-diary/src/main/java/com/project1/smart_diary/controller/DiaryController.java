@@ -43,4 +43,16 @@ public class DiaryController {
     public ResponseEntity<List<DiaryResponse>> searchDiaryByEmotion(@RequestParam(value = "emotion", required = false) String emotion){
         return  ResponseEntity.ok(diaryService.searchDiaryByEmotion(emotion));
     }
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<DiaryResponse>>> getUserDiaries() {
+        List<DiaryResponse> responses = diaryService.getUserDiaries();
+        String message = responses.isEmpty()
+                ? "Bạn chưa có nhật ký nào"
+                : "Lấy danh sách nhật ký thành công";
+        ApiResponse<List<DiaryResponse>> apiResponse = ApiResponse.<List<DiaryResponse>>builder()
+                .message(message)
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
 }
