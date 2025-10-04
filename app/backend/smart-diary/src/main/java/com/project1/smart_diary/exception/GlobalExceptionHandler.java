@@ -8,6 +8,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.HashMap;
@@ -46,16 +47,15 @@ public class GlobalExceptionHandler {
         Map<String, Object> body = new HashMap<>();
         body.put("code", 1234);
         body.put("status", HttpStatus.BAD_REQUEST.value());
-
         List<String> errorMessages = ex.getBindingResult()
                 .getAllErrors()
                 .stream()
                 .map(ObjectError::getDefaultMessage)
                 .toList();
-
         body.put("message", errorMessages);
         return ResponseEntity.badRequest().body(body);
     }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ErrorResponse> handleMaxSizeException() {
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -67,4 +67,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ErrorCode.IMAGE_SIZE_EXCEEDED.getHttpStatusCode())
                 .body(errorResponse);
     }
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(ErrorCode.INVALID_DATE_FORMAT.getCode())
+                .message(ErrorCode.INVALID_DATE_FORMAT.getMessage())
+                .status(ErrorCode.INVALID_DATE_FORMAT.getHttpStatusCode().value())
+                .build();
+        return ResponseEntity.status(ErrorCode.INVALID_DATE_FORMAT.getHttpStatusCode()).body(errorResponse);
+    }
+
 }
