@@ -124,6 +124,7 @@ public class DiaryService {
         }
         return mediaList;
     }
+
     public List<DiaryResponse> searchDiaryByDate(DiarySearchByDateRequest rq) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         List<DiaryEntity> diaryEntityList = new ArrayList<>();
@@ -141,7 +142,7 @@ public class DiaryService {
         } else {
             throw new ApplicationException(ErrorCode.DATE_NULL);
         }
-        if(diaryEntityList ==  null || diaryEntityList.isEmpty()){
+        if (diaryEntityList == null || diaryEntityList.isEmpty()) {
             throw new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
         }
         List<DiaryResponse> res = new ArrayList<>();
@@ -150,6 +151,20 @@ public class DiaryService {
             res.add(diaryResponse);
         }
         return res;
+    }
+
+    public List<DiaryResponse> searchDiaryByEmotion(String inpEmotion) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (inpEmotion == null) {
+            throw new ApplicationException(ErrorCode.EMOTION_NULL);
+        }
+        List<DiaryEntity> diaries = diaryRepository.findByUser_EmailAndEmotion(email, inpEmotion);
+        if (diaries == null || diaries.isEmpty()) {
+            throw new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
+        }
+        return diaries.stream()
+                .map(diaryConverter::toResponse)
+                .toList();
     }
 
 }
