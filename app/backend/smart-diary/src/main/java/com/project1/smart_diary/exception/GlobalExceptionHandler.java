@@ -8,6 +8,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,16 +28,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
-    //    @ExceptionHandler(value = BadCredentialsException.class)
-//    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex){
-//        ErrorResponse errorResponse = ErrorResponse.builder()
-//                .code(ErrorCode.UNAUTHENTICATED.getCode())
-//                .message(ErrorCode.UNAUTHENTICATED.getMessage())
-//                .status(ErrorCode.UNAUTHENTICATED.getHttpStatusCode().value())
-//                .build();
-//
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-//    }
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ErrorResponse> handleApplicationException(ApplicationException ex) {
         ErrorCode errorCode = ex.getErrorCode();
@@ -50,15 +41,6 @@ public class GlobalExceptionHandler {
                 .body(errorResponse);
     }
 
-    //    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-//        Map<String, Object> body = new HashMap<>();
-//        body.put("code", 1234);
-//        body.put("status", HttpStatus.BAD_REQUEST.value());
-//        String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-//        body.put("message", errorMessage);
-//        return ResponseEntity.badRequest().body(body);
-//    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> body = new HashMap<>();
@@ -73,5 +55,16 @@ public class GlobalExceptionHandler {
 
         body.put("message", errorMessages);
         return ResponseEntity.badRequest().body(body);
+    }
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleMaxSizeException() {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .code(ErrorCode.IMAGE_SIZE_EXCEEDED.getCode())
+                .message(ErrorCode.IMAGE_SIZE_EXCEEDED.getMessage())
+                .status(ErrorCode.IMAGE_SIZE_EXCEEDED.getHttpStatusCode().value())
+                .build();
+
+        return ResponseEntity.status(ErrorCode.IMAGE_SIZE_EXCEEDED.getHttpStatusCode())
+                .body(errorResponse);
     }
 }

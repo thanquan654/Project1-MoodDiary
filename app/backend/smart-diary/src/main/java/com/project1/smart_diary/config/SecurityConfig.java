@@ -59,6 +59,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/v3/api-docs.yaml"
                         ).permitAll()
+                        .requestMatchers("/diaries/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 //

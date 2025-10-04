@@ -38,6 +38,16 @@ spring:
   data:
     redis:
       url: "${SPRING_REDIS_URL:redis://default:QjJaLtUgFTqzaMwTXjwGuRORiIllWCje@interchange.proxy.rlwy.net:34181}"
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+cloudinary:
+  cloud-name: "${CLOUDINARY_CLOUD_NAME:dmyrfnxfv}"
+  api-key: "${CLOUDINARY_API_KEY:567893817722166}"
+  api-secret: "${CLOUDINARY_API_SECRET:UXEZV0sENuJ1caxccS8P9H2dbCU}"
+
 
 jwt:
   signerKey: "${JWT_SIGNER_KEY}"

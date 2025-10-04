@@ -21,6 +21,11 @@ public enum ErrorCode {
     EMAIL_NOT_FOUND(2001, "Email không tồn tại.", HttpStatus.NOT_FOUND),
     PASSWORD_MISMATCH(2002, "Mật khẩu và xác nhận mật khẩu không khớp.", HttpStatus.BAD_REQUEST),
     INVALID_RESET_TOKEN(2003, "Mã đặt lại không hợp lệ hoặc đã hết hạn.", HttpStatus.BAD_REQUEST),
+    DIARY_TITLE_REQUIRED(2004, "không để trống tiêu đề nhật ký", HttpStatus.BAD_REQUEST),
+    DIARY_CONTENT_REQUIRED(2005, "không để trống nội dung nhật ký", HttpStatus.BAD_REQUEST),
+    MAX_IMAGES_EXCEEDED(2006, "Chỉ được upload tối đa 5 ảnh", HttpStatus.BAD_REQUEST),
+    IMAGE_SIZE_EXCEEDED(2007, "Dung lượng ảnh không được vượt quá 10MB", HttpStatus.PAYLOAD_TOO_LARGE),
+    INVALID_IMAGE_FORMAT(2008, "Chỉ hỗ trợ định dạng .jpg, .png", HttpStatus.UNSUPPORTED_MEDIA_TYPE),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode httpStatusCode) {
