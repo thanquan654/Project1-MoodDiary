@@ -139,10 +139,10 @@ public class DiaryService {
             diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBefore(email, toDateTime);
 
         } else {
-            throw new RuntimeException("Vui lòng nhập vào ngày cần tìm");
+            throw new ApplicationException(ErrorCode.DATE_NULL);
         }
         if(diaryEntityList ==  null || diaryEntityList.isEmpty()){
-            throw new RuntimeException("không tìm thấy nhật kí");
+            throw new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
         }
         List<DiaryResponse> res = new ArrayList<>();
         for (DiaryEntity diaryEntity : diaryEntityList) {
