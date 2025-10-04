@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface DiaryRepository extends JpaRepository<DiaryEntity,Long> {
-    List<DiaryEntity> findByUser_Email(String email);
+    List<DiaryEntity> findByUser_EmailOrderByCreatedAtDesc(String email);
     List<DiaryEntity> findByUser_EmailAndCreatedAtBetween(String email, LocalDateTime fromDate, LocalDateTime toDate);
     List<DiaryEntity> findByUser_EmailAndCreatedAtAfter(String email, LocalDateTime fromDate);
     List<DiaryEntity> findByUser_EmailAndCreatedAtBefore(String email, LocalDateTime toDate);
