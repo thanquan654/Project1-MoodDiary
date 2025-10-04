@@ -39,4 +39,8 @@ public class DiaryController {
         diarySearchByDateRequest.setToDate(toDate);
         return ResponseEntity.ok(diaryService.searchDiaryByDate(diarySearchByDateRequest));
     }
+    @GetMapping("/search/emotion")
+    public ResponseEntity<List<DiaryResponse>> searchDiaryByEmotion(@RequestParam(value = "emotion", required = false) String emotion){
+        return  ResponseEntity.ok(diaryService.searchDiaryByEmotion(emotion));
+    }
 }
