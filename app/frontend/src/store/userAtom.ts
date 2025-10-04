@@ -1,17 +1,16 @@
+// store/userAtom.ts
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-const tokenAtom = atomWithStorage<string | null>('user_token', null)
+export const tokenAtom = atomWithStorage<string | null>('user_token', null)
 
-const isLoadingAtom = atom<boolean>(false)
+export const isLoadingAtom = atom<boolean>(true)
 
-const isAuthenticatedAtom = atom((get) => get(tokenAtom) !== null)
+export const userAtom = atom<unknown | null>(null)
 
-const userAtom = atom<unknown | null>(null)
+export const isAuthenticatedAtom = atom((get) => !!get(tokenAtom))
 
-const logoutAtom = atom(null, (get, set) => {
+export const logoutAtom = atom(null, (_get, set) => {
 	set(tokenAtom, null)
 	set(userAtom, null)
 })
-
-export { isAuthenticatedAtom, tokenAtom, isLoadingAtom, userAtom, logoutAtom }

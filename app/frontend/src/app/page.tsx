@@ -3,17 +3,9 @@
 import { Button } from '@/components/ui/button'
 import { useUser } from '@/hooks/useUser'
 import Link from 'next/link'
-import { useEffect } from 'react'
 
 export default function Home() {
-	const { user, isAuthenticated, logout, getUserInfo } = useUser()
-
-	useEffect(() => {
-		if (isAuthenticated && !user) {
-			console.log('get user info')
-			getUserInfo().then(() => console.log('get user info done'))
-		}
-	}, [getUserInfo, isAuthenticated, user])
+	const { user, isAuthenticated, logout } = useUser()
 
 	return (
 		<div className="flex flex-col items-center justify-center h-screen space-y-4">
