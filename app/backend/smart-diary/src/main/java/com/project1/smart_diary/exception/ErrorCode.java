@@ -29,6 +29,7 @@ public enum ErrorCode {
 
     DATE_NULL(3001, "không được để trống cả fromDate và toDate", HttpStatus.BAD_REQUEST),
     DIARY_NOT_FOUND(3002, "Không tìm thấy nhật kí", HttpStatus.NOT_FOUND),
+    INVALID_DATE_FORMAT(3003, "Định dạng ngày không hợp lệ. Vui lòng nhập theo định dạng yyyy-MM-dd.", HttpStatus.BAD_REQUEST)
 
     ;
 
