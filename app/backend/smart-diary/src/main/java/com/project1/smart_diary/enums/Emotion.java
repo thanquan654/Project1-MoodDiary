@@ -5,11 +5,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum Emotion {
-    POSITIVE("Tích cực 😊"),
-    NEGATIVE("Tiêu cực 😢"),
-    NEUTRAL("Bình thường 😐"),
-    ANXIOUS("Lo lắng 😟"),
-    ANGRY("Tức giận 😡");
+    HAPPY("Vui"),
+    SAD("Buồn"),
+    NEUTRAL("Trung tính"),
+    ANXIOUS("Lo lắng"),
+    ANGRY("Tức giận");
 
     private final String description;
 

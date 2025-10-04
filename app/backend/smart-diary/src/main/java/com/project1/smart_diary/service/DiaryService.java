@@ -2,10 +2,12 @@ package com.project1.smart_diary.service;
 
 import com.project1.smart_diary.converter.DiaryConverter;
 import com.project1.smart_diary.dto.request.DiaryRequest;
+import com.project1.smart_diary.dto.request.DiarySearchByDateRequest;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.DiaryMedia;
 import com.project1.smart_diary.entity.UserEntity;
+import com.project1.smart_diary.enums.Emotion;
 import com.project1.smart_diary.exception.ApplicationException;
 import com.project1.smart_diary.exception.ErrorCode;
 import com.project1.smart_diary.repository.DiaryRepository;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -121,6 +124,32 @@ public class DiaryService {
         }
         return mediaList;
     }
+    public List<DiaryResponse> searchDiaryByDate(DiarySearchByDateRequest rq) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<DiaryEntity> diaryEntityList = new ArrayList<>();
+        if (rq.getToDate() != null && rq.getFromDate() != null) {
+            LocalDateTime fromDateTime = rq.getFromDate().atStartOfDay();
+            LocalDateTime toDateTime = rq.getToDate().plusDays(1).atStartOfDay().minusNanos(1);
+            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBetween(email, fromDateTime, toDateTime);
+        } else if (rq.getFromDate() != null) {
+            LocalDateTime fromDateTime = rq.getFromDate().atStartOfDay();
+            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtAfter(email, fromDateTime);
+        } else if (rq.getToDate() != null) {
+            LocalDateTime toDateTime = rq.getToDate().plusDays(1).atStartOfDay().minusNanos(1);
+            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBefore(email, toDateTime);
 
+        } else {
+            throw new ApplicationException(ErrorCode.DATE_NULL);
+        }
+        if(diaryEntityList ==  null || diaryEntityList.isEmpty()){
+            throw new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
+        }
+        List<DiaryResponse> res = new ArrayList<>();
+        for (DiaryEntity diaryEntity : diaryEntityList) {
+            DiaryResponse diaryResponse = diaryConverter.toResponse(diaryEntity);
+            res.add(diaryResponse);
+        }
+        return res;
+    }
 
 }

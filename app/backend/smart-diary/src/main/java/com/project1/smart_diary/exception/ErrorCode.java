@@ -26,6 +26,10 @@ public enum ErrorCode {
     MAX_IMAGES_EXCEEDED(2006, "Chỉ được upload tối đa 5 ảnh", HttpStatus.BAD_REQUEST),
     IMAGE_SIZE_EXCEEDED(2007, "Dung lượng ảnh không được vượt quá 10MB", HttpStatus.PAYLOAD_TOO_LARGE),
     INVALID_IMAGE_FORMAT(2008, "Chỉ hỗ trợ định dạng .jpg, .png", HttpStatus.UNSUPPORTED_MEDIA_TYPE),
+
+    DATE_NULL(3001, "không được để trống cả fromDate và toDate", HttpStatus.BAD_REQUEST),
+    DIARY_NOT_FOUND(3002, "Không tìm thấy nhật kí", HttpStatus.NOT_FOUND),
+
     ;
 
     ErrorCode(int code, String message, HttpStatusCode httpStatusCode) {
