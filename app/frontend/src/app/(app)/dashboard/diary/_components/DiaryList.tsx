@@ -19,8 +19,10 @@ interface DiaryListProps {
 }
 
 export default function DiaryList({ initialData }: DiaryListProps) {
-	const [expandedDays, setExpandedDays] = useState<string[]>(['15/12'])
-	const [diaryList] = useState<DiaryListByDate>(initialData)
+	const [expandedDays, setExpandedDays] = useState<string[]>([])
+
+	// Bỏ hoàn toàn useMemo và filteredDiaryList, vì dữ liệu đã được lọc từ server
+	const diaryList = initialData
 
 	const toggleDay = (date: string) => {
 		setExpandedDays((prev) =>
@@ -31,92 +33,78 @@ export default function DiaryList({ initialData }: DiaryListProps) {
 	}
 
 	return (
-		<div className="mt-6">
-			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-lg lg:text-2xl font-bold text-diary-text">
-					Danh sách nhật ký
-				</h1>
-
-				<Link href={'/dashboard/diary/new'}>
+		<div className="space-y-4">
+			<div className="flex justify-end">
+				<Link href="/dashboard/diary/new">
 					<Button className="bg-diary-primary hover:bg-diary-primary/90 text-diary-text-dark">
 						<BookPlus className="mr-2" />
-						Tạo nhật ký
+						<span>Thêm nhật ký mới</span>
 					</Button>
 				</Link>
 			</div>
 
-			<div className="space-y-4">
-				{diaryList.map((dayEntry) => (
-					<div
-						key={dayEntry.date}
-						className="bg-card text-card-foreground border border-border rounded-lg overflow-hidden"
+			{/* Dùng diaryList trực tiếp */}
+			{diaryList.map((dayEntry) => (
+				<div
+					key={dayEntry.date}
+					className="bg-card text-card-foreground border border-border rounded-lg overflow-hidden"
+				>
+					{/* Date Header */}
+					<button
+						className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+						onClick={() => toggleDay(dayEntry.date)}
 					>
-						{/* Date Header */}
-						<button
-							className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
-							onClick={() => toggleDay(dayEntry.date)}
-						>
-							<div className="flex items-center gap-3">
-								<Calendar className="w-5 h-5 text-diary-primary" />
-								<span className="font-medium">
-									{dayEntry.date}
-								</span>
-								<span className="text-sm text-muted-foreground">
-									{dayEntry.entries.length} bài viết
-								</span>
-							</div>
+						<div className="flex items-center gap-3">
+							<Calendar className="w-5 h-5 text-diary-primary" />
+							<span className="font-medium">{dayEntry.date}</span>
+							<span className="text-sm text-muted-foreground">
+								{dayEntry.entries.length} bài viết
+							</span>
+						</div>
 
-							<ChevronDown
-								className={`w-5 h-5 text-muted-foreground transform transition-transform ${
-									expandedDays.includes(dayEntry.date)
-										? 'rotate-180'
-										: ''
-								}`}
-							/>
-						</button>
+						<ChevronDown
+							className={`w-5 h-5 text-muted-foreground transform transition-transform ${
+								expandedDays.includes(dayEntry.date)
+									? 'rotate-180'
+									: ''
+							}`}
+						/>
+					</button>
 
-						{/* Entries */}
-						{expandedDays.includes(dayEntry.date) && (
-							<div className="divide-y divide-border">
-								{dayEntry.entries.map((entry) => (
-									<div
-										key={entry.id}
-										className="p-4 hover:bg-muted/50 transition-colors"
-									>
-										<div className="flex items-center justify-between">
-											<div className="flex items-center gap-2">
-												<span className="text-xl">
-													{emotionIconMap[
-														entry.emotion.toLowerCase()
-													] || '😐'}
-												</span>
-												<Link
-													href={`/dashboard/diary/${entry.id}`}
-													className="hover:text-primary transition-colors"
-												>
-													<h3 className="font-medium">
-														{entry.title}
-													</h3>
-													<p className="text-sm text-muted-foreground">
-														{entry.content.substring(
-															0,
-															100,
-														)}
-														{entry.content.length >
-														100
-															? '...'
-															: ''}
-													</p>
-												</Link>
-											</div>
+					{/* Entries */}
+					{expandedDays.includes(dayEntry.date) && (
+						<div className="divide-y divide-border">
+							{dayEntry.entries.map((entry) => (
+								<div
+									key={entry.id}
+									className="p-4 hover:bg-muted/50 transition-colors"
+								>
+									<div className="flex items-center justify-between">
+										<div className="flex items-center gap-2">
+											<span className="text-xl">
+												{emotionIconMap[
+													entry.emotion.toLowerCase()
+												] || '😐'}
+											</span>
+											<Link
+												href={`/dashboard/diary/${entry.id}`}
+												className="hover:text-primary transition-colors"
+											>
+												<h3 className="font-medium">
+													{entry.title}
+												</h3>
+												<p className="text-sm text-muted-foreground">
+													{entry.preview}
+												</p>
+											</Link>
 										</div>
 									</div>
-								))}
-							</div>
-						)}
-					</div>
-				))}
-			</div>
+								</div>
+							))}
+						</div>
+					)}
+				</div>
+			))}
 		</div>
 	)
 }

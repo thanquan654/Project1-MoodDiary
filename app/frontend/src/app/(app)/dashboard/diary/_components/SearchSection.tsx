@@ -18,15 +18,88 @@ import {
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { ChevronDownIcon, Search, SearchIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation' // Import hooks
+import { useEffect, useState } from 'react'
 
-export default function SearchSection() {
-	const [searchText, setSearchText] = useState('')
+interface SearchSectionProps {
+	onKeywordSearch?: (value: string) => void
+	onDateSearch?: (
+		startDate: Date | undefined,
+		endDate: Date | undefined,
+	) => void
+	onEmotionSearch?: (value: string) => void
+}
+
+export default function SearchSection({
+	onKeywordSearch,
+	onDateSearch,
+	onEmotionSearch,
+}: SearchSectionProps) {
+	const router = useRouter()
+	const searchParams = useSearchParams()
+
+	// State nội bộ để quản lý input, nhưng giá trị thật sự đến từ URL
+	const [searchText, setSearchText] = useState(
+		searchParams.get('keyword') || '',
+	)
+	const [startDate, setStartDate] = useState<Date | undefined>(
+		searchParams.get('startDate')
+			? new Date(searchParams.get('startDate')!)
+			: undefined,
+	)
+	const [endDate, setEndDate] = useState<Date | undefined>(
+		searchParams.get('endDate')
+			? new Date(searchParams.get('endDate')!)
+			: undefined,
+	)
+	const [emotionFilter, setEmotionFilter] = useState(
+		searchParams.get('emotion') || 'all',
+	)
+
 	const [openStartDate, setOpenStartDate] = useState(false)
-	const [startDate, setStartDate] = useState<Date | undefined>(undefined)
 	const [openEndDate, setOpenEndDate] = useState(false)
-	const [endDate, setEndDate] = useState<Date | undefined>(undefined)
-	const [emotionFilter, setEmotionFilter] = useState('')
+
+	// Hàm helper để cập nhật URL
+	const updateQueryParams = (paramsToUpdate: Record<string, string>) => {
+		const currentParams = new URLSearchParams(
+			Array.from(searchParams.entries()),
+		)
+
+		Object.entries(paramsToUpdate).forEach(([key, value]) => {
+			if (value) {
+				currentParams.set(key, value)
+			} else {
+				currentParams.delete(key)
+			}
+		})
+
+		router.push(`/dashboard/diary?${currentParams.toString()}`)
+	}
+
+	const handleSearchClick = () => {
+		updateQueryParams({ keyword: searchText })
+	}
+
+	const handleDateSelect = (
+		type: 'start' | 'end',
+		date: Date | undefined,
+	) => {
+		const newStartDate = type === 'start' ? date : startDate
+		const newEndDate = type === 'end' ? date : endDate
+		setStartDate(newStartDate)
+		setEndDate(newEndDate)
+		updateQueryParams({
+			startDate: newStartDate
+				? newStartDate.toISOString().split('T')[0]
+				: '',
+			endDate: newEndDate ? newEndDate.toISOString().split('T')[0] : '',
+		})
+	}
+
+	const handleEmotionChange = (value: string) => {
+		setEmotionFilter(value)
+		updateQueryParams({ emotion: value === 'all' ? '' : value })
+	}
 
 	return (
 		<div className="space-y-4">
@@ -37,13 +110,16 @@ export default function SearchSection() {
 						type="text"
 						value={searchText}
 						onChange={(e) => setSearchText(e.target.value)}
+						onKeyDown={(e) =>
+							e.key === 'Enter' && handleSearchClick()
+						} // Thêm tìm kiếm bằng Enter
 						placeholder="Tìm kiếm nhật ký..."
 						className="w-full pl-10 pr-4 py-3 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-diary-primary/20 focus:border-diary-primary"
 					/>
 				</div>
 				<button
 					className="p-3 bg-muted/50 border border-border rounded-lg hover:bg-muted transition-colors"
-					onClick={() => {}}
+					onClick={handleSearchClick} // Cập nhật onClick
 				>
 					<SearchIcon className="w-4 h-4 text-muted-foreground" />
 				</button>
@@ -78,9 +154,8 @@ export default function SearchSection() {
 								selected={startDate}
 								captionLayout="dropdown"
 								onSelect={(date) => {
-									setStartDate(date)
+									handleDateSelect('start', date)
 									setOpenStartDate(false)
-									// TODO: Implement date search
 								}}
 							/>
 						</PopoverContent>
@@ -109,9 +184,8 @@ export default function SearchSection() {
 								selected={endDate}
 								captionLayout="dropdown"
 								onSelect={(date) => {
-									setEndDate(date)
+									handleDateSelect('end', date)
 									setOpenEndDate(false)
-									// TODO: Implement date search
 								}}
 							/>
 						</PopoverContent>
@@ -121,7 +195,10 @@ export default function SearchSection() {
 				<Separator orientation="vertical" className="h-9" />
 
 				{/* Mood Picker */}
-				<Select value={emotionFilter} onValueChange={setEmotionFilter}>
+				<Select
+					value={emotionFilter}
+					onValueChange={handleEmotionChange}
+				>
 					<SelectTrigger className="w-36">
 						<SelectValue placeholder="Cảm xúc" />
 					</SelectTrigger>

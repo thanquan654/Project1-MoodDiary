@@ -12,14 +12,15 @@ export interface Diary {
 	updatedAt: string | null
 }
 
-export interface DiaryEntry {
+export interface DiaryEntryByDate {
 	id: number
 	title: string
+	preview: string
 	time: string
 	emotion: string
 }
 
 export type DiaryListByDate = {
 	date: string
-	entries: DiaryEntry[]
+	entries: DiaryEntryByDate[]
 }[]
