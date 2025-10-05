@@ -156,23 +156,44 @@ const getDiarysListApi = async (
 
 const getDiaryByIdApi = async (id: string, token?: string) => {
 	try {
-		const url = `${BACKEND_URL}/diaries/${id}`
-		const response = await fetch(url, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				...(token && { Authorization: `Bearer ${token}` }),
-				'ngrok-skip-browser-warning': 'true',
+		// const url = `${BACKEND_URL}/diaries/${id}`
+		// const response = await fetch(url, {
+		// 	method: 'GET',
+		// 	headers: {
+		// 		'Content-Type': 'application/json',
+		// 		...(token && { Authorization: `Bearer ${token}` }),
+		// 		'ngrok-skip-browser-warning': 'true',
+		// 	},
+		// 	cache: 'no-store',
+		// })
+
+		// if (!response.ok) {
+		// 	throw new Error(`API call failed with status: ${response.status}`)
+		// }
+
+		// const data = await response.json()
+		// return data
+
+		return {
+			message: 'Success',
+			data: {
+				id: 26,
+				title: 'Suy nghĩ miên man ngày cuối tuần',
+				content:
+					'Yêu e nhất trên đời hehee. Chiều nay trời mưa, ngồi một mình lại suy nghĩ về nhiều chuyện đã qua. Đôi khi chỉ cần những khoảnh khắc tĩnh lặng như thế này thôi.',
+				advice: 'Những lúc trầm tư giúp chúng ta hiểu rõ hơn về bản thân. Hãy cho phép mình được yếu đuối đôi chút.',
+				emotion: 'Buồn nhẹ',
+				media: [
+					{
+						id: 44,
+						mediaUrl:
+							'https://res.cloudinary.com/dmyrfnxfv/image/upload/v1759555142/diary_images/diary_1759555141611.jpg',
+					},
+				],
+				createdAt: '2025-10-04T12:19:03.271Z',
+				updatedAt: '2025-10-04T15:20:11.100Z',
 			},
-			cache: 'no-store',
-		})
-
-		if (!response.ok) {
-			throw new Error(`API call failed with status: ${response.status}`)
 		}
-
-		const data = await response.json()
-		return data
 	} catch (error) {
 		console.error(`Error getting diary by id ${id}:`, error)
 		throw error
