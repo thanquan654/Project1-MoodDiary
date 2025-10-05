@@ -30,7 +30,7 @@ export default async function DiaryDetailPage({ params }: Props) {
 	const diary = await getDiaryByIdApi(param.id, token)
 
 	return (
-		<div className="min-h-screen bg-background p-4">
+		<div className="min-h-screen bg-background">
 			<Suspense fallback={<DiaryDetailLoading />}>
 				<DiaryDetailClient initialData={diary.data} params={param} />
 			</Suspense>
