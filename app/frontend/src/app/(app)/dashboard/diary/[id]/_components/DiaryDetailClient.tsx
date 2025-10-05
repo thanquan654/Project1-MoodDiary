@@ -51,14 +51,9 @@ export default function DiaryDetailClient({
 
 	return (
 		<div className="flex flex-col min-h-screen bg-background">
-			<DiaryHeader onDelete={handleDeleteEntry} />
-
-			<div className="flex flex-1">
-				<div className="flex-1 lg:p-8">
-					<div className="max-w-4xl mx-auto">
-						<DiaryContentCard diary={initialData} />
-					</div>
-				</div>
+			<div className="max-w-4xl mx-auto m-2 mt-6">
+				<DiaryHeader onDelete={handleDeleteEntry} />
+				<DiaryContentCard diary={initialData} />
 			</div>
 		</div>
 	)

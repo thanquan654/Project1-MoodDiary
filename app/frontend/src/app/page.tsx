@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation'
 
 export default async function Home() {
 	const cookieStore = cookies()
-	const token = cookieStore.get('user_token')
+	const token = (await cookieStore).get('user_token')
 
 	if (token) {
 		redirect('/dashboard')
