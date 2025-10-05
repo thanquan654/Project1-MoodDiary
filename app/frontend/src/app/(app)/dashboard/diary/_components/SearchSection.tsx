@@ -20,16 +20,7 @@ import { Separator } from '@/components/ui/separator'
 import { ChevronDownIcon, Search, SearchIcon } from 'lucide-react'
 import { useState } from 'react'
 
-export default function SearchSection({
-	onKeywordSearch,
-	onDateSearch,
-}: {
-	onKeywordSearch: (value: string) => void
-	onDateSearch: (
-		startDate: Date | undefined,
-		endDate: Date | undefined,
-	) => void
-}) {
+export default function SearchSection() {
 	const [searchText, setSearchText] = useState('')
 	const [openStartDate, setOpenStartDate] = useState(false)
 	const [startDate, setStartDate] = useState<Date | undefined>(undefined)
@@ -52,7 +43,7 @@ export default function SearchSection({
 				</div>
 				<button
 					className="p-3 bg-muted/50 border border-border rounded-lg hover:bg-muted transition-colors"
-					onClick={() => onKeywordSearch(searchText)}
+					onClick={() => {}}
 				>
 					<SearchIcon className="w-4 h-4 text-muted-foreground" />
 				</button>
@@ -89,7 +80,7 @@ export default function SearchSection({
 								onSelect={(date) => {
 									setStartDate(date)
 									setOpenStartDate(false)
-									onDateSearch(date, endDate)
+									// TODO: Implement date search
 								}}
 							/>
 						</PopoverContent>
@@ -120,7 +111,7 @@ export default function SearchSection({
 								onSelect={(date) => {
 									setEndDate(date)
 									setOpenEndDate(false)
-									onDateSearch(startDate, date)
+									// TODO: Implement date search
 								}}
 							/>
 						</PopoverContent>

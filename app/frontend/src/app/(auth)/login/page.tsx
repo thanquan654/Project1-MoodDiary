@@ -1,81 +1,24 @@
-'use client'
-
+import { Metadata } from 'next'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import LoginForm from '@/app/(auth)/_components/LoginForm'
-import type {
-	LoginFormError,
-	LoginFormValue,
-} from '@/app/(auth)/_types/authForm.type'
-import useForm from '@/hooks/useForm'
-import { useUser } from '@/hooks/useUser'
-import { useRouter } from 'next/navigation'
-import React from 'react'
 
-export default function LoginPage() {
-	const router = useRouter()
-	const { login } = useUser()
+export const metadata: Metadata = {
+	title: 'Đăng nhập - Smart Diary',
+	description: 'Đăng nhập vào Smart Diary để ghi lại cảm xúc của bạn',
+}
 
-	const [formError, setFormError] = React.useState('')
+export default async function LoginPage() {
+	const cookieStore = cookies()
+	const token = (await cookieStore).get('user_token')?.value
 
-	const validateLoginForm = (values: LoginFormValue) => {
-		const errors: LoginFormError = {}
-		if (!values.email) {
-			errors.email = 'Email không đúng định dạng. Vui lòng kiểm tra lại.'
-		} else if (
-			!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-		) {
-			errors.email = 'Email không đúng định dạng. Vui lòng kiểm tra lại.'
-		}
-		if (!values.password) {
-			errors.password = 'Vui lòng nhập mật khẩu.'
-		} else if (values.password.length < 8) {
-			errors.password =
-				'Mật khẩu phải có ít nhất 8 ký tự. Vui lòng kiểm tra lại.'
-		}
-		return errors
+	if (token) {
+		redirect('/dashboard')
 	}
-
-	const loginUser = async (values: LoginFormValue) => {
-		const result = await login(values.email, values.password)
-
-		if (result.status >= 400) {
-			setFormError(result.message)
-			return
-		}
-
-		router.push('/dashboard')
-	}
-
-	const {
-		values,
-		errors,
-		isLoading,
-		handleChange,
-		handleSubmit,
-	}: {
-		values: LoginFormValue
-		errors: LoginFormError
-		isLoading: boolean
-		handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-		handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
-	} = useForm(
-		{
-			email: '',
-			password: '',
-		},
-		validateLoginForm,
-		loginUser,
-	)
 
 	return (
 		<div className="min-h-screen bg-diary-bg-light dark:bg-diary-bg-dark flex items-center justify-center p-4">
-			<LoginForm
-				values={values}
-				errors={errors}
-				isLoading={isLoading}
-				formError={formError}
-				handleChange={handleChange}
-				handleSubmit={handleSubmit}
-			/>
+			<LoginForm />
 		</div>
 	)
 }
