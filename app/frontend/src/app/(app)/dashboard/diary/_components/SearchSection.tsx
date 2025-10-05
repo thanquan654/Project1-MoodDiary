@@ -89,7 +89,7 @@ export default function SearchSection({
 								onSelect={(date) => {
 									setStartDate(date)
 									setOpenStartDate(false)
-									onDateSearch(startDate, endDate)
+									onDateSearch(date, endDate)
 								}}
 							/>
 						</PopoverContent>
@@ -120,7 +120,7 @@ export default function SearchSection({
 								onSelect={(date) => {
 									setEndDate(date)
 									setOpenEndDate(false)
-									onDateSearch(startDate, endDate)
+									onDateSearch(startDate, date)
 								}}
 							/>
 						</PopoverContent>
