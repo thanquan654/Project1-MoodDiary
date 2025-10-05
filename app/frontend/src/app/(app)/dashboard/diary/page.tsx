@@ -8,6 +8,7 @@ import {
 	Filter,
 	ChevronDown,
 	SearchIcon,
+	BookPlus,
 } from 'lucide-react'
 import Link from 'next/link'
 import Header from '@/app/(app)/_components/DashboardHeader'
@@ -17,6 +18,7 @@ import {
 	transformDiaryDataList,
 } from '@/helpers/transformDiaryData'
 import SearchSection from '@/app/(app)/dashboard/diary/_components/SearchSection'
+import { Button } from '@/components/ui/button'
 
 const emotionIconMap: { [key: string]: string } = {
 	happy: '😊',
@@ -65,6 +67,15 @@ export default function DiariesPage() {
 						onKeywordSearch={onKeywordsearch}
 						onDateSearch={onDateSearch}
 					/>
+
+					<div className="flex justify-end">
+						<Link href={'/dashboard/diary/new'}>
+							<Button className="bg-diary-primary hover:bg-diary-primary/90 text-diary-text-dark ">
+								<BookPlus className="mr-2" />
+								<span>Thêm nhật ký mới</span>
+							</Button>
+						</Link>
+					</div>
 
 					{/* Diary List */}
 					<div className="space-y-4">
