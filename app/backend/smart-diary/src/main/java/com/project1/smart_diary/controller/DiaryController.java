@@ -55,4 +55,17 @@ public class DiaryController {
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<DiaryResponse>> getDiaryDetail(@PathVariable Long id) {
+        DiaryResponse response = diaryService.getDiaryDetail(id);
+
+        ApiResponse<DiaryResponse> apiResponse = ApiResponse.<DiaryResponse>builder()
+                .message("Lấy thông tin nhật ký thành công")
+                .data(response)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
 }
