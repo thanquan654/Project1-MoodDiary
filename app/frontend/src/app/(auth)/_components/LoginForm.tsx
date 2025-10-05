@@ -202,7 +202,9 @@ export default function LoginForm() {
 					<Separator />
 
 					<div className="flex items-center gap-2">
-						<Link href="/api/auth/login/google">
+						<Link
+							href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login/google`}
+						>
 							<GoogleButton
 								type="dark"
 								label="Đăng nhập với Google"

@@ -18,8 +18,6 @@ export async function POST(request: NextRequest) {
 
 		const data = await apiRes.json()
 
-		console.log('🚀 ~ data:', data)
-
 		if (!apiRes.ok) {
 			return NextResponse.json(data, { status: apiRes.status })
 		}
