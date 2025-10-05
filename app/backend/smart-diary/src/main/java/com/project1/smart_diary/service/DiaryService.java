@@ -183,4 +183,17 @@ public class DiaryService {
         return diaryConverter.toResponseList(diaries);
     }
 
+    public DiaryResponse getDiaryDetail(Long id) {
+        UserEntity currentUser = getCurrentUser();
+
+        DiaryEntity diary = diaryRepository.findById(id)
+                .orElseThrow(() -> {
+                    return new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
+                });
+        if (!diary.getUser().getId().equals(currentUser.getId())) {
+            throw new ApplicationException(ErrorCode.NOT_DIARY_OWNER);
+        }
+
+        return diaryConverter.toResponse(diary);
+    }
 }
