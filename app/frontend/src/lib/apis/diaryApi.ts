@@ -1,18 +1,14 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
-const token = localStorage.getItem('user_token')
-
-const getDiarysListApi = async () => {
+const getDiarysListApi = async (token?: string) => {
 	try {
-		// const respone = await fetch(`${BASE_URL}/diaries`, {
-		// 	method: 'GET',
-		// 	headers: {
-		// 		'Content-Type': 'application/json',
-		// 		Authorization: `Bearer ${token}`,
-		// 		'ngrok-skip-browser-warning': 'true',
-		// 	},
-		// })
-
-		// return respone
+		const response = await fetch('/api/diary', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				...(token && { Authorization: `Bearer ${token}` }),
+			},
+		})
+		const data = await response.json()
+		return data
 		// FIXME: Enable this when backend is ready
 		return {
 			message: 'Lấy danh sách nhật ký thành công',
@@ -130,4 +126,37 @@ const getDiarysListApi = async () => {
 	}
 }
 
-export { getDiarysListApi }
+const getDiaryByIdApi = async (id: string, token?: string) => {
+	try {
+		const response = await fetch(`/api/diary/${id}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				...(token && { Authorization: `Bearer ${token}` }),
+			},
+		})
+		const data = await response.json()
+		return data
+	} catch (error) {
+		console.error('Error getting diary:', error)
+		throw error
+	}
+}
+
+const deleteDiaryApi = async (id: number) => {
+	try {
+		const response = await fetch(`/api/diary/${id}`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+		const data = await response.json()
+		return data
+	} catch (error) {
+		console.error('Error deleting diary:', error)
+		throw error
+	}
+}
+
+export { getDiarysListApi, getDiaryByIdApi, deleteDiaryApi }

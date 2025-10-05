@@ -1,48 +1,29 @@
-'use client'
-
-import { Button } from '@/components/ui/button'
-import { useUser } from '@/hooks/useUser'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
-export default function Home() {
-	const { user, isAuthenticated, logout } = useUser()
+export default async function Home() {
+	const cookieStore = cookies()
+	const token = cookieStore.get('user_token')
+
+	if (token) {
+		redirect('/dashboard')
+	}
 
 	return (
 		<div className="flex flex-col items-center justify-center h-screen space-y-4">
-			<h1 className="text-2xl font-bold">Trang chủ</h1>
+			<h1 className="text-2xl font-bold">MoodDiary</h1>
+			<p className="text-center text-muted-foreground">
+				Chào mừng đến với nhật ký cảm xúc thông minh
+			</p>
 
-			{isAuthenticated ? (
-				<div className="p-4 border rounded-md">
-					<h2 className="text-xl">Chào mừng trở lại!</h2>
-					<p>
-						<strong>Trạng thái:</strong> Đã đăng nhập
-					</p>
-					<p>
-						<strong>Dữ liệu User từ hook:</strong>
-					</p>
-					{/* Hiển thị object bằng JSON.stringify */}
-					<pre className="p-2 mt-2 text-sm bg-gray-100 rounded">
-						{JSON.stringify(user, null, 2)}
-					</pre>
-					<Button
-						onClick={logout}
-						variant="destructive"
-						className="mt-4"
-					>
-						Đăng xuất
-					</Button>
-				</div>
-			) : (
-				<div className="p-4 border rounded-md">
-					<p>
-						<strong>Trạng thái:</strong> Chưa đăng nhập
-					</p>
-					<p>Bạn cần đăng nhập để xem thông tin.</p>
-					<Button asChild className="mt-4">
-						<Link href="/login">Đi đến trang Đăng nhập</Link>
-					</Button>
-				</div>
-			)}
+			<div className="p-4 border rounded-md text-center">
+				<p className="mb-4">Bạn cần đăng nhập để sử dụng ứng dụng</p>
+				<Button asChild>
+					<Link href="/login">Đăng nhập ngay</Link>
+				</Button>
+			</div>
 		</div>
 	)
 }

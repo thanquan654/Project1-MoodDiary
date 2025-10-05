@@ -1,42 +1,18 @@
-'use client'
-
-import { useEffect, useState } from 'react'
-import {
-	Calendar,
-	Plus,
-	Search,
-	Filter,
-	ChevronDown,
-	SearchIcon,
-	BookPlus,
-} from 'lucide-react'
-import Link from 'next/link'
-import Header from '@/app/(app)/_components/DashboardHeader'
 import { getDiarysListApi } from '@/lib/apis/diaryApi'
-import {
-	DiaryListByDate,
-	transformDiaryDataList,
-} from '@/helpers/transformDiaryData'
+import Header from '@/app/(app)/_components/DashboardHeader'
 import SearchSection from '@/app/(app)/dashboard/diary/_components/SearchSection'
-import { Button } from '@/components/ui/button'
+import { transformDiaryDataList } from '@/helpers/transformDiaryData'
+import { cookies } from 'next/headers'
+import DiaryList from '@/app/(app)/dashboard/diary/_components/DiaryList'
 
-const emotionIconMap: { [key: string]: string } = {
-	happy: '😊',
-	anxious: '😑',
-	sad: '😢',
-	angry: '😡',
-	neutral: '😐',
-}
+export const dynamic = 'force-dynamic'
 
-export default function DiariesPage() {
-	const [diaryList, setDiaryList] = useState<DiaryListByDate>([])
-	const [expandedDays, setExpandedDays] = useState<string[]>(['15/12'])
+export default async function DiariesPage() {
+	const cookieStore = cookies()
+	const token = cookieStore.get('user_token')?.value
 
-	useEffect(() => {
-		getDiarysListApi().then((res) => {
-			setDiaryList(transformDiaryDataList(res?.data))
-		})
-	}, [])
+	const response = await getDiarysListApi(token)
+	const diaryList = transformDiaryDataList(response?.data)
 
 	const toggleDay = (date: string) => {
 		setExpandedDays((prev) =>

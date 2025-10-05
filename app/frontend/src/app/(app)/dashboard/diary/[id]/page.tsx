@@ -1,58 +1,35 @@
-'use client'
-
-import {
-	ArrowLeft,
-	Calendar,
-	Clock,
-	Heart,
-	ImageIcon,
-	Trash2,
-	Edit,
-} from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, Heart, ImageIcon } from 'lucide-react'
 import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
 import Image from 'next/image'
+import { Metadata } from 'next'
+import { cookies } from 'next/headers'
+import { Button } from '@/components/ui/button'
+import DeleteDiaryButton from '../_components/DeleteDiaryButton'
+import { getDiaryByIdApi } from '@/lib/apis/diaryApi'
+import { formatDate } from '@/lib/utils'
 
-// Mock data - in real app this would come from database
-const mockDiaryEntry = {
-	id: 31,
-	title: 'Ngày đầu tiên ở Đà Lạt',
-	content:
-		'Hôm nay là ngày đầu tiên của chuyến đi Đà Lạt. Không khí ở đây thật trong lành và se lạnh, khác hẳn với Sài Gòn ồn ào. Buổi sáng đi dạo quanh Hồ Xuân Hương, chiều thì ghé quán cà phê Tùng ngồi ngắm người qua lại. Cảm thấy thật bình yên.',
-	advice: 'Hãy tận hưởng trọn vẹn từng khoảnh khắc của chuyến đi nhé. Đừng quên thử món bánh tráng nướng!',
-	emotion: 'Bình yên',
-	media: [
-		{
-			id: 51,
-			mediaUrl: 'https://picsum.photos/seed/dalat_lake/800/600',
-		},
-		{
-			id: 52,
-			mediaUrl: 'https://picsum.photos/seed/dalat_lake/800/600',
-		},
-	],
-	createdAt: '2025-10-15T08:30:15.123Z',
-	updatedAt: null,
+interface Props {
+	params: { id: string }
 }
 
-export default function DiaryDetailPage() {
-	const params = useParams()
-	const id = params.id as string
-	const router = useRouter()
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const cookieStore = cookies()
+	const token = cookieStore.get('user_token')?.value
 
-	// In real app, fetch diary entry by ID
-	const entry = mockDiaryEntry
+	const diary = await getDiaryByIdApi(params.id, token)
+
+	return {
+		title: `${diary.title} - Smart Diary`,
+		description: diary.content.substring(0, 160),
+	}
+}
+
+export default async function DiaryDetailPage({ params }: Props) {
+	const cookieStore = cookies()
+	const token = (await cookieStore).get('user_token')?.value
+
+	const diary = await getDiaryByIdApi(params.id, token)
+	const createdDate = new Date(diary.createdAt)
 
 	const handleDeleteEntry = () => {
 		console.log('[v0] Deleting entry:', id)

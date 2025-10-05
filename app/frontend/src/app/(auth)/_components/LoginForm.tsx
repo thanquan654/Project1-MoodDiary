@@ -1,11 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import type {
 	LoginFormValue,
 	LoginFormError,
 } from '@/app/(auth)/_types/authForm.type'
+import { useUser } from '@/hooks/useUser'
+import useForm from '@/hooks/useForm'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -21,22 +24,61 @@ import { Mail, Lock, EyeOff, Eye } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import GoogleButton from 'react-google-button'
 
-export default function LoginForm({
-	values,
-	errors,
-	isLoading,
-	formError,
-	handleChange,
-	handleSubmit,
-}: {
-	values: LoginFormValue
-	errors: LoginFormError
-	isLoading: boolean
-	formError: string
-	handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-	handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
-}) {
+export default function LoginForm() {
+	const router = useRouter()
+	const { login } = useUser()
+	const [formError, setFormError] = useState('')
 	const [isShowPassword, setShowPassword] = useState<boolean>(false)
+
+	const validateLoginForm = (values: LoginFormValue) => {
+		const errors: LoginFormError = {}
+		if (!values.email) {
+			errors.email = 'Email không đúng định dạng. Vui lòng kiểm tra lại.'
+		} else if (
+			!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+		) {
+			errors.email = 'Email không đúng định dạng. Vui lòng kiểm tra lại.'
+		}
+		if (!values.password) {
+			errors.password = 'Vui lòng nhập mật khẩu.'
+		} else if (values.password.length < 8) {
+			errors.password =
+				'Mật khẩu phải có ít nhất 8 ký tự. Vui lòng kiểm tra lại.'
+		}
+		return errors
+	}
+
+	const loginUser = async (values: LoginFormValue) => {
+		const result = await login(values.email, values.password)
+
+		if (result.status >= 400) {
+			setFormError(result.message)
+			return
+		}
+
+		router.push('/dashboard')
+	}
+
+	const {
+		values,
+		errors,
+		isLoading,
+		handleChange,
+		handleSubmit,
+	}: {
+		values: LoginFormValue
+		errors: LoginFormError
+		isLoading: boolean
+		handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+		handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void
+	} = useForm(
+		{
+			email: '',
+			password: '',
+		},
+		validateLoginForm,
+		loginUser,
+	)
 
 	return (
 		<Card className="w-full max-w-md bg-white dark:bg-diary-surface-dark border-diary-border-light dark:border-diary-border-dark">
@@ -160,9 +202,7 @@ export default function LoginForm({
 					<Separator />
 
 					<div className="flex items-center gap-2">
-						<Link
-							href={`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login/google`}
-						>
+						<Link href="/api/auth/login/google">
 							<GoogleButton
 								type="dark"
 								label="Đăng nhập với Google"
