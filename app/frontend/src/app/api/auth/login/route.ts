@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
 		// Set token vào HttpOnly cookie
 		if (token) {
-			response.cookies.set('user_token', token, {
+			response.cookies.set('auth_token', token, {
 				httpOnly: true,
 				secure: process.env.NODE_ENV !== 'development',
 				maxAge: 60 * 60 * 24 * 7, // 1 tuần

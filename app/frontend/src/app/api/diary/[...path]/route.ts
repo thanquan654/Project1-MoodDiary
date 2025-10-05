@@ -6,12 +6,14 @@ export async function GET(
 	request: NextRequest,
 	{ params }: { params: { path: string[] } },
 ) {
-	const path = params.path.join('/')
+	const path = (await params).path.join('/')
 	const searchParams = request.nextUrl.searchParams
 	const queryString = searchParams.toString()
 	const url = queryString
 		? `${BACKEND_URL}/diaries/${path}?${queryString}`
 		: `${BACKEND_URL}/diaries/${path}`
+
+	console.log('🚀 ~ url:', url)
 
 	const headers = new Headers(request.headers)
 	headers.delete('connection')
