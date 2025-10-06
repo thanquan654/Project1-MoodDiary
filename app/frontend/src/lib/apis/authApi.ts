@@ -73,7 +73,7 @@ const logoutApi = async (token: string) => {
 }
 
 const getUserInfoApi = async (token: string) => {
-	const response = await fetch('/api/auth/users/my-info', {
+	const response = await fetch('/api/users/my-info', {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
