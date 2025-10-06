@@ -127,33 +127,33 @@ public class DiaryService {
         return mediaList;
     }
 
-    public List<DiaryResponse> searchDiaryByDate(DiarySearchByDateRequest rq) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<DiaryEntity> diaryEntityList = new ArrayList<>();
-        if (rq.getToDate() != null && rq.getFromDate() != null) {
-            LocalDateTime fromDateTime = rq.getFromDate().atStartOfDay();
-            LocalDateTime toDateTime = rq.getToDate().plusDays(1).atStartOfDay().minusNanos(1);
-            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBetween(email, fromDateTime, toDateTime);
-        } else if (rq.getFromDate() != null) {
-            LocalDateTime fromDateTime = rq.getFromDate().atStartOfDay();
-            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtAfter(email, fromDateTime);
-        } else if (rq.getToDate() != null) {
-            LocalDateTime toDateTime = rq.getToDate().plusDays(1).atStartOfDay().minusNanos(1);
-            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBefore(email, toDateTime);
-
-        } else {
-            throw new ApplicationException(ErrorCode.DATE_NULL);
-        }
-        if (diaryEntityList == null || diaryEntityList.isEmpty()) {
-            throw new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
-        }
-        List<DiaryResponse> res = new ArrayList<>();
-        for (DiaryEntity diaryEntity : diaryEntityList) {
-            DiaryResponse diaryResponse = diaryConverter.toResponse(diaryEntity);
-            res.add(diaryResponse);
-        }
-        return res;
-    }
+//    public List<DiaryResponse> searchDiaryByDate(DiarySearchByDateRequest rq) {
+//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+//        List<DiaryEntity> diaryEntityList = new ArrayList<>();
+//        if (rq.getToDate() != null && rq.getFromDate() != null) {
+//            LocalDateTime fromDateTime = rq.getFromDate().atStartOfDay();
+//            LocalDateTime toDateTime = rq.getToDate().plusDays(1).atStartOfDay().minusNanos(1);
+//            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBetween(email, fromDateTime, toDateTime);
+//        } else if (rq.getFromDate() != null) {
+//            LocalDateTime fromDateTime = rq.getFromDate().atStartOfDay();
+//            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtAfter(email, fromDateTime);
+//        } else if (rq.getToDate() != null) {
+//            LocalDateTime toDateTime = rq.getToDate().plusDays(1).atStartOfDay().minusNanos(1);
+//            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBefore(email, toDateTime);
+//
+//        } else {
+//            throw new ApplicationException(ErrorCode.DATE_NULL);
+//        }
+//        if (diaryEntityList == null || diaryEntityList.isEmpty()) {
+//            throw new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
+//        }
+//        List<DiaryResponse> res = new ArrayList<>();
+//        for (DiaryEntity diaryEntity : diaryEntityList) {
+//            DiaryResponse diaryResponse = diaryConverter.toResponse(diaryEntity);
+//            res.add(diaryResponse);
+//        }
+//        return res;
+//    }
 
     private Emotion fromDescription(String value) {
         for (Emotion e : Emotion.values()) {
@@ -164,20 +164,20 @@ public class DiaryService {
         throw new ApplicationException(ErrorCode.INVALID_EMOTION);
     }
 
-    public List<DiaryResponse> searchDiaryByEmotion(String inpEmotion) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (inpEmotion.equals("")) {
-            throw new ApplicationException(ErrorCode.EMOTION_NULL);
-        }
-        Emotion emotion = fromDescription(inpEmotion);
-        List<DiaryEntity> diaries = diaryRepository.findByUser_EmailAndEmotion(email, emotion);
-        if (diaries == null || diaries.isEmpty()) {
-            throw new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
-        }
-        return diaries.stream()
-                .map(diaryConverter::toResponse)
-                .toList();
-    }
+//    public List<DiaryResponse> searchDiaryByEmotion(String inpEmotion) {
+//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+//        if (inpEmotion.equals("")) {
+//            throw new ApplicationException(ErrorCode.EMOTION_NULL);
+//        }
+//        Emotion emotion = fromDescription(inpEmotion);
+//        List<DiaryEntity> diaries = diaryRepository.findByUser_EmailAndEmotion(email, emotion);
+//        if (diaries == null || diaries.isEmpty()) {
+//            throw new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
+//        }
+//        return diaries.stream()
+//                .map(diaryConverter::toResponse)
+//                .toList();
+//    }
 
     public List<DiaryResponse> getUserDiaries() {
         UserEntity currentUser = getCurrentUser();
