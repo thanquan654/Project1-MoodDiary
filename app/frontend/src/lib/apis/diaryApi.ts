@@ -18,7 +18,9 @@ const getDiarysListApi = async (
 		)
 		const query = new URLSearchParams(cleanedParams).toString()
 
-		const url = `${BACKEND_URL}/diaries?${query}`
+		const url = query
+			? `${BACKEND_URL}/diaries/search?${query}`
+			: `${BACKEND_URL}/diaries`
 
 		const response = await fetch(url, {
 			method: 'GET',
@@ -31,7 +33,13 @@ const getDiarysListApi = async (
 		})
 
 		if (!response.ok) {
-			throw new Error(`API call failed with status: ${response.status}`)
+			console.error(`API call failed with status: ${response.status}`)
+			const data = await response.json()
+
+			return {
+				message: `API call failed with status: ${response.status}`,
+				data: [],
+			}
 		}
 
 		const data = await response.json()
@@ -39,7 +47,6 @@ const getDiarysListApi = async (
 		return data
 	} catch (error) {
 		console.error('Error in getDiarysListApi:', error)
-		throw error
 	}
 }
 

@@ -65,8 +65,6 @@ export async function POST(request: NextRequest) {
 		headers.append('Authorization', `Bearer ${token}`)
 	}
 
-	console.log('🚀 ~ formData:', formData)
-
 	try {
 		const response = await fetch(url, {
 			method: 'POST',

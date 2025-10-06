@@ -9,8 +9,6 @@ export async function GET(
 	const path = (await params).path.join('/')
 	const url = `${BACKEND_URL}/diaries/${path}`
 
-	console.log('🚀 ~ url:', url)
-
 	const headers = new Headers(request.headers)
 	headers.delete('connection')
 	headers.set('ngrok-skip-browser-warning', 'true')
