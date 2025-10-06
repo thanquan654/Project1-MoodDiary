@@ -50,7 +50,7 @@ export default function DiaryDetailClient({
 	}
 
 	return (
-		<div className="flex flex-col min-h-screen bg-background">
+		<div className="flex flex-col min-h-screen bg-background mx-4">
 			<div className="max-w-4xl mx-auto m-2 mt-6">
 				<DiaryHeader onDelete={handleDeleteEntry} />
 				<DiaryContentCard diary={initialData} />

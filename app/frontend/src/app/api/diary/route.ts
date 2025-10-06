@@ -47,3 +47,42 @@ export async function GET(request: NextRequest) {
 		)
 	}
 }
+
+export async function POST(request: NextRequest) {
+	const formData = await request.formData()
+	const url = `${BACKEND_URL}/diaries`
+
+	const cookieStore = cookies()
+	const token = (await cookieStore).get('auth_token')?.value
+
+	const headers = new Headers(request.headers)
+	headers.delete('content-length')
+	headers.delete('content-type')
+	headers.delete('connection')
+	headers.set('ngrok-skip-browser-warning', 'true')
+
+	if (token) {
+		headers.append('Authorization', `Bearer ${token}`)
+	}
+
+	console.log('🚀 ~ formData:', formData)
+
+	try {
+		const response = await fetch(url, {
+			method: 'POST',
+			headers,
+			body: formData,
+		})
+		const data = await response.json()
+
+		return NextResponse.json(data, {
+			status: response.status,
+		})
+	} catch (error: unknown) {
+		console.error('Error creating diary:', error)
+		return NextResponse.json(
+			{ error: 'Internal Server Error' },
+			{ status: 500 },
+		)
+	}
+}

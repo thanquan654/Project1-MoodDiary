@@ -21,7 +21,6 @@ interface DiaryListProps {
 export default function DiaryList({ initialData }: DiaryListProps) {
 	const [expandedDays, setExpandedDays] = useState<string[]>([])
 
-	// Bỏ hoàn toàn useMemo và filteredDiaryList, vì dữ liệu đã được lọc từ server
 	const diaryList = initialData
 
 	const toggleDay = (date: string) => {
@@ -42,6 +41,12 @@ export default function DiaryList({ initialData }: DiaryListProps) {
 					</Button>
 				</Link>
 			</div>
+
+			{diaryList.length === 0 && (
+				<div className="text-muted-foreground mt-10 text-center">
+					Bạn chưa có nhật ký nào, hãy viết ra những suy nghĩ của bạn
+				</div>
+			)}
 
 			{/* Dùng diaryList trực tiếp */}
 			{diaryList.map((dayEntry) => (
