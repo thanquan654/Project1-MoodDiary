@@ -16,4 +16,7 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity,Long> {
     List<DiaryEntity> findByUser_EmailAndCreatedAtAfter(String email, LocalDateTime fromDate);
     List<DiaryEntity> findByUser_EmailAndCreatedAtBefore(String email, LocalDateTime toDate);
     List<DiaryEntity> findByUser_EmailAndEmotion(String email, Emotion emotion);
+    List<DiaryEntity> findByUser_EmailAndEmotionAndCreatedAtBetween(String email, Emotion emotion, LocalDateTime fromDate, LocalDateTime toDate);
+    List<DiaryEntity> findByUser_EmailAndEmotionAndCreatedAtAfter(String email,Emotion emotion, LocalDateTime fromDate);
+    List<DiaryEntity> findByUser_EmailAndEmotionAndCreatedAtBefore(String email, Emotion emotion, LocalDateTime toDate);
 }
