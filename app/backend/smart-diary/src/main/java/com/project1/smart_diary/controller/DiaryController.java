@@ -31,19 +31,19 @@ public class DiaryController {
 
         return ResponseEntity.ok(apiResponse);
     }
-    @GetMapping("/search/date")
-    public ResponseEntity<List<DiaryResponse>> searchDiaryByDate(
-            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
-            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
-        DiarySearchByDateRequest diarySearchByDateRequest = new DiarySearchByDateRequest();
-        diarySearchByDateRequest.setFromDate(fromDate);
-        diarySearchByDateRequest.setToDate(toDate);
-        return ResponseEntity.ok(diaryService.searchDiaryByDate(diarySearchByDateRequest));
-    }
-    @GetMapping("/search/emotion")
-    public ResponseEntity<List<DiaryResponse>> searchDiaryByEmotion(@RequestParam(value = "emotion", required = false) String emotion){
-        return  ResponseEntity.ok(diaryService.searchDiaryByEmotion(emotion));
-    }
+//    @GetMapping("/search/date")
+//    public ResponseEntity<List<DiaryResponse>> searchDiaryByDate(
+//            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+//            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+//        DiarySearchByDateRequest diarySearchByDateRequest = new DiarySearchByDateRequest();
+//        diarySearchByDateRequest.setFromDate(fromDate);
+//        diarySearchByDateRequest.setToDate(toDate);
+//        return ResponseEntity.ok(diaryService.searchDiaryByDate(diarySearchByDateRequest));
+//    }
+//    @GetMapping("/search/emotion")
+//    public ResponseEntity<List<DiaryResponse>> searchDiaryByEmotion(@RequestParam(value = "emotion", required = false) String emotion){
+//        return  ResponseEntity.ok(diaryService.searchDiaryByEmotion(emotion));
+//    }
     @GetMapping
     public ResponseEntity<ApiResponse<List<DiaryResponse>>> getUserDiaries() {
         List<DiaryResponse> responses = diaryService.getUserDiaries();
