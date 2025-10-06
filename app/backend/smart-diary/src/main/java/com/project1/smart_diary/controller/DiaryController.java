@@ -70,7 +70,7 @@ public class DiaryController {
         return ResponseEntity.ok(apiResponse);
     }
     @GetMapping("/search")
-    public ResponseEntity<List<DiaryResponse>> searchDiary(
+    public ResponseEntity<ApiResponse<List<DiaryResponse>>> searchDiary(
             @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
             @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
             @RequestParam(value = "emotion", required = false) String emotion) {
@@ -78,6 +78,10 @@ public class DiaryController {
         diarySearchRequest.setFromDate(fromDate);
         diarySearchRequest.setToDate(toDate);
         diarySearchRequest.setEmotion(emotion);
-        return ResponseEntity.ok(diaryService.searchDiary(diarySearchRequest));
+        ApiResponse<List<DiaryResponse>> res = ApiResponse.<List<DiaryResponse>>builder()
+                .message("Tìm kiếm thành công")
+                .data(diaryService.searchDiary(diarySearchRequest))
+                .build();
+        return ResponseEntity.ok(res);
     }
 }
