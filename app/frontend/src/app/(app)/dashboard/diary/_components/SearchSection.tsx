@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { Label } from '@/components/ui/label'
 import {
 	Popover,
 	PopoverContent,
@@ -19,22 +18,9 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { ChevronDownIcon, Search, SearchIcon } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation' // Import hooks
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-interface SearchSectionProps {
-	onKeywordSearch?: (value: string) => void
-	onDateSearch?: (
-		startDate: Date | undefined,
-		endDate: Date | undefined,
-	) => void
-	onEmotionSearch?: (value: string) => void
-}
-
-export default function SearchSection({
-	onKeywordSearch,
-	onDateSearch,
-	onEmotionSearch,
-}: SearchSectionProps) {
+export default function SearchSection() {
 	const router = useRouter()
 	const searchParams = useSearchParams()
 

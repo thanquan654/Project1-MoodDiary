@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const BACKEND_URL = process.env.BACKEND_URL
 
 const getDiarysListApi = async (

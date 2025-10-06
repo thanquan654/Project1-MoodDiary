@@ -4,7 +4,7 @@ const BACKEND_URL = process.env.BACKEND_URL
 
 export async function GET(
 	request: NextRequest,
-	{ params }: { params: { path: string[] } },
+	{ params }: { params: Promise<{ path: string[] }> },
 ) {
 	const path = (await params).path.join('/')
 	const searchParams = await request.nextUrl.searchParams
@@ -28,6 +28,7 @@ export async function GET(
 			status: response.status,
 		})
 	} catch (error) {
+		console.error('Error fetching diary:', error)
 		return NextResponse.json(
 			{ error: 'Internal Server Error' },
 			{ status: 500 },
@@ -37,9 +38,9 @@ export async function GET(
 
 export async function POST(
 	request: NextRequest,
-	{ params }: { params: { path: string[] } },
+	{ params }: { params: Promise<{ path: string[] }> },
 ) {
-	const path = params.path.join('/')
+	const path = (await params).path.join('/')
 	const body = await request.json()
 	const url = `${BACKEND_URL}/auth/${path}`
 
@@ -59,6 +60,7 @@ export async function POST(
 			status: response.status,
 		})
 	} catch (error) {
+		console.error('Error fetching diary:', error)
 		return NextResponse.json(
 			{ error: 'Internal Server Error' },
 			{ status: 500 },

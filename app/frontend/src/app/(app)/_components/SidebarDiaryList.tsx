@@ -61,7 +61,7 @@ export default function SideBarDiaryList() {
 				</h2>
 
 				<div className="space-y-2">
-					{diaryEntries.map((entry, index) => (
+					{diaryEntries.map((entry) => (
 						<div
 							key={entry.date}
 							className={`space-y-1 ${

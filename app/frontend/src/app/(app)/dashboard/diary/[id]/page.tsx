@@ -1,15 +1,17 @@
-import { Suspense, use } from 'react'
+import { Suspense } from 'react'
 import { cookies } from 'next/headers'
 import { getDiaryByIdApi } from '@/lib/apis/diaryApi'
 import DiaryDetailClient from './_components/DiaryDetailClient'
 import { Metadata } from 'next'
 import DiaryDetailLoading from '@/app/(app)/dashboard/diary/[id]/loading'
 
-interface Props {
-	params: { id: string }
+type PageProps = {
+	params: Promise<{ id: string }>
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+	params,
+}: PageProps): Promise<Metadata> {
 	const param = await params
 
 	const cookieStore = cookies()
@@ -22,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 	}
 }
 
-export default async function DiaryDetailPage({ params }: Props) {
+export default async function DiaryDetailPage({ params }: PageProps) {
 	const param = await params
 
 	const cookieStore = cookies()
