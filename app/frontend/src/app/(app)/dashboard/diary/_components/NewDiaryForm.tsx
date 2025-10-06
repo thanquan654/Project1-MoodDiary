@@ -25,6 +25,7 @@ export default function NewDiaryForm() {
 	const [error, setError] = useState({
 		title: '',
 		content: '',
+		form: '',
 	})
 	const [images, setImages] = useState<File[]>([])
 	const [isRecording, setIsRecording] = useState(false)
@@ -104,6 +105,7 @@ export default function NewDiaryForm() {
 		setError({
 			title: '',
 			content: '',
+			form: '',
 		})
 
 		if (!title.trim()) {
@@ -129,7 +131,7 @@ export default function NewDiaryForm() {
 			formData.append('title', title)
 			formData.append('content', content)
 			images.forEach((image) => {
-				formData.append('images', image)
+				formData.append('newImages', image)
 			})
 
 			const response = await fetch('/api/diary', {
@@ -138,7 +140,12 @@ export default function NewDiaryForm() {
 			})
 
 			if (!response.ok) {
-				throw new Error('Failed to create diary')
+				const errorData = (await (await response).json()).message
+
+				setError((prev) => ({
+					...prev,
+					form: errorData,
+				}))
 			}
 
 			router.push('/dashboard/diary')
@@ -288,7 +295,7 @@ export default function NewDiaryForm() {
 				<Button
 					type="button"
 					variant="outline"
-					className="w-full bg-transparent"
+					className="flex-1 bg-transparent"
 					onClick={() => router.back()}
 				>
 					Hủy

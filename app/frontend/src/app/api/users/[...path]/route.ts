@@ -13,8 +13,6 @@ export async function GET(
 		? `${BACKEND_URL}/users/${path}?${queryString}`
 		: `${BACKEND_URL}/users/${path}`
 
-	console.log(url)
-
 	const headers = new Headers(request.headers)
 	headers.delete('connection') // Remove hop-by-hop headers
 	headers.set('ngrok-skip-browser-warning', 'true')
