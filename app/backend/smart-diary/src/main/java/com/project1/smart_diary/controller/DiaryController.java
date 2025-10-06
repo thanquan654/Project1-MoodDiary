@@ -2,6 +2,7 @@ package com.project1.smart_diary.controller;
 
 import com.project1.smart_diary.dto.request.DiaryRequest;
 import com.project1.smart_diary.dto.request.DiarySearchByDateRequest;
+import com.project1.smart_diary.dto.request.DiarySearchRequest;
 import com.project1.smart_diary.dto.response.ApiResponse;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.service.DiaryService;
@@ -67,5 +68,16 @@ public class DiaryController {
                 .build();
 
         return ResponseEntity.ok(apiResponse);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<DiaryResponse>> searchDiary(
+            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @RequestParam(value = "emotion", required = false) String emotion) {
+        DiarySearchRequest diarySearchRequest = new DiarySearchRequest();
+        diarySearchRequest.setFromDate(fromDate);
+        diarySearchRequest.setToDate(toDate);
+        diarySearchRequest.setEmotion(emotion);
+        return ResponseEntity.ok(diaryService.searchDiary(diarySearchRequest));
     }
 }
