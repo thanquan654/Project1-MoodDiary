@@ -4,6 +4,12 @@ import { transformDiaryDataList } from '@/helpers/transformDiaryData'
 import { cookies } from 'next/headers'
 import DiaryList from '@/app/(app)/dashboard/diary/_components/DiaryList'
 import SearchSection from './_components/SearchSection'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+	title: 'Danh sách nhật ký - Smart Diary',
+	description: 'Nhật ký cảm xúc của bạn',
+}
 
 export const dynamic = 'force-dynamic'
 
