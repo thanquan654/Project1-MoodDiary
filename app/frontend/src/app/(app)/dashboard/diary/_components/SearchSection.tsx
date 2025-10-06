@@ -29,17 +29,17 @@ export default function SearchSection() {
 		searchParams.get('keyword') || '',
 	)
 	const [startDate, setStartDate] = useState<Date | undefined>(
-		searchParams.get('startDate')
-			? new Date(searchParams.get('startDate')!)
+		searchParams.get('fromDate')
+			? new Date(searchParams.get('fromDate')!)
 			: undefined,
 	)
 	const [endDate, setEndDate] = useState<Date | undefined>(
-		searchParams.get('endDate')
-			? new Date(searchParams.get('endDate')!)
+		searchParams.get('toDate')
+			? new Date(searchParams.get('toDate')!)
 			: undefined,
 	)
 	const [emotionFilter, setEmotionFilter] = useState(
-		searchParams.get('emotion') || 'all',
+		searchParams.get('emotion') || '',
 	)
 
 	const [openStartDate, setOpenStartDate] = useState(false)
@@ -75,10 +75,10 @@ export default function SearchSection() {
 		setStartDate(newStartDate)
 		setEndDate(newEndDate)
 		updateQueryParams({
-			startDate: newStartDate
+			fromDate: newStartDate
 				? newStartDate.toISOString().split('T')[0]
 				: '',
-			endDate: newEndDate ? newEndDate.toISOString().split('T')[0] : '',
+			toDate: newEndDate ? newEndDate.toISOString().split('T')[0] : '',
 		})
 	}
 
@@ -191,11 +191,13 @@ export default function SearchSection() {
 					<SelectContent>
 						<SelectGroup>
 							<SelectItem value="all">Tất cả</SelectItem>
-							<SelectItem value="happy">😄 Vui vẻ</SelectItem>
-							<SelectItem value="anxious">😑 Lo lắng</SelectItem>
-							<SelectItem value="sad">🥲 Buồn</SelectItem>
-							<SelectItem value="angry">😡 Tức giận</SelectItem>
-							<SelectItem value="neutral">
+							<SelectItem value="Vui">😄 Vui vẻ</SelectItem>
+							<SelectItem value="Lo Lắng">😑 Lo lắng</SelectItem>
+							<SelectItem value="Buồn">🥲 Buồn</SelectItem>
+							<SelectItem value="Tức giận">
+								😡 Tức giận
+							</SelectItem>
+							<SelectItem value="Trung tính">
 								😐 Trung tính
 							</SelectItem>
 						</SelectGroup>

@@ -26,14 +26,6 @@ export type DiaryListByDate = {
 	entries: Entry[]
 }[]
 
-const emotionToMoodMap: { [key: string]: string } = {
-	'Vui vẻ': 'happy',
-	'Lo lắng': 'anxious',
-	Buồn: 'sad',
-	'Tức giận': 'angry',
-	'Trung tính': 'neutral',
-}
-
 const vietnameseDays = [
 	'Chủ Nhật',
 	'Thứ Hai',
@@ -67,7 +59,7 @@ export function transformDiaryDataList(diaries: Diary[]): DiaryListByDate {
 				time: `${padZero(createdAtDate.getHours())}:${padZero(
 					createdAtDate.getMinutes(),
 				)}`,
-				emotion: emotionToMoodMap[diary.emotion] || 'neutral',
+				emotion: diary.emotion || 'Trung tính',
 				preview:
 					diary.content.substring(0, 100) +
 					(diary.content.length > 100 ? '...' : ''),

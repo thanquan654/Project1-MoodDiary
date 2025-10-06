@@ -7,11 +7,11 @@ import { Calendar, ChevronDown, BookPlus } from 'lucide-react'
 import { type DiaryListByDate } from '../_types/diary.type'
 
 const emotionIconMap: { [key: string]: string } = {
-	happy: '😊',
-	anxious: '😑',
-	sad: '😢',
-	angry: '😡',
-	neutral: '😐',
+	Vui: '😄',
+	'Lo lắng': '😑',
+	Buồn: '😢',
+	'Tức giận': '😡',
+	'Trung tính': '😐',
 }
 
 interface DiaryListProps {
@@ -88,7 +88,7 @@ export default function DiaryList({ initialData }: DiaryListProps) {
 										<div className="flex items-center gap-2">
 											<span className="text-xl">
 												{emotionIconMap[
-													entry.emotion.toLowerCase()
+													entry.emotion
 												] || '😐'}
 											</span>
 											<Link
