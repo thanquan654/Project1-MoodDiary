@@ -1,7 +1,5 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL
-
 const loginUserApi = async (email: string, password: string) => {
-	const response = await fetch(`${BASE_URL}/auth/login`, {
+	const response = await fetch('/api/auth/login', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -16,7 +14,7 @@ const registerUserApi = async (
 	email: string,
 	password: string,
 ) => {
-	const response = await fetch(`${BASE_URL}/auth/register`, {
+	const response = await fetch('/api/auth/register', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -27,7 +25,7 @@ const registerUserApi = async (
 }
 
 const loginWithGoogleApi = async () => {
-	const response = await fetch(`${BASE_URL}/auth/login/google`, {
+	const response = await fetch('/api/auth/login/google', {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -37,7 +35,7 @@ const loginWithGoogleApi = async () => {
 }
 
 const requestForgotPasswordApi = async (email: string) => {
-	const response = await fetch(`${BASE_URL}/auth/forgot-password`, {
+	const response = await fetch('/api/auth/forgot-password', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -52,7 +50,7 @@ const resetPasswordApi = async (
 	password: string,
 	confirmPassword: string,
 ) => {
-	const response = await fetch(`${BASE_URL}/auth/reset-password`, {
+	const response = await fetch('/api/auth/reset-password', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -63,7 +61,7 @@ const resetPasswordApi = async (
 }
 
 const logoutApi = async (token: string) => {
-	const response = await fetch(`${BASE_URL}/auth/logout`, {
+	const response = await fetch('/api/auth/logout', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -75,7 +73,7 @@ const logoutApi = async (token: string) => {
 }
 
 const getUserInfoApi = async (token: string) => {
-	const response = await fetch(`${BASE_URL}/users/my-info`, {
+	const response = await fetch('/api/users/my-info', {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
