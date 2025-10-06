@@ -33,6 +33,7 @@ public enum ErrorCode {
     INVALID_EMOTION(3004, "Emotion không hợp lệ. Vui lòng nhập các từ khóa như: Vui, Buồn, Lo lắng, Tức giận, Trung tính.", HttpStatus.BAD_REQUEST),
     EMOTION_NULL(3005, "Không được để trống cảm xúc, vui lòng nhập cảm xúc để tìm kiếm.", HttpStatus.BAD_REQUEST),
     NOT_DIARY_OWNER(3006, "Không có quyền truy cập nhật ký này", HttpStatus.FORBIDDEN),
+    DATE_AND_EMOTION_NULL(3001, "không được để trống cả fromDate, toDate và emotion", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode httpStatusCode) {
