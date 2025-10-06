@@ -30,8 +30,6 @@ export default async function DiariesPage({ searchParams }: DiariesPageProps) {
 
 	const response = await getDiarysListApi(filters, token)
 
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-expect-error
 	const diaryList = transformDiaryDataList(response?.data)
 
 	return (
