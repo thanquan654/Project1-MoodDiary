@@ -3,6 +3,7 @@ package com.project1.smart_diary.service;
 import com.project1.smart_diary.converter.DiaryConverter;
 import com.project1.smart_diary.dto.request.DiaryRequest;
 import com.project1.smart_diary.dto.request.DiarySearchByDateRequest;
+import com.project1.smart_diary.dto.request.DiarySearchRequest;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.DiaryMedia;
@@ -195,5 +196,50 @@ public class DiaryService {
         }
 
         return diaryConverter.toResponse(diary);
+    }
+
+    public List<DiaryResponse> searchDiary(DiarySearchRequest rq) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Emotion emotion;
+        List<DiaryEntity> diaryEntityList = new ArrayList<>();
+        if (rq.getToDate() != null && rq.getFromDate() != null && rq.getEmotion() != null) {
+            LocalDateTime fromDateTime = rq.getFromDate().atStartOfDay();
+            LocalDateTime toDateTime = rq.getToDate().plusDays(1).atStartOfDay().minusNanos(1);
+            emotion = fromDescription(rq.getEmotion());
+            diaryEntityList = diaryRepository.findByUser_EmailAndEmotionAndCreatedAtBetween(email, emotion, fromDateTime, toDateTime);
+        } else if (rq.getToDate() != null && rq.getFromDate() != null) {
+            LocalDateTime fromDateTime = rq.getFromDate().atStartOfDay();
+            LocalDateTime toDateTime = rq.getToDate().plusDays(1).atStartOfDay().minusNanos(1);
+            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBetween(email, fromDateTime, toDateTime);
+        } else if (rq.getFromDate() != null && rq.getEmotion() != null) {
+            LocalDateTime fromDateTime = rq.getFromDate().atStartOfDay();
+            emotion = fromDescription(rq.getEmotion());
+            diaryEntityList = diaryRepository.findByUser_EmailAndEmotionAndCreatedAtAfter(email, emotion, fromDateTime);
+        } else if (rq.getToDate() != null && rq.getEmotion() != null) {
+            LocalDateTime toDateTime = rq.getToDate().plusDays(1).atStartOfDay().minusNanos(1);
+            emotion = fromDescription(rq.getEmotion());
+            diaryEntityList = diaryRepository.findByUser_EmailAndEmotionAndCreatedAtBefore(email, emotion, toDateTime);
+        } else if (rq.getFromDate() != null) {
+            LocalDateTime fromDateTime = rq.getFromDate().atStartOfDay();
+            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtAfter(email, fromDateTime);
+        } else if (rq.getToDate() != null) {
+            LocalDateTime toDateTime = rq.getToDate().plusDays(1).atStartOfDay().minusNanos(1);
+            diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBefore(email, toDateTime);
+
+        } else if (rq.getEmotion() != null) {
+            emotion = fromDescription(rq.getEmotion());
+            diaryEntityList = diaryRepository.findByUser_EmailAndEmotion(email, emotion);
+        } else {
+            throw new ApplicationException(ErrorCode.DATE_AND_EMOTION_NULL);
+        }
+        if (diaryEntityList == null || diaryEntityList.isEmpty()) {
+            throw new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
+        }
+        List<DiaryResponse> res = new ArrayList<>();
+        for (DiaryEntity diaryEntity : diaryEntityList) {
+            DiaryResponse diaryResponse = diaryConverter.toResponse(diaryEntity);
+            res.add(diaryResponse);
+        }
+        return res;
     }
 }
