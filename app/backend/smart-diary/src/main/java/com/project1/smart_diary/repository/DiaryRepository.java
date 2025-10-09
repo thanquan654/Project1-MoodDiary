@@ -3,6 +3,7 @@ package com.project1.smart_diary.repository;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.UserEntity;
 import com.project1.smart_diary.enums.Emotion;
+import com.project1.smart_diary.repository.custom.DiaryRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface DiaryRepository extends JpaRepository<DiaryEntity,Long> {
+public interface DiaryRepository extends JpaRepository<DiaryEntity,Long>, DiaryRepositoryCustom {
     List<DiaryEntity> findByUser_EmailOrderByCreatedAtDesc(String email);
     List<DiaryEntity> findByUser_EmailAndCreatedAtBetween(String email, LocalDateTime fromDate, LocalDateTime toDate);
     List<DiaryEntity> findByUser_EmailAndCreatedAtAfter(String email, LocalDateTime fromDate);
