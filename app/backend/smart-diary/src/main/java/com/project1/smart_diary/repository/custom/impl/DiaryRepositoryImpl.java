@@ -61,9 +61,12 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
             jpql.append("and d.createdAt <= :toDate ");
             params.put("toDate", toDate);
         }
-
-
         log.info("jpql search with date: {} ", jpql);
+
+        if (diarySearchRequest.getKeyword() != null && !diarySearchRequest.getKeyword().trim().isEmpty()) {
+            jpql.append("and (lower(d.title) like lower(:keyword) or lower(d.content) like lower(:keyword)) ");
+            params.put("keyword", "%" + diarySearchRequest.getKeyword().trim().toLowerCase() + "%");
+        }
         jpql.append("order by d.createdAt desc");
         TypedQuery<DiaryEntity> query = entityManager.createQuery(jpql.toString(), DiaryEntity.class);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
