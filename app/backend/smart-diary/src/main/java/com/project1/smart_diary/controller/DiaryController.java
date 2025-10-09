@@ -1,14 +1,12 @@
 package com.project1.smart_diary.controller;
 
 import com.project1.smart_diary.dto.request.DiaryRequest;
-import com.project1.smart_diary.dto.request.DiarySearchByDateRequest;
-import com.project1.smart_diary.dto.request.DiarySearchRequest;
+import com.project1.smart_diary.dto.request.DiarySearchByDateAndEmotionRequest;
 import com.project1.smart_diary.dto.response.ApiResponse;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.service.DiaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,7 +72,7 @@ public class DiaryController {
             @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
             @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
             @RequestParam(value = "emotion", required = false) String emotion) {
-        DiarySearchRequest diarySearchRequest = new DiarySearchRequest();
+        DiarySearchByDateAndEmotionRequest diarySearchRequest = new DiarySearchByDateAndEmotionRequest();
         diarySearchRequest.setFromDate(fromDate);
         diarySearchRequest.setToDate(toDate);
         diarySearchRequest.setEmotion(emotion);

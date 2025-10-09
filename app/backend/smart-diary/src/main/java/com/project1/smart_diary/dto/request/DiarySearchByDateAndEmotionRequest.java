@@ -4,11 +4,10 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class DiarySearchRequest {
+public class DiarySearchByDateAndEmotionRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fromDate;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
