@@ -34,12 +34,12 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
 
     @Override
     public List<DiaryEntity> searchDiary(String email, DiarySearchRequest diarySearchRequest) {
-        StringBuilder jpql = new StringBuilder("select d from DiaryEntity d where d.user.email=:email");
+        StringBuilder jpql = new StringBuilder("select d from DiaryEntity d where d.user.email =: email ");
         Map<String, Object> params = new HashMap<>();
         params.put("email", email);
         if (diarySearchRequest.getEmotion() != null && !diarySearchRequest.getEmotion().trim().isEmpty()) {
             Emotion emotion = fromDescription(diarySearchRequest.getEmotion());
-            jpql.append(" and d.emotion=:emotion");
+            jpql.append("and d.emotion =: emotion ");
             params.put("emotion", emotion);
         }
         LocalDateTime fromDate = null;
@@ -51,13 +51,13 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
             toDate = diarySearchRequest.getToDate().plusDays(1).atStartOfDay().minusNanos(1);
         }
         if (fromDate != null && toDate != null) {
-            jpql.append(" and d.createdAt between :fromDate and :toDate");
+            jpql.append("and d.createdAt between :fromDate and :toDate ");
             params.put("fromDate", fromDate);
             params.put("toDate", toDate);
         } else if (fromDate != null) {
-            jpql.append(" and d.createdAt between :fromDate and :toDate");
+            jpql.append("and d.createdAt >= :fromDate ");
         } else if (toDate != null) {
-            jpql.append(" and d.createdAt between :toDate and :fromDate");
+            jpql.append("and d.createdAt <= :toDate ");
         }
         log.info("jpql search with date: {} ", jpql);
         jpql.append("order by d.createdAt desc");
