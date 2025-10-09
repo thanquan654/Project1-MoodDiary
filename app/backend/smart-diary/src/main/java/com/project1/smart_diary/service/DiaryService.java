@@ -2,8 +2,7 @@ package com.project1.smart_diary.service;
 
 import com.project1.smart_diary.converter.DiaryConverter;
 import com.project1.smart_diary.dto.request.DiaryRequest;
-import com.project1.smart_diary.dto.request.DiarySearchByDateRequest;
-import com.project1.smart_diary.dto.request.DiarySearchRequest;
+import com.project1.smart_diary.dto.request.DiarySearchByDateAndEmotionRequest;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.DiaryMedia;
@@ -15,7 +14,6 @@ import com.project1.smart_diary.repository.DiaryRepository;
 import com.project1.smart_diary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +25,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -199,7 +196,7 @@ public class DiaryService {
         return diaryConverter.toResponse(diary);
     }
     @Transactional(readOnly = true)
-    public List<DiaryResponse> searchDiary(DiarySearchRequest rq) {
+    public List<DiaryResponse> searchDiary(DiarySearchByDateAndEmotionRequest rq) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Emotion emotion;
         List<DiaryEntity> diaryEntityList = new ArrayList<>();
