@@ -1,14 +1,13 @@
 package com.project1.smart_diary.controller;
 
 import com.project1.smart_diary.dto.request.DiaryRequest;
-import com.project1.smart_diary.dto.request.DiarySearchByDateRequest;
+import com.project1.smart_diary.dto.request.DiarySearchByDateAndEmotionRequest;
 import com.project1.smart_diary.dto.request.DiarySearchRequest;
 import com.project1.smart_diary.dto.response.ApiResponse;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.service.DiaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +30,8 @@ public class DiaryController {
 
         return ResponseEntity.ok(apiResponse);
     }
-//    @GetMapping("/search/date")
+
+    //    @GetMapping("/search/date")
 //    public ResponseEntity<List<DiaryResponse>> searchDiaryByDate(
 //            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
 //            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
@@ -69,15 +69,35 @@ public class DiaryController {
 
         return ResponseEntity.ok(apiResponse);
     }
+
+    //    @GetMapping("/search")
+//    public ResponseEntity<ApiResponse<List<DiaryResponse>>> searchDiary(
+//            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+//            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+//            @RequestParam(value = "emotion", required = false) String emotion) {
+//        DiarySearchByDateAndEmotionRequest diarySearchRequest = new DiarySearchByDateAndEmotionRequest();
+//        diarySearchRequest.setFromDate(fromDate);
+//        diarySearchRequest.setToDate(toDate);
+//        diarySearchRequest.setEmotion(emotion);
+//        ApiResponse<List<DiaryResponse>> res = ApiResponse.<List<DiaryResponse>>builder()
+//                .message("Tìm kiếm thành công")
+//                .data(diaryService.searchDiaryByDateAndEmotion(diarySearchRequest))
+//                .build();
+//        return ResponseEntity.ok(res);
+//    }
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<DiaryResponse>>> searchDiary(
+//            @ModelAttribute DiarySearchRequest diarySearchRequest
             @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
             @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
-            @RequestParam(value = "emotion", required = false) String emotion) {
-        DiarySearchRequest diarySearchRequest = new DiarySearchRequest();
-        diarySearchRequest.setFromDate(fromDate);
-        diarySearchRequest.setToDate(toDate);
-        diarySearchRequest.setEmotion(emotion);
+            @RequestParam(value = "emotion", required = false) String emotion,
+            @RequestParam(value = "keyword", required = false) String keyword){
+        DiarySearchRequest diarySearchRequest = DiarySearchRequest.builder()
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .emotion(emotion)
+                .keyword(keyword)
+                .build();
         ApiResponse<List<DiaryResponse>> res = ApiResponse.<List<DiaryResponse>>builder()
                 .message("Tìm kiếm thành công")
                 .data(diaryService.searchDiary(diarySearchRequest))

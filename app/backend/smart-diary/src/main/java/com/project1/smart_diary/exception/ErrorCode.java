@@ -31,9 +31,10 @@ public enum ErrorCode {
     DIARY_NOT_FOUND(3002, "Không tìm thấy nhật kí", HttpStatus.NOT_FOUND),
     INVALID_DATE_FORMAT(3003, "Định dạng ngày không hợp lệ. Vui lòng nhập theo định dạng yyyy-MM-dd.", HttpStatus.BAD_REQUEST),
     INVALID_EMOTION(3004, "Emotion không hợp lệ. Vui lòng nhập các từ khóa như: Vui, Buồn, Lo lắng, Tức giận, Trung tính.", HttpStatus.BAD_REQUEST),
-    EMOTION_NULL(3005, "Không được để trống cảm xúc, vui lòng nhập cảm xúc để tìm kiếm.", HttpStatus.BAD_REQUEST),
-    NOT_DIARY_OWNER(3006, "Không có quyền truy cập nhật ký này", HttpStatus.FORBIDDEN),
-    DATE_AND_EMOTION_NULL(3001, "không được để trống cả fromDate, toDate và emotion", HttpStatus.BAD_REQUEST),
+    INVALID_KEYWORD(3005, "Keyword không hợp lệ. Vui lòng nhập 1 từ khóa tùy ý, không gửi về rỗng", HttpStatus.BAD_REQUEST),
+    EMOTION_NULL(3006, "Không được để trống cảm xúc, vui lòng nhập cảm xúc để tìm kiếm.", HttpStatus.BAD_REQUEST),
+    NOT_DIARY_OWNER(3007, "Không có quyền truy cập nhật ký này", HttpStatus.FORBIDDEN),
+    DATE_AND_EMOTION_NULL(3008, "không được để trống cả fromDate, toDate và emotion", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode httpStatusCode) {
