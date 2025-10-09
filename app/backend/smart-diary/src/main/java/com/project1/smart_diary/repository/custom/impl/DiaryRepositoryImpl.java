@@ -35,6 +35,12 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
 
     @Override
     public List<DiaryEntity> searchDiary(String email, DiarySearchRequest diarySearchRequest) {
+        if(diarySearchRequest.getEmotion() != null && diarySearchRequest.getEmotion().trim().isEmpty()){
+            throw new ApplicationException(ErrorCode.INVALID_EMOTION);
+        }
+        if(diarySearchRequest.getKeyword() != null && diarySearchRequest.getKeyword().trim().isEmpty()){
+            throw  new ApplicationException(ErrorCode.INVALID_KEYWORD);
+        }
         StringBuilder jpql = new StringBuilder("select d from DiaryEntity d where d.user.email =: email ");
         Map<String, Object> params = new HashMap<>();
         params.put("email", email);
@@ -69,6 +75,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
             params.put("keyword", "%" + diarySearchRequest.getKeyword().trim().toLowerCase() + "%");
         }
         jpql.append("order by d.createdAt desc");
+        log.info("jpql search full: {} ", jpql);
         TypedQuery<DiaryEntity> query = entityManager.createQuery(jpql.toString(), DiaryEntity.class);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             query.setParameter(entry.getKey(), entry.getValue());
