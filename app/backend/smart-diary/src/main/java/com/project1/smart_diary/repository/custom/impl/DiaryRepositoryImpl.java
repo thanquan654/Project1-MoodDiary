@@ -56,9 +56,13 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
             params.put("toDate", toDate);
         } else if (fromDate != null) {
             jpql.append("and d.createdAt >= :fromDate ");
+            params.put("fromDate", fromDate);
         } else if (toDate != null) {
             jpql.append("and d.createdAt <= :toDate ");
+            params.put("toDate", toDate);
         }
+
+
         log.info("jpql search with date: {} ", jpql);
         jpql.append("order by d.createdAt desc");
         TypedQuery<DiaryEntity> query = entityManager.createQuery(jpql.toString(), DiaryEntity.class);

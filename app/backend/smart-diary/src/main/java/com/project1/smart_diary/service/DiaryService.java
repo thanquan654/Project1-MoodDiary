@@ -3,6 +3,7 @@ package com.project1.smart_diary.service;
 import com.project1.smart_diary.converter.DiaryConverter;
 import com.project1.smart_diary.dto.request.DiaryRequest;
 import com.project1.smart_diary.dto.request.DiarySearchByDateAndEmotionRequest;
+import com.project1.smart_diary.dto.request.DiarySearchRequest;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.DiaryMedia;
@@ -195,8 +196,9 @@ public class DiaryService {
 
         return diaryConverter.toResponse(diary);
     }
-    @Transactional(readOnly = true)
-    public List<DiaryResponse> searchDiary(DiarySearchByDateAndEmotionRequest rq) {
+
+        @Transactional(readOnly = true)
+    public List<DiaryResponse> searchDiaryByDateAndEmotion(DiarySearchByDateAndEmotionRequest rq) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Emotion emotion;
         List<DiaryEntity> diaryEntityList = new ArrayList<>();
@@ -239,5 +241,15 @@ public class DiaryService {
             res.add(diaryResponse);
         }
         return res;
+    }
+    public List<DiaryResponse> searchDiary(DiarySearchRequest diarySearchRequest) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<DiaryEntity> diaryEntityList = diaryRepository.searchDiary(email, diarySearchRequest);
+        if (diaryEntityList == null || diaryEntityList.isEmpty()) {
+            throw new ApplicationException(ErrorCode.DIARY_NOT_FOUND);
+        }
+        return diaryEntityList.stream()
+                .map(diaryConverter::toResponse)
+                .toList();
     }
 }
