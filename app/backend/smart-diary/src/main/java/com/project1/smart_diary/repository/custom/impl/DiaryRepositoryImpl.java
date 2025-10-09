@@ -24,6 +24,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     private EntityManager entityManager;
 
     private Emotion fromDescription(String value) {
+
         for (Emotion e : Emotion.values()) {
             if (e.getDescription().equalsIgnoreCase(value.trim())) {
                 return e;
