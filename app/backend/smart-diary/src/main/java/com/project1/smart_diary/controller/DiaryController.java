@@ -30,7 +30,8 @@ public class DiaryController {
 
         return ResponseEntity.ok(apiResponse);
     }
-//    @GetMapping("/search/date")
+
+    //    @GetMapping("/search/date")
 //    public ResponseEntity<List<DiaryResponse>> searchDiaryByDate(
 //            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
 //            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
@@ -68,7 +69,8 @@ public class DiaryController {
 
         return ResponseEntity.ok(apiResponse);
     }
-//    @GetMapping("/search")
+
+    //    @GetMapping("/search")
 //    public ResponseEntity<ApiResponse<List<DiaryResponse>>> searchDiary(
 //            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
 //            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
@@ -84,7 +86,18 @@ public class DiaryController {
 //        return ResponseEntity.ok(res);
 //    }
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<DiaryResponse>>> searchDiary(@ModelAttribute DiarySearchRequest diarySearchRequest){
+    public ResponseEntity<ApiResponse<List<DiaryResponse>>> searchDiary(
+//            @ModelAttribute DiarySearchRequest diarySearchRequest
+            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @RequestParam(value = "emotion", required = false) String emotion,
+            @RequestParam(value = "keyword", required = false) String keyword){
+        DiarySearchRequest diarySearchRequest = DiarySearchRequest.builder()
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .emotion(emotion)
+                .keyword(keyword)
+                .build();
         ApiResponse<List<DiaryResponse>> res = ApiResponse.<List<DiaryResponse>>builder()
                 .message("Tìm kiếm thành công")
                 .data(diaryService.searchDiary(diarySearchRequest))
