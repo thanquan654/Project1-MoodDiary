@@ -12,6 +12,5 @@ import java.util.List;
 public class DiaryRequest {
     private String title;
     private String content;
-    private List<MultipartFile> newImages;
-    private List<Long> existingImageIds;
+    private List<MultipartFile> images;
 }
