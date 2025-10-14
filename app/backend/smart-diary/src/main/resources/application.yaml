@@ -20,8 +20,8 @@ spring:
     open-in-view: true
     properties:
       hibernate.jdbc.time_zone: Asia/Ho_Chi_Minh
-    jackson:
-      time-zone: Asia/Ho_Chi_Minh
+  jackson:
+    time-zone: Asia/Ho_Chi_Minh
 
   security:
     oauth2:
