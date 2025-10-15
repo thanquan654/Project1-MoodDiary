@@ -37,15 +37,17 @@ public class DiaryService {
     private final UserRepository userRepository;
     private final CloudinaryService cloudinaryService;
     private final DiaryConverter diaryConverter;
+    private final GeminiAIService geminiAIService;
 
     public DiaryResponse createDiary(DiaryRequest request) {
         UserEntity currentUser = getCurrentUser();
         validateDiaryRequest(request);
 
+        Emotion emotion = geminiAIService.predictTextEmotion(request.getContent());
         DiaryEntity diary = DiaryEntity.builder()
                 .title(request.getTitle() != null ? request.getTitle() : "")
                 .content(request.getContent())
-                .emotion(null)
+                .emotion(emotion)
                 .advice(null)
                 .user(currentUser)
                 .media(new ArrayList<>())
