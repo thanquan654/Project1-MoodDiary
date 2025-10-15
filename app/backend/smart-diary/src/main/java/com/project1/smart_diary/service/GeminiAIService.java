@@ -1,5 +1,7 @@
 package com.project1.smart_diary.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project1.smart_diary.config.GeminiApiConfig;
 import com.project1.smart_diary.enums.Emotion;
 import com.project1.smart_diary.exception.ApplicationException;
@@ -62,7 +64,6 @@ public class GeminiAIService {
             return Emotion.NEUTRAL;
         }
     }
-
     private String callGeminiAPI(String prompt) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -87,6 +88,50 @@ public class GeminiAIService {
         } catch (Exception e) {
             log.error("Error calling Gemini API: {}", e.getMessage());
             throw e;
+        }
+    }
+
+    public String generateAdvice(String text, Emotion emotion) {
+        String prompt = String.format("Tạo lời khuyên ngắn gọn và tích cực cho nội dung: '%s' với cảm xúc: %s. Trả về lời khuyên khoảng 2 dòng.",
+                text, emotion.getDescription());
+
+        try {
+            String response = callGeminiAPI(prompt);
+            String extractedText = extractTextFromResponse(response);
+            return extractedText;
+        } catch (Exception e) {
+            log.error("Error generating advice: {}", e.getMessage());
+            return "Hãy giữ tinh thần tích cực và tiếp tục cố gắng!";
+        }
+    }
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private String extractTextFromResponse(String jsonResponse) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
+            JsonNode candidatesNode = rootNode.path("candidates");
+            if (candidatesNode.isArray() && candidatesNode.size() > 0) {
+                JsonNode firstCandidate = candidatesNode.get(0);
+                JsonNode contentNode = firstCandidate.path("content");
+                JsonNode partsNode = contentNode.path("parts");
+
+                if (partsNode.isArray() && partsNode.size() > 0) {
+                    JsonNode firstPart = partsNode.get(0);
+                    JsonNode textNode = firstPart.path("text");
+
+                    if (!textNode.isMissingNode()) {
+                        String extractedText = textNode.asText().trim();
+                        log.info("Extracted text: {}", extractedText);
+                        return extractedText;
+                    }
+                }
+            }
+
+            log.warn("Could not extract text from response: {}", jsonResponse);
+            return "Không thể trích xuất nội dung từ phản hồi AI.";
+
+        } catch (Exception e) {
+            log.error("Error parsing JSON response: {}", e.getMessage());
+            return "Lỗi khi xử lý phản hồi từ AI: " + e.getMessage();
         }
     }
 }

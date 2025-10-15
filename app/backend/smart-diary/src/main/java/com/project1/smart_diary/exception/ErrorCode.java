@@ -37,7 +37,7 @@ public enum ErrorCode {
     DATE_AND_EMOTION_NULL(3008, "không được để trống cả fromDate, toDate và emotion", HttpStatus.BAD_REQUEST),
 
     DATA_INPUT_AI_NULL(4001, "Dữ liệu phân tích cảm xúc rỗng", HttpStatus.BAD_REQUEST),
-    UNCATEGORIZEO_EXCEPTION_AI(4002, "Lỗi server kết nối AI", HttpStatus.INTERNAL_SERVER_ERROR),
+    UNCATEGORIZEO_EXCEPTION_AI(4002, "Đã xảy ra lỗi khi phân tích. Vui lòng thử lại sau.", HttpStatus.INTERNAL_SERVER_ERROR),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode httpStatusCode) {
