@@ -155,7 +155,7 @@ public class DiaryService {
         return diaryConverter.toResponse(diary);
     }
 
-        @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<DiaryResponse> searchDiaryByDateAndEmotion(DiarySearchByDateAndEmotionRequest rq) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Emotion emotion;

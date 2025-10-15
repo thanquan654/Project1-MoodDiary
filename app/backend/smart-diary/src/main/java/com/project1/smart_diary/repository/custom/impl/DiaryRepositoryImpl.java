@@ -22,9 +22,7 @@ import java.util.Map;
 public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
-
     private Emotion fromDescription(String value) {
-
         for (Emotion e : Emotion.values()) {
             if (e.getDescription().equalsIgnoreCase(value.trim())) {
                 return e;
@@ -32,7 +30,6 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
         }
         throw new ApplicationException(ErrorCode.INVALID_EMOTION);
     }
-
     @Override
     public List<DiaryEntity> searchDiary(String email, DiarySearchRequest diarySearchRequest) {
         if(diarySearchRequest.getEmotion() != null && diarySearchRequest.getEmotion().trim().isEmpty()){
