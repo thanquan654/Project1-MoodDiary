@@ -57,3 +57,11 @@ jwt:
   signerKey: "${JWT_SIGNER_KEY}"
   valid-duration: 86400
   refreshable-duration: 3000000
+
+gemini:
+  api:
+    key: "${GEMINI_API_KEY:AIzaSyAYnHSgEAQx4vNXcdjzCIyQ8Gkyao1dfnc}"
+    url: "https://generativelanguage.googleapis.com/v1"
+    endpoints:
+      text-generation: "${gemini.api.url}/models/gemini-2.0-flash:generateContent"
+#      image-generation: "${gemini.api.url}/models/gemini-1.5-flash:generateContent"
