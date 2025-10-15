@@ -30,7 +30,7 @@ public class GeminiAIService {
             throw new ApplicationException(ErrorCode.DATA_INPUT_AI_NULL);
         }
         String prompt = String.format(
-                "Phân tích cảm xúc của đoạn văn sau (có thể chứa emoji): \"%s\". " +
+                "Bạn là một chuyên gia phân tích cảm xúc tiếng Việt. Phân tích cảm xúc của đoạn văn sau (có thể chứa emoji): \"%s\". " +
                         "Trả về một trong các từ: HAPPY, SAD, NEUTRAL, ANXIOUS, ANGRY. nếu dữ liệu không đủ để phân tích hãy trả ra từ : UNSPECIFIED",
                 input
         );
@@ -92,7 +92,10 @@ public class GeminiAIService {
     }
 
     public String generateAdvice(String text, Emotion emotion) {
-        String prompt = String.format("Tạo lời khuyên ngắn gọn và tích cực cho nội dung: '%s' với cảm xúc: %s. Trả về lời khuyên khoảng 2 dòng.",
+        String prompt = String.format("Hãy đóng vai một người bạn tâm lý, hiểu biết và luôn mang năng lượng tích cực" +
+                        "Dựa trên đoạn văn và cảm xúc của người viết " +
+                        "hãy tạo lời khuyên ngắn gọn và tích cực cho nội dung: " +
+                        "'%s' với cảm xúc: %s. Trả về lời khuyên khoảng dưới 100 từ.",
                 text, emotion.getDescription());
 
         try {

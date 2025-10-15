@@ -44,11 +44,12 @@ public class DiaryService {
         validateDiaryRequest(request);
 
         Emotion emotion = geminiAIService.predictTextEmotion(request.getContent());
+        String advice = geminiAIService.generateAdvice(request.getContent(), emotion);
         DiaryEntity diary = DiaryEntity.builder()
                 .title(request.getTitle() != null ? request.getTitle() : "")
                 .content(request.getContent())
                 .emotion(emotion)
-                .advice(null)
+                .advice(advice)
                 .user(currentUser)
                 .media(new ArrayList<>())
                 .build();
