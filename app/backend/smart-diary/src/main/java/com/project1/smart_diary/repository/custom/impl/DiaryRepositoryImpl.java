@@ -39,7 +39,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
             throw new ApplicationException(ErrorCode.INVALID_EMOTION);
         }
         if(diarySearchRequest.getKeyword() != null && diarySearchRequest.getKeyword().trim().isEmpty()){
-            throw  new ApplicationException(ErrorCode.INVALID_KEYWORD);
+            throw new ApplicationException(ErrorCode.INVALID_KEYWORD);
         }
         StringBuilder jpql = new StringBuilder("select d from DiaryEntity d where d.user.email =: email ");
         Map<String, Object> params = new HashMap<>();
