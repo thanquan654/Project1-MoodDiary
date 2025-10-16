@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import type React from 'react'
@@ -14,32 +15,31 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { Camera, Mic, MicOff, X } from 'lucide-react'
-import Link from 'next/link'
 import Image from 'next/image'
+import { editDiaryApi } from '@/lib/apis/diaryApi'
 
 interface EditDiaryFormProps {
 	diary: {
-		id: string
+		id: number
 		title: string
 		content: string
-		mood: string
-		images: {
+		advice: any
+		emotion: any
+		media: {
 			id: number
-			url: string
+			mediaUrl: string
 		}[]
+		createdAt: string
+		updatedAt: string
 	}
 }
 
 export default function EditDiaryForm({ diary }: EditDiaryFormProps) {
 	const router = useRouter()
 
-	// In real app, fetch diary entry by ID
-	const entry = diary
-	const id = entry.id
-
-	const [title, setTitle] = useState(entry.title)
-	const [content, setContent] = useState(entry.content)
-	const [existingImages, setExistingImages] = useState(entry.images)
+	const [title, setTitle] = useState(diary.title)
+	const [content, setContent] = useState(diary.content)
+	const [existingImages, setExistingImages] = useState(diary.media)
 	const [newImages, setNewImages] = useState<File[]>([])
 	const [error, setError] = useState({
 		title: '',
@@ -171,30 +171,47 @@ export default function EditDiaryForm({ diary }: EditDiaryFormProps) {
 
 		setIsSubmitting(true)
 
-		// Prepare data for API
-		const formData = new FormData()
-		formData.append('title', title)
-		formData.append('content', content)
+		try {
+			const formData = new FormData()
 
-		const existingImageIds = existingImages.map((img) => img.id)
-		formData.append('ExistingImageIds', JSON.stringify(existingImageIds))
+			formData.append('title', title)
+			formData.append('content', content)
 
-		newImages.forEach((image) => {
-			formData.append('newImages', image)
-		})
+			existingImages.forEach((img) =>
+				formData.append('existingImageIds', img.id.toString()),
+			)
 
-		await new Promise((resolve) => setTimeout(resolve, 1000))
+			// Append new image files
+			newImages.forEach((image) => {
+				formData.append('newImages', image)
+			})
 
-		// FIXME: Remove when backend is ready
-		console.log('[v0] Updated diary entry:', {
-			id,
-			title,
-			content,
-			existingImageIds,
-			newImagesCount: newImages.length,
-		})
+			const respone = await editDiaryApi(diary.id, formData)
 
-		// router.push(`/diaries/${id}`)
+			if (!respone.ok) {
+				const errorData = (await (await respone).json()).message
+
+				setError((prev) => ({
+					...prev,
+					form: errorData,
+				}))
+				return
+			}
+
+			router.push(`/dashboard/diary/${diary.id}`)
+			router.refresh()
+		} catch (err) {
+			console.error('Error updating diary:', err)
+			setError((prev) => ({
+				...prev,
+				form:
+					err instanceof Error
+						? err.message
+						: 'An unexpected error occurred.',
+			}))
+		} finally {
+			setIsSubmitting(false)
+		}
 	}
 
 	return (
@@ -286,7 +303,7 @@ export default function EditDiaryForm({ diary }: EditDiaryFormProps) {
 										>
 											<Image
 												src={
-													image.url ||
+													image.mediaUrl ||
 													'/placeholder.svg'
 												}
 												width={150}
@@ -380,15 +397,14 @@ export default function EditDiaryForm({ diary }: EditDiaryFormProps) {
 
 			{/* Submit Button */}
 			<div className="flex gap-3 pt-4">
-				<Link href={`/diaries/${id}`} className="flex-1">
-					<Button
-						type="button"
-						variant="outline"
-						className="w-full bg-transparent"
-					>
-						Hủy
-					</Button>
-				</Link>
+				<Button
+					type="button"
+					variant="outline"
+					className="flex-1 bg-transparent"
+					onClick={() => router.back()}
+				>
+					Hủy
+				</Button>
 				<Button
 					type="submit"
 					className="flex-1 bg-diary-primary hover:bg-diary-primary/90"
