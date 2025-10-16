@@ -56,6 +56,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
 	const formData = await request.formData()
+
 	const url = `${BACKEND_URL}/diaries`
 
 	const cookieStore = cookies()

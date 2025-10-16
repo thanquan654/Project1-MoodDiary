@@ -77,19 +77,18 @@ const getDiaryByIdApi = async (id: string, token?: string) => {
 
 const createDiaryApi = async (formData: FormData) => {
 	try {
-		const response = await fetch('api/diary', {
+		const response = await fetch('/api/diary', {
 			method: 'POST',
 			body: formData,
 		})
 
-		const data = await response.json()
-
 		if (!response.ok) {
 			console.error(`API call failed with status: ${response.status}`)
-			return data
-		} else {
-			return data
 		}
+
+		const data = await response.json()
+
+		return data
 	} catch (error) {
 		console.error('Error creating diary:', error)
 		throw error
