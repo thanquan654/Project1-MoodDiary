@@ -160,8 +160,8 @@ export default function NewDiaryForm() {
 
 			const response = await createDiaryApi(formData)
 
-			if (!response.ok) {
-				const errorData = (await response).json().message
+			if (!response.code) {
+				const errorData = response.message
 
 				setError((prev) => ({
 					...prev,
