@@ -22,6 +22,7 @@ export async function GET(
 			method: request.method,
 			headers,
 		})
+
 		const data = await response.json()
 
 		return NextResponse.json(data, {
