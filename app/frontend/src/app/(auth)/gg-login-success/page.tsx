@@ -1,5 +1,6 @@
 'use client'
 
+import { addCookieApi } from '@/lib/apis/authApi'
 import { tokenAtom } from '@/store/userAtom'
 import { useSetAtom } from 'jotai'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -9,15 +10,22 @@ function LoginSuccess() {
 	const router = useRouter()
 	const searchParams = useSearchParams()
 	const token = searchParams.get('token')
+
+	console.log('🚀 ~ token:', token)
+
 	const setToken = useSetAtom(tokenAtom)
 
 	useEffect(() => {
-		if (token) {
-			localStorage.setItem('user_token', token)
-			setToken(token)
-		}
+		async function redirect() {
+			if (token) {
+				await addCookieApi(token)
+				localStorage.setItem('auth_token', token)
+				setToken(token)
+			}
 
-		router.push('/')
+			router.push('/dashboard')
+		}
+		redirect()
 	}, [router, setToken, token])
 
 	return <div>Đăng nhập thành công, đang chuyển trang ...</div>

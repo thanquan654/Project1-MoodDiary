@@ -64,7 +64,7 @@ const getDiaryByIdApi = async (id: string, token?: string) => {
 		})
 
 		if (!response.ok) {
-			throw new Error(`API call failed with status: ${response.status}`)
+			console.error(`API call failed with status: ${response.status}`)
 		}
 
 		const data = await response.json()
@@ -75,21 +75,54 @@ const getDiaryByIdApi = async (id: string, token?: string) => {
 	}
 }
 
-const deleteDiaryApi = async (id: number, token?: string) => {
+const createDiaryApi = async (formData: FormData) => {
 	try {
-		const url = `${BACKEND_URL}/diaries/${id}`
-
-		const response = await fetch(url, {
-			method: 'DELETE',
-			headers: {
-				'Content-Type': 'application/json',
-				...(token && { Authorization: `Bearer ${token}` }),
-				'ngrok-skip-browser-warning': 'true',
-			},
+		const response = await fetch('/api/diary', {
+			method: 'POST',
+			body: formData,
 		})
 
 		if (!response.ok) {
-			throw new Error(`API call failed with status: ${response.status}`)
+			console.error(`API call failed with status: ${response.status}`)
+		}
+
+		const data = await response.json()
+
+		return data
+	} catch (error) {
+		console.error('Error creating diary:', error)
+		throw error
+	}
+}
+
+const editDiaryApi = async (id: number, formData: FormData) => {
+	try {
+		const response = await fetch(`/api/diary/${id}`, {
+			method: 'PUT',
+			body: formData,
+		})
+
+		if (!response.ok) {
+			console.error(`API call failed with status: ${response.status}`)
+		}
+
+		const data = await response.json()
+
+		return data
+	} catch (error) {
+		console.error(`Error editing diary ${id}:`, error)
+		return
+	}
+}
+
+const deleteDiaryApi = async (id: number) => {
+	try {
+		const response = await fetch(`/api/diary/${id}`, {
+			method: 'DELETE',
+		})
+
+		if (!response.ok) {
+			console.error(`API call failed with status: ${response.status}`)
 		}
 
 		const data = await response.json()
@@ -100,4 +133,10 @@ const deleteDiaryApi = async (id: number, token?: string) => {
 	}
 }
 
-export { getDiarysListApi, getDiaryByIdApi, deleteDiaryApi }
+export {
+	getDiarysListApi,
+	getDiaryByIdApi,
+	createDiaryApi,
+	editDiaryApi,
+	deleteDiaryApi,
+}

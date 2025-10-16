@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 'use client'
 
 import type React from 'react'
@@ -17,19 +16,37 @@ import {
 } from '@/components/ui/card'
 import { Camera, Mic, MicOff, X } from 'lucide-react'
 import Image from 'next/image'
-import { createDiaryApi } from '@/lib/apis/diaryApi'
+import { editDiaryApi } from '@/lib/apis/diaryApi'
 
-export default function NewDiaryForm() {
+interface EditDiaryFormProps {
+	diary: {
+		id: number
+		title: string
+		content: string
+		advice: any
+		emotion: any
+		media: {
+			id: number
+			mediaUrl: string
+		}[]
+		createdAt: string
+		updatedAt: string
+	}
+}
+
+export default function EditDiaryForm({ diary }: EditDiaryFormProps) {
 	const router = useRouter()
-	const [title, setTitle] = useState('')
-	const [content, setContent] = useState('')
+
+	const [title, setTitle] = useState(diary.title)
+	const [content, setContent] = useState(diary.content)
+	const [existingImages, setExistingImages] = useState(diary.media)
+	const [newImages, setNewImages] = useState<File[]>([])
 	const [error, setError] = useState({
 		title: '',
 		content: '',
 		image: '',
 		form: '',
 	})
-	const [images, setImages] = useState<File[]>([])
 	const [isRecording, setIsRecording] = useState(false)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const fileInputRef = useRef<HTMLInputElement>(null)
@@ -95,16 +112,20 @@ export default function NewDiaryForm() {
 			}
 		}
 
-		setImages((prev) => {
-			const remainingSlots = 5 - prev.length
+		setNewImages((prev) => {
+			const remainingSlots = 5 - prev.length - existingImages.length
 			if (remainingSlots <= 0) return prev
 			const filesToAdd = files.slice(0, remainingSlots)
 			return [...prev, ...filesToAdd]
 		})
 	}
 
-	const removeImage = (index: number) => {
-		setImages((prev) => prev.filter((_, i) => i !== index))
+	const removeExistingImage = (imageId: number) => {
+		setExistingImages((prev) => prev.filter((img) => img.id !== imageId))
+	}
+
+	const removeNewImage = (index: number) => {
+		setNewImages((prev) => prev.filter((_, i) => i !== index))
 	}
 
 	const toggleRecording = () => {
@@ -152,27 +173,42 @@ export default function NewDiaryForm() {
 
 		try {
 			const formData = new FormData()
+
 			formData.append('title', title)
 			formData.append('content', content)
-			images.forEach((image) => {
-				formData.append('images', image)
+
+			existingImages.forEach((img) =>
+				formData.append('existingImageIds', img.id.toString()),
+			)
+
+			// Append new image files
+			newImages.forEach((image) => {
+				formData.append('newImages', image)
 			})
 
-			const response = await createDiaryApi(formData)
+			const response = await editDiaryApi(diary.id, formData)
 
-			if (!response.code) {
+			if (response.code) {
 				const errorData = response.message
 
 				setError((prev) => ({
 					...prev,
 					form: errorData,
 				}))
+				return
 			}
 
-			router.push('/dashboard/diary')
-		} catch (error) {
-			console.error('Error creating diary:', error)
-			// Handle error appropriately
+			router.push(`/dashboard/diary/${diary.id}`)
+			router.refresh()
+		} catch (err) {
+			console.error('Error updating diary:', err)
+			setError((prev) => ({
+				...prev,
+				form:
+					err instanceof Error
+						? err.message
+						: 'An unexpected error occurred.',
+			}))
 		} finally {
 			setIsSubmitting(false)
 		}
@@ -193,13 +229,10 @@ export default function NewDiaryForm() {
 						onChange={(e) => setTitle(e.target.value)}
 						placeholder="Nhập tiêu đề nhật ký..."
 						className="text-base"
+						required
 					/>
 				</CardContent>
-				{error.title && (
-					<CardFooter className="text-red-500">
-						{error.title}
-					</CardFooter>
-				)}
+				{error.title && <CardFooter>{error.title}</CardFooter>}
 			</Card>
 
 			{/* Content Input */}
@@ -230,8 +263,9 @@ export default function NewDiaryForm() {
 					<Textarea
 						value={content}
 						onChange={(e) => setContent(e.target.value)}
-						placeholder="Chia sẻ những suy nghĩ của bạn... (Nhấn mic để ghi âm)"
+						placeholder="Chia sẻ những suy nghĩ của bạn..."
 						className="min-h-32 text-base resize-none"
+						required
 					/>
 					{isRecording && (
 						<div className="mt-2 flex items-center gap-2 text-red-500 text-sm">
@@ -240,14 +274,10 @@ export default function NewDiaryForm() {
 						</div>
 					)}
 				</CardContent>
-				{error.content && (
-					<CardFooter className="text-red-500">
-						{error.content}
-					</CardFooter>
-				)}
+				{error.content && <CardFooter>{error.content}</CardFooter>}
 			</Card>
 
-			{/* Image Upload */}
+			{/* Image Management */}
 			<Card className="gap-2">
 				<CardHeader>
 					<CardTitle className="text-base font-medium">
@@ -259,8 +289,85 @@ export default function NewDiaryForm() {
 				</CardHeader>
 				<CardContent>
 					<div className="space-y-4">
+						{/* Existing Images */}
+						{existingImages.length > 0 && (
+							<div>
+								<p className="text-sm text-diary-text-secondary mb-3">
+									Hình ảnh hiện có
+								</p>
+								<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+									{existingImages.map((image) => (
+										<div
+											key={image.id}
+											className="relative group"
+										>
+											<Image
+												src={
+													image.mediaUrl ||
+													'/placeholder.svg'
+												}
+												width={150}
+												height={200}
+												alt="Existing"
+												className="w-full h-24 object-cover rounded-lg border border-diary-border"
+											/>
+											<button
+												type="button"
+												onClick={() =>
+													removeExistingImage(
+														image.id,
+													)
+												}
+												className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+											>
+												<X className="h-3 w-3" />
+											</button>
+										</div>
+									))}
+								</div>
+							</div>
+						)}
+
+						{/* New Images */}
+						{newImages.length > 0 && (
+							<div>
+								<p className="text-sm text-diary-text-secondary mb-3">
+									Hình ảnh mới
+								</p>
+								<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+									{newImages.map((image, index) => (
+										<div
+											key={index}
+											className="relative group"
+										>
+											<Image
+												src={
+													URL.createObjectURL(
+														image,
+													) || '/placeholder.svg'
+												}
+												width={150}
+												height={200}
+												alt={`New ${index + 1}`}
+												className="w-full h-24 object-cover rounded-lg border border-diary-border"
+											/>
+											<button
+												type="button"
+												onClick={() =>
+													removeNewImage(index)
+												}
+												className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+											>
+												<X className="h-3 w-3" />
+											</button>
+										</div>
+									))}
+								</div>
+							</div>
+						)}
+
 						{/* Upload Button */}
-						{images.length < 5 && (
+						{newImages.length + existingImages.length < 5 && (
 							<Button
 								type="button"
 								variant="outline"
@@ -269,7 +376,7 @@ export default function NewDiaryForm() {
 							>
 								<Camera className="h-6 w-6 text-diary-text-secondary" />
 								<span className="text-sm text-diary-text-secondary">
-									Thêm hình ảnh
+									Thêm hình ảnh mới
 								</span>
 							</Button>
 						)}
@@ -278,42 +385,14 @@ export default function NewDiaryForm() {
 							ref={fileInputRef}
 							type="file"
 							accept="image/jpeg, image/png"
-							max={5}
 							multiple
+							max={5}
 							onChange={handleImageUpload}
 							className="hidden"
 						/>
-
-						{/* Image Preview */}
-						{images.length > 0 && (
-							<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-								{images.map((image, index) => (
-									<div key={index} className="relative group">
-										<Image
-											src={URL.createObjectURL(image)}
-											width={150}
-											height={200}
-											alt={`Preview ${index + 1}`}
-											className="w-full h-24 object-cover rounded-lg border border-diary-border"
-										/>
-										<button
-											type="button"
-											onClick={() => removeImage(index)}
-											className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-										>
-											<X className="h-3 w-3" />
-										</button>
-									</div>
-								))}
-							</div>
-						)}
-						{error.image && (
-							<CardFooter className="text-red-500">
-								{error.image}
-							</CardFooter>
-						)}
 					</div>
 				</CardContent>
+				{error.image && <CardFooter>{error.image}</CardFooter>}
 			</Card>
 
 			{/* Submit Button */}
@@ -331,7 +410,7 @@ export default function NewDiaryForm() {
 					className="flex-1 bg-diary-primary hover:bg-diary-primary/90"
 					disabled={isSubmitting}
 				>
-					{isSubmitting ? 'Đang lưu...' : 'Lưu nhật ký'}
+					{isSubmitting ? 'Đang lưu...' : 'Cập nhật'}
 				</Button>
 			</div>
 		</form>

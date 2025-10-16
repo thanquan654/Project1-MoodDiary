@@ -3,12 +3,14 @@
 import { ArrowLeft, Edit } from 'lucide-react'
 import Link from 'next/link'
 import DeleteDiaryDialog from './DeleteDiaryDialog'
+import { Button } from '@/components/ui/button'
 
 interface DiaryHeaderProps {
 	onDelete: () => Promise<void>
+	diaryId: number
 }
 
-export default function DiaryHeader({ onDelete }: DiaryHeaderProps) {
+export default function DiaryHeader({ onDelete, diaryId }: DiaryHeaderProps) {
 	return (
 		<>
 			{/* Mobile Header */}
@@ -24,12 +26,15 @@ export default function DiaryHeader({ onDelete }: DiaryHeaderProps) {
 						Chi tiết nhật ký
 					</div>
 					<div className="flex items-center gap-1">
-						<button
+						<Button
 							className="p-2 rounded-lg hover:bg-muted"
 							title="Chỉnh sửa"
+							asChild
 						>
-							<Edit className="w-5 h-5 text-muted-foreground" />
-						</button>
+							<Link href={`/dashboard/diary/${diaryId}/edit`}>
+								<Edit className="w-5 h-5 text-muted-foreground" />
+							</Link>
+						</Button>
 						<DeleteDiaryDialog onDelete={onDelete} variant="icon" />
 					</div>
 				</div>
@@ -49,10 +54,15 @@ export default function DiaryHeader({ onDelete }: DiaryHeaderProps) {
 					</h1>
 				</div>
 				<div className="flex items-center gap-2">
-					<button className="px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors flex items-center gap-2">
-						<Edit className="w-4 h-4" />
-						<span className="text-sm">Chỉnh sửa</span>
-					</button>
+					<Button
+						asChild
+						className="px-4 py-2 rounded-lg border border-border transition-colors flex items-center gap-2"
+					>
+						<Link href={`/dashboard/diary/${diaryId}/edit`}>
+							<Edit className="w-4 h-4" />
+							<span className="text-sm">Chỉnh sửa</span>
+						</Link>
+					</Button>
 					<DeleteDiaryDialog onDelete={onDelete} />
 				</div>
 			</div>
