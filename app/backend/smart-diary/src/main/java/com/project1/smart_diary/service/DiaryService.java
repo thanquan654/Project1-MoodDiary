@@ -4,6 +4,7 @@ import com.project1.smart_diary.converter.DiaryConverter;
 import com.project1.smart_diary.dto.request.DiaryRequest;
 import com.project1.smart_diary.dto.request.DiarySearchByDateAndEmotionRequest;
 import com.project1.smart_diary.dto.request.DiarySearchRequest;
+import com.project1.smart_diary.dto.request.DiaryUpdateRequest;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.DiaryMedia;
@@ -18,14 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-
-import java.util.List;
+import java.util.*;
 
 
 @Service
@@ -210,4 +210,113 @@ public class DiaryService {
                 .map(diaryConverter::toResponse)
                 .toList();
     }
+
+    @Transactional
+    public DiaryResponse updateDiary(Long id, DiaryUpdateRequest request) {
+        UserEntity currentUser = getCurrentUser();
+
+        DiaryEntity diary = diaryRepository.findById(id)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.DIARY_NOT_FOUND));
+
+        if (!diary.getUser().getId().equals(currentUser.getId())) {
+            throw new ApplicationException(ErrorCode.NOT_DIARY_OWNER);
+        }
+
+        validateDiaryRequestForUpdate(request);
+
+        if (!hasChanges(diary, request)) {
+            throw new ApplicationException(ErrorCode.NO_CHANGES_DETECTED);
+        }
+
+        if (StringUtils.hasText(request.getTitle())) {
+            diary.setTitle(request.getTitle().trim());
+        }
+        if (StringUtils.hasText(request.getContent())) {
+            diary.setContent(request.getContent().trim());
+        }
+
+        processImages(diary, request);
+
+        diary.setUpdatedAt(LocalDateTime.now());
+        DiaryEntity saved = diaryRepository.save(diary);
+        return diaryConverter.toResponse(saved);
+    }
+
+    private void validateDiaryRequestForUpdate(DiaryUpdateRequest req) {
+        if (req.getTitle() != null && req.getTitle().trim().isEmpty()) {
+            throw new ApplicationException(ErrorCode.DIARY_TITLE_REQUIRED);
+        }
+        if (req.getContent() != null && req.getContent().trim().isEmpty()) {
+            throw new ApplicationException(ErrorCode.DIARY_CONTENT_REQUIRED);
+        }
+
+        if (req.getNewImages() != null) {
+            for (MultipartFile file : req.getNewImages()) {
+                if (!file.isEmpty()) {
+                    validateImageFile(file);
+                }
+            }
+        }
+    }
+    private void processImages(DiaryEntity diary, DiaryUpdateRequest req) {
+        List<DiaryMedia> toKeep = new ArrayList<>();
+        List<DiaryMedia> toDelete = new ArrayList<>();
+
+        Set<Long> keepIds = req.getExistingImageIds() != null
+                ? new HashSet<>(req.getExistingImageIds())
+                : Collections.emptySet();
+
+        for (DiaryMedia media : diary.getMedia()) {
+            if (keepIds.contains(media.getId())) {
+                toKeep.add(media);
+            } else {
+                toDelete.add(media);
+            }
+        }
+
+        int keptCount = toKeep.size();
+        int newCount = req.getNewImages() != null ? req.getNewImages().size() : 0;
+        int totalAfter = keptCount + newCount;
+
+        if (totalAfter > 5) {
+            throw new ApplicationException(ErrorCode.MAX_TOTAL_IMAGES_EXCEEDED);
+        }
+
+        for (DiaryMedia media : toDelete) {
+            cloudinaryService.deleteImage(media.getMediaUrl());
+        }
+
+        diary.getMedia().removeAll(toDelete);
+
+        if (req.getNewImages() != null && !req.getNewImages().isEmpty()) {
+            List<DiaryMedia> uploaded = uploadImages(req.getNewImages(), diary);
+            diary.getMedia().addAll(uploaded);
+        }
+
+        log.info("📸 Final Media Count: Kept={}, New={}, Total={}",
+                keptCount, newCount, totalAfter);
+    }
+
+    private boolean hasChanges(DiaryEntity diary, DiaryUpdateRequest req) {
+        boolean textChanged =
+                (req.getTitle() != null && !req.getTitle().equals(diary.getTitle())) ||
+                        (req.getContent() != null && !req.getContent().equals(diary.getContent()));
+
+        if (textChanged) return true;
+
+        List<DiaryMedia> currentMedia = diary.getMedia();
+        Set<Long> keepIds = req.getExistingImageIds() != null
+                ? new HashSet<>(req.getExistingImageIds())
+                : Collections.emptySet();
+
+        boolean imageRemoved = keepIds.isEmpty() && !currentMedia.isEmpty();
+
+        boolean imageChanged = !imageRemoved &&
+                currentMedia.stream().anyMatch(m -> !keepIds.contains(m.getId()));
+
+        boolean newImagesAdded = req.getNewImages() != null && !req.getNewImages().isEmpty();
+
+        return imageRemoved || imageChanged || newImagesAdded;
+    }
+
 }

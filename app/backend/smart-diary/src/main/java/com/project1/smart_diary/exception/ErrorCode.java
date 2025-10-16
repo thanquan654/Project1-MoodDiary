@@ -35,6 +35,8 @@ public enum ErrorCode {
     EMOTION_NULL(3006, "Không được để trống cảm xúc, vui lòng nhập cảm xúc để tìm kiếm.", HttpStatus.BAD_REQUEST),
     NOT_DIARY_OWNER(3007, "Không có quyền truy cập nhật ký này", HttpStatus.FORBIDDEN),
     DATE_AND_EMOTION_NULL(3008, "không được để trống cả fromDate, toDate và emotion", HttpStatus.BAD_REQUEST),
+    MAX_TOTAL_IMAGES_EXCEEDED(3009, "Tổng số ảnh không được vượt quá 5", HttpStatus.BAD_REQUEST),
+    NO_CHANGES_DETECTED(3010, "Không có thay đổi nào được phát hiện", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode httpStatusCode) {
