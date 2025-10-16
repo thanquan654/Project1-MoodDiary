@@ -44,4 +44,17 @@ public class CloudinaryService {
             throw new IOException("Khong the tai anh len Cloudinary: " + e.getMessage(), e);
         }
     }
+
+    public void deleteImage(String imageUrl) {
+        try {
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+            String publicId = "diary_images/" + fileName.substring(0, fileName.lastIndexOf("."));
+
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+            log.info("Đã xóa ảnh Cloudinary: {}", publicId);
+        } catch (Exception e) {
+            log.error("Không thể xóa ảnh Cloudinary: {}", e.getMessage());
+        }
+    }
+
 }

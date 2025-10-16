@@ -3,6 +3,7 @@ package com.project1.smart_diary.controller;
 import com.project1.smart_diary.dto.request.DiaryRequest;
 import com.project1.smart_diary.dto.request.DiarySearchByDateAndEmotionRequest;
 import com.project1.smart_diary.dto.request.DiarySearchRequest;
+import com.project1.smart_diary.dto.request.DiaryUpdateRequest;
 import com.project1.smart_diary.dto.response.ApiResponse;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.service.DiaryService;
@@ -103,5 +104,19 @@ public class DiaryController {
                 .data(diaryService.searchDiary(diarySearchRequest))
                 .build();
         return ResponseEntity.ok(res);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<DiaryResponse>> updateDiary(
+            @PathVariable Long id,
+            @ModelAttribute DiaryUpdateRequest request) {
+        DiaryResponse response = diaryService.updateDiary(id, request);
+
+        ApiResponse<DiaryResponse> apiResponse = ApiResponse.<DiaryResponse>builder()
+                .message("Cập nhật thành công!")
+                .data(response)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
     }
 }
