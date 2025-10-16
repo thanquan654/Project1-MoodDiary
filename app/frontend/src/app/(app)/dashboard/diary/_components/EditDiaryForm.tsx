@@ -186,10 +186,10 @@ export default function EditDiaryForm({ diary }: EditDiaryFormProps) {
 				formData.append('newImages', image)
 			})
 
-			const respone = await editDiaryApi(diary.id, formData)
+			const response = await editDiaryApi(diary.id, formData)
 
-			if (!respone.ok) {
-				const errorData = (await (await respone).json()).message
+			if (response.code) {
+				const errorData = response.message
 
 				setError((prev) => ({
 					...prev,
