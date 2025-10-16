@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/card'
 import { Camera, Mic, MicOff, X } from 'lucide-react'
 import Image from 'next/image'
+import { createDiaryApi } from '@/lib/apis/diaryApi'
 
 export default function NewDiaryForm() {
 	const router = useRouter()
@@ -154,16 +155,13 @@ export default function NewDiaryForm() {
 			formData.append('title', title)
 			formData.append('content', content)
 			images.forEach((image) => {
-				formData.append('newImages', image)
+				formData.append('images', image)
 			})
 
-			const response = await fetch('/api/diary', {
-				method: 'POST',
-				body: formData,
-			})
+			const response = await createDiaryApi(formData)
 
 			if (!response.ok) {
-				const errorData = (await (await response).json()).message
+				const errorData = (await response).json().message
 
 				setError((prev) => ({
 					...prev,
