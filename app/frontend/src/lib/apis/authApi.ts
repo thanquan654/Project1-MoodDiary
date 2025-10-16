@@ -84,6 +84,17 @@ const getUserInfoApi = async (token: string) => {
 	return response
 }
 
+const addCookieApi = async (token: string) => {
+	const response = await fetch('/api/auth/add-cookie', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ token }),
+	})
+	return response
+}
+
 export {
 	loginUserApi,
 	registerUserApi,
@@ -92,4 +103,5 @@ export {
 	requestForgotPasswordApi,
 	resetPasswordApi,
 	getUserInfoApi,
+	addCookieApi,
 }
