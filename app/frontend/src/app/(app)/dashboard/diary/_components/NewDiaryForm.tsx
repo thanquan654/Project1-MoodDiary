@@ -25,6 +25,7 @@ export default function NewDiaryForm() {
 	const [error, setError] = useState({
 		title: '',
 		content: '',
+		image: '',
 		form: '',
 	})
 	const [images, setImages] = useState<File[]>([])
@@ -33,6 +34,7 @@ export default function NewDiaryForm() {
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const recognitionRef = useRef<any>(null)
 
+	// Speech Recognition
 	useEffect(() => {
 		if (
 			typeof window !== 'undefined' &&
@@ -72,6 +74,26 @@ export default function NewDiaryForm() {
 
 	const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const files = Array.from(event.target.files || [])
+
+		for (const file of files) {
+			if (file.size > 10 * 1024 * 1024) {
+				// 10 MB limit
+				setError((prev) => ({
+					...prev,
+					image: 'Chỉ hỗ trợ định dạng .jpg, .png và dung lượng ≤ 10MB.',
+				}))
+				return
+			}
+
+			if (!['image/jpeg', 'image/png'].includes(file.type)) {
+				setError((prev) => ({
+					...prev,
+					image: 'Chỉ hỗ trợ định dạng .jpg, .png và dung lượng ≤ 10MB.',
+				}))
+				return
+			}
+		}
+
 		setImages((prev) => {
 			const remainingSlots = 5 - prev.length
 			if (remainingSlots <= 0) return prev
@@ -106,6 +128,7 @@ export default function NewDiaryForm() {
 			title: '',
 			content: '',
 			form: '',
+			image: '',
 		})
 
 		if (!title.trim()) {
@@ -256,7 +279,7 @@ export default function NewDiaryForm() {
 						<input
 							ref={fileInputRef}
 							type="file"
-							accept="image/*"
+							accept="image/jpeg, image/png"
 							max={5}
 							multiple
 							onChange={handleImageUpload}
@@ -285,6 +308,11 @@ export default function NewDiaryForm() {
 									</div>
 								))}
 							</div>
+						)}
+						{error.image && (
+							<CardFooter className="text-red-500">
+								{error.image}
+							</CardFooter>
 						)}
 					</div>
 				</CardContent>
