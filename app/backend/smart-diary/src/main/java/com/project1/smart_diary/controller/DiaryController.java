@@ -119,4 +119,16 @@ public class DiaryController {
 
         return ResponseEntity.ok(apiResponse);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteDiary(@PathVariable Long id) {
+        diaryService.deleteDiary(id);
+
+        ApiResponse<String> apiResponse = ApiResponse.<String>builder()
+                .message("Xóa thành công")
+                .data(null)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
 }
