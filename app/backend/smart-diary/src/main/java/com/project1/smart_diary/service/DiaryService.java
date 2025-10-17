@@ -318,6 +318,7 @@ public class DiaryService {
 
         return imageRemoved || imageChanged || newImagesAdded;
     }
+
     public void deleteDiary(Long id) {
         UserEntity currentUser = getCurrentUser();
 
@@ -328,9 +329,34 @@ public class DiaryService {
             throw new ApplicationException(ErrorCode.NOT_DIARY_OWNER);
         }
 
+        boolean cloudinaryDeleteSuccess = deleteImagesFromCloudinary(diary);
+
         diaryRepository.delete(diary);
         log.info("✅ Diary deleted - ID: {}, User: {}", id, currentUser.getEmail());
 
+        if (!cloudinaryDeleteSuccess) {
+            log.warn("⚠️ Diary deleted but Cloudinary images may not be fully cleaned up - ID: {}", id);
+            throw new ApplicationException(ErrorCode.CLOUDINARY_DELETE_FAILED);
+        }
+
     }
 
+    private boolean deleteImagesFromCloudinary(DiaryEntity diary) {
+        if (diary.getMedia() == null || diary.getMedia().isEmpty()) {
+            return true;
+        }
+
+        boolean allSuccess = true;
+        for (DiaryMedia media : diary.getMedia()) {
+            try {
+                cloudinaryService.deleteImage(media.getMediaUrl());
+                log.info("☁️ Image deleted from Cloudinary: {}", media.getMediaUrl());
+            } catch (Exception e) {
+                log.error("❌ Failed to delete image from Cloudinary - URL: {}, Error: {}",
+                        media.getMediaUrl(), e.getMessage());
+                allSuccess = false;
+            }
+        }
+        return allSuccess;
+    }
 }
