@@ -318,5 +318,19 @@ public class DiaryService {
 
         return imageRemoved || imageChanged || newImagesAdded;
     }
+    public void deleteDiary(Long id) {
+        UserEntity currentUser = getCurrentUser();
+
+        DiaryEntity diary = diaryRepository.findById(id)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.DIARY_NOT_FOUND));
+
+        if (!diary.getUser().getId().equals(currentUser.getId())) {
+            throw new ApplicationException(ErrorCode.NOT_DIARY_OWNER);
+        }
+
+        diaryRepository.delete(diary);
+        log.info("✅ Diary deleted - ID: {}, User: {}", id, currentUser.getEmail());
+
+    }
 
 }
