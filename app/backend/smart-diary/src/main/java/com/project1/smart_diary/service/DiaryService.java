@@ -293,7 +293,7 @@ public class DiaryService {
             diary.getMedia().addAll(uploaded);
         }
 
-        log.info("📸 Final Media Count: Kept={}, New={}, Total={}",
+        log.info(" Final Media Count: Kept={}, New={}, Total={}",
                 keptCount, newCount, totalAfter);
     }
 
@@ -332,10 +332,10 @@ public class DiaryService {
         boolean cloudinaryDeleteSuccess = deleteImagesFromCloudinary(diary);
 
         diaryRepository.delete(diary);
-        log.info("✅ Diary deleted - ID: {}, User: {}", id, currentUser.getEmail());
+        log.info(" Diary deleted - ID: {}, User: {}", id, currentUser.getEmail());
 
         if (!cloudinaryDeleteSuccess) {
-            log.warn("⚠️ Diary deleted but Cloudinary images may not be fully cleaned up - ID: {}", id);
+            log.warn(" Diary deleted but Cloudinary images may not be fully cleaned up - ID: {}", id);
             throw new ApplicationException(ErrorCode.CLOUDINARY_DELETE_FAILED);
         }
 
@@ -348,12 +348,10 @@ public class DiaryService {
 
         boolean allSuccess = true;
         for (DiaryMedia media : diary.getMedia()) {
-            try {
-                cloudinaryService.deleteImage(media.getMediaUrl());
-                log.info("☁️ Image deleted from Cloudinary: {}", media.getMediaUrl());
-            } catch (Exception e) {
-                log.error("❌ Failed to delete image from Cloudinary - URL: {}, Error: {}",
-                        media.getMediaUrl(), e.getMessage());
+            boolean success = cloudinaryService.deleteImageWithResult(media.getMediaUrl());
+
+            if (success) {
+            } else {
                 allSuccess = false;
             }
         }
