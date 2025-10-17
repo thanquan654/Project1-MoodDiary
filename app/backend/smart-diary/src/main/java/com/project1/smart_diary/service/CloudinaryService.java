@@ -57,4 +57,18 @@ public class CloudinaryService {
         }
     }
 
+    public boolean deleteImageWithResult(String imageUrl) {
+        try {
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+            String publicId = "diary_images/" + fileName.substring(0, fileName.lastIndexOf("."));
+
+            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+            log.info(" Đã xóa ảnh Cloudinary: {}", publicId);
+            return true;
+        } catch (Exception e) {
+            log.error(" Không thể xóa ảnh Cloudinary: {}", e.getMessage());
+            return false;
+        }
+    }
+
 }
