@@ -9,7 +9,9 @@ public enum Emotion {
     SAD("Buồn"),
     NEUTRAL("Trung tính"),
     ANXIOUS("Lo lắng"),
-    ANGRY("Tức giận");
+    ANGRY("Tức giận"),
+    UNSPECIFIED("Không thể xác định cảm xúc. Vui lòng viết thêm chi tiết.")
+    ;
 
     private final String description;
 
