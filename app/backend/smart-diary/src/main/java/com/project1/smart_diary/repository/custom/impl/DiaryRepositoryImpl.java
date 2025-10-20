@@ -39,7 +39,7 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
             throw new ApplicationException(ErrorCode.INVALID_EMOTION);
         }
         if(diarySearchRequest.getKeyword() != null && diarySearchRequest.getKeyword().trim().isEmpty()){
-            throw  new ApplicationException(ErrorCode.INVALID_KEYWORD);
+            throw new ApplicationException(ErrorCode.INVALID_KEYWORD);
         }
         StringBuilder jpql = new StringBuilder("select d from DiaryEntity d where d.user.email =: email ");
         Map<String, Object> params = new HashMap<>();
@@ -71,8 +71,8 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom {
         log.info("jpql search with date: {} ", jpql);
 
         if (diarySearchRequest.getKeyword() != null && !diarySearchRequest.getKeyword().trim().isEmpty()) {
-            jpql.append("and (lower(d.title) like lower(:keyword) or lower(d.content) like lower(:keyword)) ");
-            params.put("keyword", "%" + diarySearchRequest.getKeyword().trim().toLowerCase() + "%");
+             jpql.append("and (lower(d.title) like lower(:keyword) or lower(d.content) like lower(:keyword)) ");
+             params.put("keyword", "%" + diarySearchRequest.getKeyword().trim().toLowerCase() + "%");
         }
         jpql.append("order by d.createdAt desc");
         log.info("jpql search full: {} ", jpql);
