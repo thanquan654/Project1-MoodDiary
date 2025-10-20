@@ -37,7 +37,11 @@ public enum ErrorCode {
     DATE_AND_EMOTION_NULL(3008, "không được để trống cả fromDate, toDate và emotion", HttpStatus.BAD_REQUEST),
     MAX_TOTAL_IMAGES_EXCEEDED(3009, "Tổng số ảnh không được vượt quá 5", HttpStatus.BAD_REQUEST),
     NO_CHANGES_DETECTED(3010, "Không có thay đổi nào được phát hiện", HttpStatus.BAD_REQUEST),
-    CLOUDINARY_DELETE_FAILED(3011, "Bài viết đã được xóa, nhưng ảnh chưa xóa khỏi máy chủ", HttpStatus.ACCEPTED)
+    CLOUDINARY_DELETE_FAILED(3011, "Bài viết đã được xóa, nhưng ảnh chưa xóa khỏi máy chủ", HttpStatus.ACCEPTED),
+
+    DATA_INPUT_AI_NULL(4001, "Dữ liệu phân tích cảm xúc rỗng", HttpStatus.BAD_REQUEST),
+    UNCATEGORIZEO_EXCEPTION_AI(4002, "Đã xảy ra lỗi khi phân tích. Vui lòng thử lại sau.", HttpStatus.INTERNAL_SERVER_ERROR),
+
     ;
 
     ErrorCode(int code, String message, HttpStatusCode httpStatusCode) {
