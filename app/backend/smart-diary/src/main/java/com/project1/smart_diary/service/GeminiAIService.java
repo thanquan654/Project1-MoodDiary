@@ -32,11 +32,31 @@ public class GeminiAIService {
         );
         try {
             String response = callGeminiAPI(prompt);
-            return response;
+            return parseEmotionFromResponse(response);
         } catch (Exception e) {
             log.error("Error predicting text emotion: {}", e.getMessage());
 //            throw new RuntimeException("Lỗi khi dự đoán cảm xúc: " + e.getMessage(), e);
             throw  new ApplicationException(ErrorCode.UNCATEGORIZEO_EXCEPTION_AI);
+        }
+    }
+    private Emotion parseEmotionFromResponse(String response) {
+        if (response == null || response.isBlank()) {
+            return Emotion.NEUTRAL;
+        }
+        response = response.toLowerCase();
+
+        if (response.contains("happy")) {
+            return Emotion.HAPPY;
+        } else if (response.contains("sad")) {
+            return Emotion.SAD;
+        } else if (response.contains("anxious")) {
+            return Emotion.ANXIOUS;
+        } else if (response.contains("angry")) {
+            return Emotion.ANGRY;
+        } else if (response.contains("unspecified")) {
+            return Emotion.UNSPECIFIED;
+        } else {
+            return Emotion.NEUTRAL;
         }
     }
 
