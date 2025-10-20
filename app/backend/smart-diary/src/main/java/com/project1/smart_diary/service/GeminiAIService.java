@@ -20,6 +20,26 @@ public class GeminiAIService {
     @Autowired
     private GeminiApiConfig geminiApiConfig;
 
+    public Emotion predictTextEmotion(String input) {
+        if (input == null || input.isBlank()) {
+            log.error("Input is null or empty");
+            throw new ApplicationException(ErrorCode.DATA_INPUT_AI_NULL);
+        }
+        String prompt = String.format(
+                "Bạn là một chuyên gia phân tích cảm xúc tiếng Việt. Phân tích cảm xúc của đoạn văn sau (có thể chứa emoji): \"%s\". " +
+                        "Trả về một trong các từ: HAPPY, SAD, NEUTRAL, ANXIOUS, ANGRY. nếu dữ liệu không đủ để phân tích hãy trả ra từ : UNSPECIFIED",
+                input
+        );
+        try {
+            String response = callGeminiAPI(prompt);
+            return response;
+        } catch (Exception e) {
+            log.error("Error predicting text emotion: {}", e.getMessage());
+//            throw new RuntimeException("Lỗi khi dự đoán cảm xúc: " + e.getMessage(), e);
+            throw  new ApplicationException(ErrorCode.UNCATEGORIZEO_EXCEPTION_AI);
+        }
+    }
+
     private String callGeminiAPI(String prompt) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
