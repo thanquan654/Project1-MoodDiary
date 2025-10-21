@@ -16,6 +16,7 @@ import com.project1.smart_diary.repository.DiaryRepository;
 import com.project1.smart_diary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.ap.shaded.org.mapstruct.tools.gem.Gem;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,15 +38,16 @@ public class DiaryService {
     private final UserRepository userRepository;
     private final CloudinaryService cloudinaryService;
     private final DiaryConverter diaryConverter;
+    private final GeminiAIService geminiAIService;
 
     public DiaryResponse createDiary(DiaryRequest request) {
         UserEntity currentUser = getCurrentUser();
         validateDiaryRequest(request);
-
+        Emotion emotion = geminiAIService.predictTextEmotion(request.getContent());
         DiaryEntity diary = DiaryEntity.builder()
                 .title(request.getTitle() != null ? request.getTitle() : "")
                 .content(request.getContent())
-                .emotion(null)
+                .emotion(emotion)
                 .advice(null)
                 .user(currentUser)
                 .media(new ArrayList<>())
