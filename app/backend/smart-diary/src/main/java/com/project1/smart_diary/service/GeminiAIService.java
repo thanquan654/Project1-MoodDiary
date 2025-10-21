@@ -135,7 +135,8 @@ public class GeminiAIService {
             return response.getBody();
         } catch (Exception e) {
             log.error("Error calling Gemini API: {}", e.getMessage());
-            throw e;
+            throw new ApplicationException(ErrorCode.UNCATEGORIZEO_EXCEPTION_AI);
+            //throw e;
         }
     }
 }
