@@ -220,25 +220,27 @@ public class DiaryService {
 
         DiaryEntity diary = diaryRepository.findById(id)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DIARY_NOT_FOUND));
-
         if (!diary.getUser().getId().equals(currentUser.getId())) {
             throw new ApplicationException(ErrorCode.NOT_DIARY_OWNER);
         }
-
         validateDiaryRequestForUpdate(request);
-
         if (!hasChanges(diary, request)) {
             throw new ApplicationException(ErrorCode.NO_CHANGES_DETECTED);
         }
-
         if (StringUtils.hasText(request.getTitle())) {
             diary.setTitle(request.getTitle().trim());
         }
-        if (StringUtils.hasText(request.getContent())) {
-            diary.setContent(request.getContent().trim());
-        }
-
+//        if (StringUtils.hasText(request.getContent())) {
+//            diary.setContent(request.getContent().trim());
+//        }
         processImages(diary, request);
+        if(!diary.getContent().equals(request.getContent())) {
+            diary.setContent(request.getContent());
+            Emotion emotion = geminiAIService.predictTextEmotion(request.getContent());
+            String advice = geminiAIService.generateAdvice(request.getContent(), emotion);
+            diary.setEmotion(emotion);
+            diary.setAdvice(advice);
+        }
 
         diary.setUpdatedAt(LocalDateTime.now());
         DiaryEntity saved = diaryRepository.save(diary);
