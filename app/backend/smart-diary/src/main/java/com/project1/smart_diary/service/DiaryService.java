@@ -230,18 +230,24 @@ public class DiaryService {
         if (StringUtils.hasText(request.getTitle())) {
             diary.setTitle(request.getTitle().trim());
         }
-//        if (StringUtils.hasText(request.getContent())) {
-//            diary.setContent(request.getContent().trim());
-//        }
-        processImages(diary, request);
-        if(!diary.getContent().equals(request.getContent())) {
-            diary.setContent(request.getContent());
-            Emotion emotion = geminiAIService.predictTextEmotion(request.getContent());
-            String advice = geminiAIService.generateAdvice(request.getContent(), emotion);
-            diary.setEmotion(emotion);
-            diary.setAdvice(advice);
+        if (StringUtils.hasText(request.getContent())) {
+            String newContent = request.getContent().trim();
+            if(!newContent.equals(diary.getContent())) {
+                diary.setContent(newContent);
+                Emotion emotion = geminiAIService.predictTextEmotion(request.getContent());
+                String advice = geminiAIService.generateAdvice(request.getContent(), emotion);
+                diary.setEmotion(emotion);
+                diary.setAdvice(advice);
+            }
         }
-
+        processImages(diary, request);
+//        if(!diary.getContent().equals(request.getContent())) {
+//            diary.setContent(request.getContent());
+//            Emotion emotion = geminiAIService.predictTextEmotion(request.getContent());
+//            String advice = geminiAIService.generateAdvice(request.getContent(), emotion);
+//            diary.setEmotion(emotion);
+//            diary.setAdvice(advice);
+//        }
         diary.setUpdatedAt(LocalDateTime.now());
         DiaryEntity saved = diaryRepository.save(diary);
         return diaryConverter.toResponse(saved);
@@ -254,7 +260,6 @@ public class DiaryService {
         if (req.getContent() != null && req.getContent().trim().isEmpty()) {
             throw new ApplicationException(ErrorCode.DIARY_CONTENT_REQUIRED);
         }
-
         if (req.getNewImages() != null) {
             for (MultipartFile file : req.getNewImages()) {
                 if (!file.isEmpty()) {

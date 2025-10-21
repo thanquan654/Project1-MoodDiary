@@ -77,6 +77,7 @@ public class GeminiAIService {
             return extractedText;
         } catch (Exception e) {
             log.error("Error generating advice: {}", e.getMessage());
+            //throw new ApplicationException(ErrorCode.UNCATEGORIZEO_EXCEPTION_AI);
             return "Hãy giữ tinh thần tích cực và tiếp tục cố gắng!";
         }
     }
