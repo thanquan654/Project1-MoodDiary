@@ -8,6 +8,7 @@ interface DiaryData {
 	title: string
 	content: string
 	emotion: string
+	advice: string
 	media: Array<{ id: number; mediaUrl: string }>
 	createdAt: string
 	updatedAt: string | null
@@ -42,6 +43,7 @@ export default function DiaryContentCard({ diary }: DiaryContentCardProps) {
 							)}
 						</span>
 					</div>
+					{' ● '}
 					<div className="flex items-center gap-1">
 						<Clock className="w-4 h-4" />
 						<span>
@@ -50,10 +52,24 @@ export default function DiaryContentCard({ diary }: DiaryContentCardProps) {
 							)}
 						</span>
 					</div>
+					{' ● '}
 					<div className="flex items-center gap-2">
 						<div className={`w-3 h-3 rounded-full`} />
 						<span>{diary.emotion}</span>
 					</div>
+				</div>
+
+				{/* Advice Section */}
+				<div className="mt-6 p-4 bg-primary/10 rounded-lg">
+					<div className="flex items-center gap-2 mb-2">
+						<Heart className="w-5 h-5 text-primary" />
+						<h3 className="text-md font-semibold text-primary">
+							Gợi ý cho bạn
+						</h3>
+					</div>
+					<p className="text-sm text-foreground/80 leading-relaxed">
+						{diary.advice}
+					</p>
 				</div>
 			</div>
 
