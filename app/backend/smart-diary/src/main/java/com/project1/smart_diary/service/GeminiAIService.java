@@ -1,5 +1,7 @@
 package com.project1.smart_diary.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project1.smart_diary.config.GeminiApiConfig;
 import com.project1.smart_diary.enums.Emotion;
 import com.project1.smart_diary.exception.ApplicationException;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+
 @Service
 @Slf4j
 public class GeminiAIService {
@@ -36,9 +39,10 @@ public class GeminiAIService {
         } catch (Exception e) {
             log.error("Error predicting text emotion: {}", e.getMessage());
 //            throw new RuntimeException("Lỗi khi dự đoán cảm xúc: " + e.getMessage(), e);
-            throw  new ApplicationException(ErrorCode.UNCATEGORIZEO_EXCEPTION_AI);
+            throw new ApplicationException(ErrorCode.UNCATEGORIZEO_EXCEPTION_AI);
         }
     }
+
     private Emotion parseEmotionFromResponse(String response) {
         if (response == null || response.isBlank()) {
             return Emotion.NEUTRAL;
@@ -60,10 +64,59 @@ public class GeminiAIService {
         }
     }
 
+    public String generateAdvice(String text, Emotion emotion) {
+        String prompt = String.format("Hãy đóng vai một người bạn tâm lý, hiểu biết và luôn mang năng lượng tích cực" +
+                        "Dựa trên đoạn văn và cảm xúc của người viết " +
+                        "hãy tạo lời khuyên ngắn gọn và tích cực cho nội dung: " +
+                        "'%s' với cảm xúc: %s. Trả về lời khuyên khoảng dưới 100 từ.",
+                text, emotion.getDescription());
+
+        try {
+            String response = callGeminiAPI(prompt);
+            String extractedText = extractTextFromResponse(response);
+            return extractedText;
+        } catch (Exception e) {
+            log.error("Error generating advice: {}", e.getMessage());
+            //throw new ApplicationException(ErrorCode.UNCATEGORIZEO_EXCEPTION_AI);
+            return "Hãy giữ tinh thần tích cực và tiếp tục cố gắng!";
+        }
+    }
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private String extractTextFromResponse(String jsonResponse) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
+            JsonNode candidatesNode = rootNode.path("candidates");
+            if (candidatesNode.isArray() && candidatesNode.size() > 0) {
+                JsonNode firstCandidate = candidatesNode.get(0);
+                JsonNode contentNode = firstCandidate.path("content");
+                JsonNode partsNode = contentNode.path("parts");
+
+                if (partsNode.isArray() && partsNode.size() > 0) {
+                    JsonNode firstPart = partsNode.get(0);
+                    JsonNode textNode = firstPart.path("text");
+
+                    if (!textNode.isMissingNode()) {
+                        String extractedText = textNode.asText().trim();
+                        log.info("Extracted text: {}", extractedText);
+                        return extractedText;
+                    }
+                }
+            }
+
+            log.warn("Could not extract text from response: {}", jsonResponse);
+            return "Không thể trích xuất nội dung từ phản hồi AI.";
+
+        } catch (Exception e) {
+            log.error("Error parsing JSON response: {}", e.getMessage());
+            return "Lỗi khi xử lý phản hồi từ AI: " + e.getMessage();
+        }
+    }
+
     private String callGeminiAPI(String prompt) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        // BỎ Authorization header - Gemini sử dụng query parameter
         String apiKey = geminiApiConfig.getKey();
         log.info("Using API key: {}", apiKey != null ? apiKey.substring(0, 10) + "..." : "NULL");
         String requestBody = String.format(
@@ -82,10 +135,8 @@ public class GeminiAIService {
             return response.getBody();
         } catch (Exception e) {
             log.error("Error calling Gemini API: {}", e.getMessage());
-            throw e;
+            throw new ApplicationException(ErrorCode.UNCATEGORIZEO_EXCEPTION_AI);
+            //throw e;
         }
     }
-
-
-
 }

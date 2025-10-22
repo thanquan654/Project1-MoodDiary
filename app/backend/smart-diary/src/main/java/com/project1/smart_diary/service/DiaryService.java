@@ -16,6 +16,7 @@ import com.project1.smart_diary.repository.DiaryRepository;
 import com.project1.smart_diary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.ap.shaded.org.mapstruct.tools.gem.Gem;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,16 +38,18 @@ public class DiaryService {
     private final UserRepository userRepository;
     private final CloudinaryService cloudinaryService;
     private final DiaryConverter diaryConverter;
+    private final GeminiAIService geminiAIService;
 
     public DiaryResponse createDiary(DiaryRequest request) {
         UserEntity currentUser = getCurrentUser();
         validateDiaryRequest(request);
-
+        Emotion emotion = geminiAIService.predictTextEmotion(request.getContent());
+        String advice = geminiAIService.generateAdvice(request.getContent(), emotion);
         DiaryEntity diary = DiaryEntity.builder()
                 .title(request.getTitle() != null ? request.getTitle() : "")
                 .content(request.getContent())
-                .emotion(null)
-                .advice(null)
+                .emotion(emotion)
+                .advice(advice)
                 .user(currentUser)
                 .media(new ArrayList<>())
                 .build();
@@ -217,26 +220,34 @@ public class DiaryService {
 
         DiaryEntity diary = diaryRepository.findById(id)
                 .orElseThrow(() -> new ApplicationException(ErrorCode.DIARY_NOT_FOUND));
-
         if (!diary.getUser().getId().equals(currentUser.getId())) {
             throw new ApplicationException(ErrorCode.NOT_DIARY_OWNER);
         }
-
         validateDiaryRequestForUpdate(request);
-
         if (!hasChanges(diary, request)) {
             throw new ApplicationException(ErrorCode.NO_CHANGES_DETECTED);
         }
-
         if (StringUtils.hasText(request.getTitle())) {
             diary.setTitle(request.getTitle().trim());
         }
         if (StringUtils.hasText(request.getContent())) {
-            diary.setContent(request.getContent().trim());
+            String newContent = request.getContent().trim();
+            if(!newContent.equals(diary.getContent())) {
+                diary.setContent(newContent);
+                Emotion emotion = geminiAIService.predictTextEmotion(request.getContent());
+                String advice = geminiAIService.generateAdvice(request.getContent(), emotion);
+                diary.setEmotion(emotion);
+                diary.setAdvice(advice);
+            }
         }
-
         processImages(diary, request);
-
+//        if(!diary.getContent().equals(request.getContent())) {
+//            diary.setContent(request.getContent());
+//            Emotion emotion = geminiAIService.predictTextEmotion(request.getContent());
+//            String advice = geminiAIService.generateAdvice(request.getContent(), emotion);
+//            diary.setEmotion(emotion);
+//            diary.setAdvice(advice);
+//        }
         diary.setUpdatedAt(LocalDateTime.now());
         DiaryEntity saved = diaryRepository.save(diary);
         return diaryConverter.toResponse(saved);
@@ -249,7 +260,6 @@ public class DiaryService {
         if (req.getContent() != null && req.getContent().trim().isEmpty()) {
             throw new ApplicationException(ErrorCode.DIARY_CONTENT_REQUIRED);
         }
-
         if (req.getNewImages() != null) {
             for (MultipartFile file : req.getNewImages()) {
                 if (!file.isEmpty()) {
