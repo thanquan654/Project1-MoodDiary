@@ -11,6 +11,7 @@ interface DiaryData {
 	title: string
 	content: string
 	emotion: string
+	advice: string
 	media: Array<{ id: number; mediaUrl: string }>
 	createdAt: string
 	updatedAt: string | null
