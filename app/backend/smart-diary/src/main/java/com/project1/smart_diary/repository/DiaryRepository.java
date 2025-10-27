@@ -21,5 +21,5 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity,Long>, DiaryR
     List<DiaryEntity> findByUser_EmailAndEmotionAndCreatedAtAfter(String email,Emotion emotion, LocalDateTime fromDate);
     List<DiaryEntity> findByUser_EmailAndEmotionAndCreatedAtBefore(String email, Emotion emotion, LocalDateTime toDate);
 
-    boolean existsByUser_EmailAndCreatedAtBetweenAndPromptQuestionIsNotNull(String email, LocalDateTime start, LocalDateTime end);
+    boolean existsByUser_EmailAndCreatedAtBetween(String email, LocalDateTime start, LocalDateTime end);
 }

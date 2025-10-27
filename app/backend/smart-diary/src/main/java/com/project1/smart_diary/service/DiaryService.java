@@ -14,6 +14,7 @@ import com.project1.smart_diary.exception.ApplicationException;
 import com.project1.smart_diary.exception.ErrorCode;
 import com.project1.smart_diary.repository.DiaryRepository;
 import com.project1.smart_diary.repository.UserRepository;
+import com.project1.smart_diary.util.PromptQuestionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.ap.shaded.org.mapstruct.tools.gem.Gem;
@@ -25,7 +26,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 
@@ -39,6 +42,7 @@ public class DiaryService {
     private final CloudinaryService cloudinaryService;
     private final DiaryConverter diaryConverter;
     private final GeminiAIService geminiAIService;
+    private final PromptQuestionUtil promptQuestionUtil;
 
     public DiaryResponse createDiary(DiaryRequest request) {
         UserEntity currentUser = getCurrentUser();
@@ -366,5 +370,29 @@ public class DiaryService {
             }
         }
         return allSuccess;
+    }
+    public Map<String, Object> getTodayPrompt() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        boolean hasRecordedToday = hasRecordedDiaryToday(email);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("hasRecordedToday", hasRecordedToday);
+
+        if (!hasRecordedToday) {
+            String todayQuestion = promptQuestionUtil.getRandomQuestion();
+            response.put("todayQuestion", todayQuestion);
+        }
+
+        return response;
+    }
+
+    private boolean hasRecordedDiaryToday(String email) {
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+
+        return diaryRepository.existsByUser_EmailAndCreatedAtBetween(
+                email, startOfDay, endOfDay);
     }
 }

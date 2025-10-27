@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/diaries")
@@ -127,6 +128,21 @@ public class DiaryController {
         ApiResponse<String> apiResponse = ApiResponse.<String>builder()
                 .message("Xóa thành công")
                 .data(null)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+    @GetMapping("/quick-checkin")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getTodayPrompt() {
+        Map<String, Object> response = diaryService.getTodayPrompt();
+
+        String message = Boolean.TRUE.equals(response.get("hasRecordedToday"))
+                ? "Hôm nay đã có nhật ký rồi"
+                : "Câu hỏi gợi mở hôm nay";
+
+        ApiResponse<Map<String, Object>> apiResponse = ApiResponse.<Map<String, Object>>builder()
+                .message(message)
+                .data(response)
                 .build();
 
         return ResponseEntity.ok(apiResponse);
