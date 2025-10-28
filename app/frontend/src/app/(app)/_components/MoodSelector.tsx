@@ -1,6 +1,7 @@
 'use client'
 
 import { createDiaryApi } from '@/lib/apis/diaryApi'
+import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -36,10 +37,12 @@ export function MoodSelector() {
 	const router = useRouter()
 	const [selectedMood, setSelectedMood] = useState<string | null>(null)
 	const [additionalContent, setAdditionalContent] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
 	const [submitError, setSubmitError] = useState('')
 	const [isSubmitted, setIsSubmitted] = useState(false)
 
 	const handleSubmit = async () => {
+		setIsLoading(true)
 		if (selectedMood) {
 			const mood = moods.find((mood) => mood.id === selectedMood)?.label
 			setIsSubmitted(true)
@@ -54,10 +57,12 @@ export function MoodSelector() {
 			const data = await createDiaryApi(formData)
 
 			if (data?.code) {
+				setIsLoading(false)
 				setSubmitError(data.message)
 				return
 			}
 
+			setIsLoading(false)
 			setIsSubmitted(true)
 
 			setTimeout(() => {
@@ -152,9 +157,13 @@ export function MoodSelector() {
 
 							<button
 								onClick={handleSubmit}
-								className="w-full bg-diary-primary text-white py-2 px-4 rounded-lg font-medium hover:bg-diary-primary/90 transition-colors"
+								className="flex justify-center w-full bg-diary-primary text-white py-2 px-4 rounded-lg font-medium hover:bg-diary-primary/90 transition-colors"
 							>
-								Xác nhận
+								{isLoading ? (
+									<Loader2 className="animate-spin" />
+								) : (
+									'Xác nhận'
+								)}
 							</button>
 						</div>
 					)}

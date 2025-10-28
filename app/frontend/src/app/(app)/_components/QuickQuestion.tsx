@@ -1,17 +1,21 @@
 'use client'
 
+import Loading from '@/app/(app)/loading'
 import { createDiaryApi } from '@/lib/apis/diaryApi'
+import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export function QuickQuestion({ question }: { question: string }) {
 	const router = useRouter()
 	const [answer, setAnswer] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
 	const [isSubmitted, setIsSubmitted] = useState(false)
 	const [submitError, setSubmitError] = useState('')
 
 	const handleSubmit = async () => {
 		if (answer.trim()) {
+			setIsLoading(true)
 			const formData = new FormData()
 			formData.append(
 				'title',
@@ -27,9 +31,11 @@ export function QuickQuestion({ question }: { question: string }) {
 
 			if (data?.code) {
 				setSubmitError(data.message)
+				setIsLoading(false)
 				return
 			}
 
+			setIsLoading(false)
 			setIsSubmitted(true)
 
 			setTimeout(() => {
@@ -78,9 +84,13 @@ export function QuickQuestion({ question }: { question: string }) {
 					<button
 						onClick={handleSubmit}
 						disabled={!answer.trim()}
-						className="w-full bg-diary-primary text-white py-2 px-4 rounded-lg font-medium hover:bg-diary-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+						className="flex justify-center w-full bg-diary-primary text-white py-2 px-4 rounded-lg font-medium hover:bg-diary-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 					>
-						Trả lời
+						{isLoading ? (
+							<Loader2 className="animate-spin" />
+						) : (
+							'Trả lời'
+						)}
 					</button>
 				</div>
 			)}
