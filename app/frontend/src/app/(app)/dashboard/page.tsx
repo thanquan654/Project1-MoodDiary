@@ -10,6 +10,14 @@ export const metadata = {
 	description: 'MoodDiary: Nhật ký cảm xúc thông minh',
 }
 
+const isNowAfter8PM = () => {
+	console.log(new Date().toLocaleTimeString('vi-VI'))
+
+	const hour = new Date().getHours()
+
+	return hour >= 20
+}
+
 export default async function Dashboard() {
 	const cookieStore = cookies()
 	const token = (await cookieStore).get('auth_token')?.value
@@ -22,7 +30,7 @@ export default async function Dashboard() {
 			</div>
 
 			<main className="px-4 pb-20 lg:pb-6 pt-4 lg:px-8 lg:py-8">
-				{!checkInData.data.hasRecordedToday && (
+				{!checkInData.data.hasRecordedToday && isNowAfter8PM() && (
 					<div className="flex flex-col md:flex-row gap-2">
 						<div className="flex-1 mb-6 lg:mb-8 ">
 							<MoodSelector />

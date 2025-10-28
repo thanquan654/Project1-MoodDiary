@@ -1,6 +1,5 @@
 'use client'
 
-import Loading from '@/app/(app)/loading'
 import { createDiaryApi } from '@/lib/apis/diaryApi'
 import { Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
