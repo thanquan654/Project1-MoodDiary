@@ -11,7 +11,7 @@ export default function DashboardLayout({
 }>) {
 	return (
 		<AuthGuard>
-			<div className="flex h-screen bg-diary-bg-light dark:bg-diary-bg-dark transition-colors">
+			<div className="flex h-screen w-screen bg-diary-bg-light dark:bg-diary-bg-dark transition-colors">
 				<Sidebar />
 
 				<div className="flex-1 flex flex-col">

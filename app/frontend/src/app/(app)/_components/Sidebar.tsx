@@ -6,10 +6,13 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import SideBarDiaryList from '@/app/(app)/_components/SidebarDiaryList'
+import { useUser } from '@/hooks/useUser'
 
 export default function Sidebar() {
 	const { toggleTheme, theme } = useTheme()
 	const pathname = usePathname()
+
+	const { user } = useUser()
 
 	const getActiveTab = () => {
 		if (pathname === '/dashboard') return 'home'
@@ -74,7 +77,7 @@ export default function Sidebar() {
 						</div>
 						<Link href="/dashboard/user" className="flex-1 ">
 							<p className="text-sm font-medium text-foreground">
-								Người dùng
+								{user?.fullName}
 							</p>
 							<p className="text-xs text-muted-foreground">
 								Xem hồ sơ

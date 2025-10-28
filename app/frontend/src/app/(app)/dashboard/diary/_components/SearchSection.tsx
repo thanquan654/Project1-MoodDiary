@@ -112,7 +112,7 @@ export default function SearchSection() {
 			</div>
 
 			{/* Filter */}
-			<div className="flex gap-2">
+			<div className="flex gap-2 flex-wrap">
 				{/* Date Picker */}
 				<div className="flex gap-2">
 					<Popover
