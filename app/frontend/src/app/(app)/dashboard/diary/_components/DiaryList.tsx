@@ -12,6 +12,7 @@ const emotionIconMap: { [key: string]: string } = {
 	Buồn: '😢',
 	'Tức giận': '😡',
 	'Trung tính': '😐',
+	'Không thể xác định cảm xúc. Vui lòng viết thêm chi tiết.': '😵‍💫',
 }
 
 interface DiaryListProps {
