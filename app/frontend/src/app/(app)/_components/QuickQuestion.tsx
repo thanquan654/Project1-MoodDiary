@@ -15,31 +15,33 @@ export function QuickQuestion({ question }: { question: string }) {
 	const handleSubmit = async () => {
 		if (answer.trim()) {
 			setIsLoading(true)
-			const formData = new FormData()
-			formData.append(
-				'title',
-				`Nhật ký nhanh ngày ${new Date().toLocaleDateString('vi-VI')}`,
-			)
-			formData.append(
-				'content',
-				`${question}
-                ${answer}`,
-			)
+			setSubmitError('')
+			try {
+				const formData = new FormData()
+				formData.append(
+					'title',
+					`Nhật ký nhanh ngày ${new Date().toLocaleDateString(
+						'vi-VI',
+					)}`,
+				)
+				formData.append('content', `${question}\n${answer}`)
 
-			const data = await createDiaryApi(formData)
+				const data = await createDiaryApi(formData)
 
-			if (data?.code) {
-				setSubmitError(data.message)
+				if (data?.code) {
+					setSubmitError(data.message)
+				} else {
+					setIsSubmitted(true)
+					setTimeout(() => {
+						router.refresh()
+					}, 1000)
+				}
+			} catch (error) {
+				console.error('Failed to submit answer:', error)
+				setSubmitError('Đã có lỗi xảy ra. Vui lòng thử lại.')
+			} finally {
 				setIsLoading(false)
-				return
 			}
-
-			setIsLoading(false)
-			setIsSubmitted(true)
-
-			setTimeout(() => {
-				router.refresh()
-			}, 1000)
 		}
 	}
 

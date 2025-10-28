@@ -20,7 +20,7 @@ const moods = [
 		emoji: '😢',
 	},
 	{
-		id: 'neutual',
+		id: 'neutral',
 		label: 'Trung tính',
 		color: 'bg-emotion-happy',
 		emoji: '😐',
@@ -42,10 +42,12 @@ export function MoodSelector() {
 	const [isSubmitted, setIsSubmitted] = useState(false)
 
 	const handleSubmit = async () => {
+		if (!selectedMood) return
+
 		setIsLoading(true)
-		if (selectedMood) {
+		setSubmitError('')
+		try {
 			const mood = moods.find((mood) => mood.id === selectedMood)?.label
-			setIsSubmitted(true)
 
 			const formData = new FormData()
 			formData.append(
@@ -57,17 +59,19 @@ export function MoodSelector() {
 			const data = await createDiaryApi(formData)
 
 			if (data?.code) {
-				setIsLoading(false)
 				setSubmitError(data.message)
 				return
 			}
 
-			setIsLoading(false)
 			setIsSubmitted(true)
-
 			setTimeout(() => {
 				router.refresh()
 			}, 1000)
+		} catch (error) {
+			console.error('Failed to submit mood:', error)
+			setSubmitError('Đã có lỗi xảy ra. Vui lòng thử lại.')
+		} finally {
+			setIsLoading(false)
 		}
 	}
 

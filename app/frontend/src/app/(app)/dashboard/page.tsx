@@ -11,8 +11,6 @@ export const metadata = {
 }
 
 const isNowAfter8PM = () => {
-	console.log(new Date().toLocaleTimeString('vi-VI'))
-
 	const hour = new Date().getHours()
 
 	return hour >= 20
