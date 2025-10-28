@@ -29,7 +29,9 @@ export default async function Dashboard() {
 						</div>
 
 						<div className="flex-1 mb-6 lg:mb-8">
-							<QuickQuestion />
+							<QuickQuestion
+								question={checkInData.data.todayQuestion}
+							/>
 						</div>
 					</div>
 				)}

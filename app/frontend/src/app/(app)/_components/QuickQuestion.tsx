@@ -1,34 +1,40 @@
 'use client'
 
+import { createDiaryApi } from '@/lib/apis/diaryApi'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-const questions = [
-	'Điều gì khiến bạn cảm thấy biết ơn nhất hôm nay?',
-	'Bạn đã học được gì mới trong ngày hôm nay?',
-	'Khoảnh khắc nào trong ngày khiến bạn cảm thấy hạnh phúc nhất?',
-	'Bạn muốn cải thiện điều gì trong ngày mai?',
-	'Ai là người đã làm cho ngày của bạn trở nên đặc biệt?',
-]
-
-export function QuickQuestion() {
-	const [currentQuestion] = useState(
-		questions[Math.floor(Math.random() * questions.length)],
-	)
+export function QuickQuestion({ question }: { question: string }) {
+	const router = useRouter()
 	const [answer, setAnswer] = useState('')
 	const [isSubmitted, setIsSubmitted] = useState(false)
+	const [submitError, setSubmitError] = useState('')
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		if (answer.trim()) {
-			console.log('[v0] Quick question answered:', {
-				question: currentQuestion,
-				answer,
-			})
+			const formData = new FormData()
+			formData.append(
+				'title',
+				`Nhật ký nhanh ngày ${new Date().toLocaleDateString('vi-VI')}`,
+			)
+			formData.append(
+				'content',
+				`${question}
+                ${answer}`,
+			)
+
+			const data = await createDiaryApi(formData)
+
+			if (data?.code) {
+				setSubmitError(data.message)
+				return
+			}
+
 			setIsSubmitted(true)
-			// Reset after 2 seconds
+
 			setTimeout(() => {
-				setIsSubmitted(false)
-				setAnswer('')
-			}, 2000)
+				router.refresh()
+			}, 1000)
 		}
 	}
 
@@ -50,9 +56,7 @@ export function QuickQuestion() {
 						<h3 className="text-lg font-semibold text-foreground mb-2">
 							Câu hỏi nhanh
 						</h3>
-						<p className="text-foreground mb-4">
-							{currentQuestion}
-						</p>
+						<p className="text-foreground mb-4">{question}</p>
 					</div>
 
 					<div>
@@ -64,6 +68,12 @@ export function QuickQuestion() {
 							rows={3}
 						/>
 					</div>
+
+					{submitError && (
+						<div className="text-red-500 text-sm text-center">
+							{submitError}
+						</div>
+					)}
 
 					<button
 						onClick={handleSubmit}
