@@ -1,3 +1,8 @@
+import DashboardHeader from '@/app/(app)/_components/DashboardHeader'
+import { MoodSelector } from '@/app/(app)/_components/MoodSelector'
+import { QuickQuestion } from '@/app/(app)/_components/QuickQuestion'
+import { getQuickCheckInData } from '@/lib/apis/dashboard'
+import { cookies } from 'next/headers'
 import Link from 'next/link'
 import React from 'react'
 
@@ -6,11 +11,31 @@ export const metadata = {
 	description: 'MoodDiary: Nhật ký cảm xúc thông minh',
 }
 
-export default function Dashboard() {
+export default async function Dashboard() {
+	const cookieStore = cookies()
+	const token = (await cookieStore).get('auth_token')?.value
+	const checkInData = await getQuickCheckInData(token)
+
 	return (
-		<div>
-			<div>Dashboard Page</div>
-			<Link href="/">Home</Link>
+		<div className="min-h-screen bg-background">
+			<div className="">
+				<DashboardHeader />
+			</div>
+
+			<main className="px-4 pb-20 lg:pb-6 pt-4 lg:px-8 lg:py-8">
+				{!checkInData.data.hasRecordedToday && (
+					<div className="flex gap-2">
+						<div className="flex-1 mb-6 lg:mb-8 ">
+							<MoodSelector />
+						</div>
+
+						<div className="flex-1 mb-6 lg:mb-8">
+							<QuickQuestion />
+						</div>
+					</div>
+				)}
+				{/* {checkInData.message} */}
+			</main>
 		</div>
 	)
 }

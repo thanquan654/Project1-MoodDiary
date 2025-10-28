@@ -6,7 +6,11 @@ export const tokenAtom = atomWithStorage<string | null>('user_token', null)
 
 export const isLoadingAtom = atom<boolean>(true)
 
-export const userAtom = atom<unknown | null>(null)
+export const userAtom = atom<{
+	avatarUrl: string | null
+	email: string
+	fullName: string
+} | null>(null)
 
 export const isAuthenticatedAtom = atom((get) => !!get(tokenAtom))
 

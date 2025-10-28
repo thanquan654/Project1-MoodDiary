@@ -1,4 +1,10 @@
-export function Header() {
+'use client'
+
+import { useUser } from '@/hooks/useUser'
+
+export function DashboardHeader() {
+	const { user } = useUser()
+
 	const today = new Date()
 	const formattedDate = today.toLocaleDateString('vi-VN', {
 		weekday: 'long',
@@ -12,7 +18,8 @@ export function Header() {
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="font-semibold text-2xl text-diary-primary">
-						Nhật ký của bạn
+						Xin chào
+						{user?.fullName ? `, ${user?.fullName}` : 'bạn'}
 					</h1>
 					<p className="text-caption text-muted-foreground">
 						{formattedDate}
@@ -23,4 +30,4 @@ export function Header() {
 	)
 }
 
-export default Header
+export default DashboardHeader
