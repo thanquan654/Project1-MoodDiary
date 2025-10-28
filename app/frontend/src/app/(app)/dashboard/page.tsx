@@ -3,7 +3,6 @@ import { MoodSelector } from '@/app/(app)/_components/MoodSelector'
 import { QuickQuestion } from '@/app/(app)/_components/QuickQuestion'
 import { getQuickCheckInData } from '@/lib/apis/dashboard'
 import { cookies } from 'next/headers'
-import Link from 'next/link'
 import React from 'react'
 
 export const metadata = {
@@ -24,7 +23,7 @@ export default async function Dashboard() {
 
 			<main className="px-4 pb-20 lg:pb-6 pt-4 lg:px-8 lg:py-8">
 				{!checkInData.data.hasRecordedToday && (
-					<div className="flex gap-2">
+					<div className="flex flex-col md:flex-row gap-2">
 						<div className="flex-1 mb-6 lg:mb-8 ">
 							<MoodSelector />
 						</div>
@@ -34,7 +33,8 @@ export default async function Dashboard() {
 						</div>
 					</div>
 				)}
-				{/* {checkInData.message} */}
+
+				<div>Lịch cảm xúc</div>
 			</main>
 		</div>
 	)

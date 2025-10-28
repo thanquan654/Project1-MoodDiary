@@ -1,5 +1,7 @@
 'use client'
 
+import { createDiaryApi } from '@/lib/apis/diaryApi'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 const moods = [
@@ -31,24 +33,36 @@ const moods = [
 ]
 
 export function MoodSelector() {
+	const router = useRouter()
 	const [selectedMood, setSelectedMood] = useState<string | null>(null)
 	const [additionalContent, setAdditionalContent] = useState('')
+	const [submitError, setSubmitError] = useState('')
 	const [isSubmitted, setIsSubmitted] = useState(false)
 
-	const handleSubmit = () => {
+	const handleSubmit = async () => {
 		if (selectedMood) {
 			const mood = moods.find((mood) => mood.id === selectedMood)?.label
-			console.log('[v0] Mood submitted:', {
-				mood: moods.find((mood) => mood.id === selectedMood)?.label,
-				content: additionalContent,
-			})
 			setIsSubmitted(true)
-			// Reset after 2 seconds
+
+			const formData = new FormData()
+			formData.append(
+				'title',
+				`Nhật ký nhanh ngày ${new Date().toLocaleDateString('vi-VI')}`,
+			)
+			formData.append('content', `${mood}\n${additionalContent}`)
+
+			const data = await createDiaryApi(formData)
+
+			if (data?.code) {
+				setSubmitError(data.message)
+				return
+			}
+
+			setIsSubmitted(true)
+
 			setTimeout(() => {
-				setIsSubmitted(false)
-				setSelectedMood(null)
-				setAdditionalContent('')
-			}, 2000)
+				router.refresh()
+			}, 1000)
 		}
 	}
 
@@ -129,6 +143,12 @@ export function MoodSelector() {
 									rows={3}
 								/>
 							</div>
+
+							{submitError && (
+								<div className="text-red-500 text-sm text-center">
+									{submitError}
+								</div>
+							)}
 
 							<button
 								onClick={handleSubmit}
