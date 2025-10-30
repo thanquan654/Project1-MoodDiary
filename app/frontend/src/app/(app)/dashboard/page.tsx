@@ -11,9 +11,13 @@ export const metadata = {
 }
 
 const isNowAfter8PM = () => {
-	const hour = new Date().getHours()
-
-	console.log('🚀 ~ hour:', hour)
+	const formatter = new Intl.DateTimeFormat('en-US', {
+		timeZone: 'Asia/Ho_Chi_Minh',
+		hour: '2-digit',
+		hour12: false,
+	})
+	const date = formatter.format(new Date())
+	const hour = parseInt(date, 10)
 
 	return hour >= 20
 }
@@ -27,7 +31,6 @@ export default async function Dashboard() {
 		<div className="min-h-screen bg-background">
 			<div className="">
 				<DashboardHeader />
-				{new Date().toString()}
 			</div>
 
 			<main className="px-4 pb-20 lg:pb-6 pt-4 lg:px-8 lg:py-8">
