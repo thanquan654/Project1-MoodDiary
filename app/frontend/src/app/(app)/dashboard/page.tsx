@@ -13,6 +13,8 @@ export const metadata = {
 const isNowAfter8PM = () => {
 	const hour = new Date().getHours()
 
+	console.log('🚀 ~ hour:', hour)
+
 	return hour >= 20
 }
 
@@ -25,6 +27,7 @@ export default async function Dashboard() {
 		<div className="min-h-screen bg-background">
 			<div className="">
 				<DashboardHeader />
+				{new Date().toString()}
 			</div>
 
 			<main className="px-4 pb-20 lg:pb-6 pt-4 lg:px-8 lg:py-8">
