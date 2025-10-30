@@ -34,7 +34,7 @@ export default function DiaryContentCard({ diary }: DiaryContentCardProps) {
 					</div>
 				</div>
 
-				<div className="flex items-center gap-4 text-sm text-foreground">
+				<div className="flex flex-col md:flex-row items-center gap-4 text-sm text-foreground">
 					<div className="flex items-center gap-1">
 						<Calendar className="w-4 h-4" />
 						<span>

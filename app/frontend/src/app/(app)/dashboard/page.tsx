@@ -11,7 +11,13 @@ export const metadata = {
 }
 
 const isNowAfter8PM = () => {
-	const hour = new Date().getHours()
+	const formatter = new Intl.DateTimeFormat('en-US', {
+		timeZone: 'Asia/Ho_Chi_Minh',
+		hour: '2-digit',
+		hour12: false,
+	})
+	const date = formatter.format(new Date())
+	const hour = parseInt(date, 10)
 
 	return hour >= 20
 }
