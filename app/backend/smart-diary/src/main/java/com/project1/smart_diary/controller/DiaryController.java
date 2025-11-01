@@ -150,7 +150,6 @@ public class DiaryController {
 
     @PostMapping("/ai-chat/message")
     public ResponseEntity<String> chatMessage(@RequestBody ChatMessageRequest request) {
-
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(chatService.savecChatMessage(request));
     }
 }
