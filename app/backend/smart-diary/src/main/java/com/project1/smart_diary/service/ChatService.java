@@ -56,16 +56,17 @@ public class ChatService {
             chatSession = new ChatSession();
             chatSession.setTitle("Cuộc trò chuyện gần đây");
             chatSession.setUser(user);
+            chatSessionRepository.save(chatSession);
             chatMessage = new ChatMessage();
             chatMessage.setSession(chatSession);
             chatMessage.setMessage(request.getMessage());
-            chatMessage.isUserMessage(isUser);
+            chatMessage.setUserMessage(isUser);
             chatMessageRepository.save(chatMessage);
         } else {
             chatMessage = new ChatMessage();
             chatMessage.setSession(chatSession);
             chatMessage.setMessage(request.getMessage());
-            chatMessage.isUserMessage(isUser);
+            chatMessage.setUserMessage(isUser);
             chatMessageRepository.save(chatMessage);
         }
         return "Lưu tin nhắn thành công";
