@@ -2,6 +2,7 @@ package com.project1.smart_diary.service;
 
 import com.project1.smart_diary.dto.request.ChatMessageRequest;
 import com.project1.smart_diary.dto.response.ChatContextResponse;
+import com.project1.smart_diary.dto.response.ChatMessageResponse;
 import com.project1.smart_diary.entity.ChatMessage;
 import com.project1.smart_diary.entity.ChatSession;
 import com.project1.smart_diary.entity.DiaryEntity;
@@ -13,8 +14,10 @@ import com.project1.smart_diary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,6 +72,21 @@ public class ChatService {
             chatMessageRepository.save(chatMessage);
         }
         return "Lưu tin nhắn thành công";
+    }
+    @Transactional(readOnly = true)
+    public List<ChatMessageResponse> getMessages() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        UserEntity user = userRepository.findByEmail(email);
+
+        List<ChatMessage> messages = chatMessageRepository.findBySessionUserIdOrderByIdAsc(user.getId());
+
+        return messages.stream()
+                .map(msg -> ChatMessageResponse.builder()
+                        .isUserMessage(msg.isUserMessage())
+                        .message(msg.getMessage())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 }

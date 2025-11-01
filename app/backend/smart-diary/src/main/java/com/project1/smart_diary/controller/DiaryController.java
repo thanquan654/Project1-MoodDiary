@@ -3,6 +3,7 @@ package com.project1.smart_diary.controller;
 import com.project1.smart_diary.dto.request.*;
 import com.project1.smart_diary.dto.response.ApiResponse;
 import com.project1.smart_diary.dto.response.ChatContextResponse;
+import com.project1.smart_diary.dto.response.ChatMessageResponse;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.service.ChatService;
 import com.project1.smart_diary.service.DiaryService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -151,5 +153,10 @@ public class DiaryController {
     @PostMapping("/ai-chat/message")
     public ResponseEntity<String> chatMessage(@RequestBody ChatMessageRequest request) {
         return ResponseEntity.ok(chatService.savecChatMessage(request));
+    }
+    @GetMapping("/ai-chat/message")
+    public Map<String, Object> getChatMessages() {
+        List<ChatMessageResponse> messages = chatService.getMessages();
+        return Collections.singletonMap("messages", messages);
     }
 }

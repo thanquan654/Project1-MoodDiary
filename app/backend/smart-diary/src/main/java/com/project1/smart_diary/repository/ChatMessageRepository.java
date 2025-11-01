@@ -4,6 +4,9 @@ import com.project1.smart_diary.entity.ChatMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage,Long> {
+    List<ChatMessage> findBySessionUserIdOrderByIdAsc(Long userId);
 }
