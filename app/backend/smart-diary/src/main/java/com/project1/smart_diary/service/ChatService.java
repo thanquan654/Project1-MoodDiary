@@ -56,9 +56,8 @@ public class ChatService {
             chatSession = new ChatSession();
             chatSession.setTitle("Cuộc trò chuyện gần đây");
             chatSession.setUser(user);
-            chatSessionRepository.save(chatSession);
             chatMessage = new ChatMessage();
-            chatMessage.setSession(chatSession);
+            chatMessage.setSession(chatSessionRepository.save(chatSession));
             chatMessage.setMessage(request.getMessage());
             chatMessage.setUserMessage(isUser);
             chatMessageRepository.save(chatMessage);
