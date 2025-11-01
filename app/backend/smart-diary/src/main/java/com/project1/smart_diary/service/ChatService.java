@@ -27,16 +27,6 @@ public class ChatService {
         }
         return contextBuilder.toString();
     }
-//    private String converterContexts(List<DiaryEntity> diaryEntities, String email) {
-//        UserEntity userEntity = userRepository.findByEmail(email);
-//        List<DiaryEntity> diaries = diaryRepository.findTop5ByUser_EmailOrderByCreatedAtDesc(email);
-//        StringBuilder contextBuilder = new StringBuilder();
-//        for (DiaryEntity diary : diaries) {
-//            contextBuilder.append("- Tiêu đề: ").append(diary.getTitle()).append("\n")
-//                    .append(" Nội dung: ").append(diary.getContent()).append("\n")
-//                    .append(" Ngày tạo: ").append(diary.getCreatedAt()).append("\n\n");
-//        }
-//        return contextBuilder.toString(); }
     public ChatContextResponse getContext(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         List<DiaryEntity> diaries = diaryRepository.findTop5ByUser_EmailOrderByCreatedAtDesc(email);
