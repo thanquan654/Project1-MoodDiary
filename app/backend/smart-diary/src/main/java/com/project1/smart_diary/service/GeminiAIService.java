@@ -149,7 +149,7 @@ public class GeminiAIService {
                     Bạn là một người bạn đồng hành thân thiện và hiểu tâm lý người dùng.
                     Dưới đây là 5 nhật ký gần đây của người dùng:
                     %s
-                    Hãy tạo ra một câu chào hỏi tự nhiên, nhẹ nhàng và gợi mở để bắt đầu cuộc trò chuyện.
+                    Hãy tạo ra một câu chào hỏi tự nhiên, nhẹ nhàng (dưới 2 dòng) và gợi mở để bắt đầu cuộc trò chuyện.
                     Câu chào nên phản ánh cảm xúc hoặc chủ đề chung trong các nhật ký gần đây.
                     Trả về chỉ 1 câu chào, ví dụ:
                     "Mình thấy gần đây bạn có vẻ căng thẳng về công việc. Bạn muốn chia sẻ thêm không?"
