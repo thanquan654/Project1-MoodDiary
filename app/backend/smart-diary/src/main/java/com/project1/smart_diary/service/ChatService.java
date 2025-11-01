@@ -20,7 +20,6 @@ public class ChatService {
 //        UserEntity userEntity = userRepository.findByEmail(email);
         List<DiaryEntity> diaries = diaryRepository.findTop5ByUser_EmailOrderByCreatedAtDesc(email);
         StringBuilder contextBuilder = new StringBuilder();
-
         for (DiaryEntity diary : diaries) {
             contextBuilder.append("- Tiêu đề: ").append(diary.getTitle()).append("\n")
                     .append("  Nội dung: ").append(diary.getContent()).append("\n")
@@ -28,4 +27,5 @@ public class ChatService {
         }
         return contextBuilder.toString();
     }
+
 }

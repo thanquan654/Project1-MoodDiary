@@ -42,6 +42,7 @@ public enum ErrorCode {
     DATA_INPUT_AI_NULL(4001, "Dữ liệu phân tích cảm xúc rỗng", HttpStatus.BAD_REQUEST),
     UNCATEGORIZEO_EXCEPTION_AI(4002, "Đã xảy ra lỗi khi phân tích. Vui lòng thử lại sau.", HttpStatus.INTERNAL_SERVER_ERROR),
 
+    SERVER_GENERATE_INITIAL_ERROR(5001, "Máy chủ lỗi. Vui lòng thử lại sau", HttpStatus.INTERNAL_SERVER_ERROR),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode httpStatusCode) {

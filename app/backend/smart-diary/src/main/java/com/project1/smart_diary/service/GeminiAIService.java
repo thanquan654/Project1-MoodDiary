@@ -139,4 +139,28 @@ public class GeminiAIService {
             //throw e;
         }
     }
+
+    public String genInitialMessage(String context) {
+        try {
+            if (context == null || context.isBlank()) {
+                return "Xin chào! Mình là trợ lý tâm lý của bạn. Hôm nay bạn cảm thấy thế nào?";
+            }
+            String prompt = String.format("""
+                    Bạn là một người bạn đồng hành thân thiện và hiểu tâm lý người dùng.
+                    Dưới đây là 5 nhật ký gần đây của người dùng:
+                    %s
+                    Hãy tạo ra một câu chào hỏi tự nhiên, nhẹ nhàng và gợi mở để bắt đầu cuộc trò chuyện.
+                    Câu chào nên phản ánh cảm xúc hoặc chủ đề chung trong các nhật ký gần đây.
+                    Trả về chỉ 1 câu chào, ví dụ:
+                    "Mình thấy gần đây bạn có vẻ căng thẳng về công việc. Bạn muốn chia sẻ thêm không?"
+                    hoặc
+                    "Dạo này có vẻ tâm trạng bạn hơi trầm lắng. Mình có thể giúp gì để bạn cảm thấy nhẹ lòng hơn không?"
+                    """, context);
+            String response = callGeminiAPI(prompt);
+            String initialMessage = extractTextFromResponse(response);
+            return initialMessage;
+        } catch (Exception e) {
+            throw new ApplicationException(ErrorCode.SERVER_GENERATE_INITIAL_ERROR);
+        }
+    }
 }
