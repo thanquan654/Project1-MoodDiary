@@ -1,11 +1,10 @@
 package com.project1.smart_diary.controller;
 
-import com.project1.smart_diary.dto.request.DiaryRequest;
-import com.project1.smart_diary.dto.request.DiarySearchByDateAndEmotionRequest;
-import com.project1.smart_diary.dto.request.DiarySearchRequest;
-import com.project1.smart_diary.dto.request.DiaryUpdateRequest;
+import com.project1.smart_diary.dto.request.*;
 import com.project1.smart_diary.dto.response.ApiResponse;
+import com.project1.smart_diary.dto.response.ChatContextResponse;
 import com.project1.smart_diary.dto.response.DiaryResponse;
+import com.project1.smart_diary.service.ChatService;
 import com.project1.smart_diary.service.DiaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,7 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DiaryController {
     private final DiaryService diaryService;
-
+    private final ChatService chatService;
     @PostMapping
     public ResponseEntity<ApiResponse<DiaryResponse>> createDiary(@ModelAttribute DiaryRequest request) {
         DiaryResponse response = diaryService.createDiary(request);
@@ -135,16 +134,22 @@ public class DiaryController {
     @GetMapping("/quick-checkin")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getTodayPrompt() {
         Map<String, Object> response = diaryService.getTodayPrompt();
-
         String message = Boolean.TRUE.equals(response.get("hasRecordedToday"))
                 ? "Hôm nay đã có nhật ký rồi"
                 : "Câu hỏi gợi mở hôm nay";
-
         ApiResponse<Map<String, Object>> apiResponse = ApiResponse.<Map<String, Object>>builder()
                 .message(message)
                 .data(response)
                 .build();
-
         return ResponseEntity.ok(apiResponse);
+    }
+    @GetMapping("/ai-chat/start")
+    public ResponseEntity<ChatContextResponse> getContext(){
+        return ResponseEntity.ok(chatService.getContext());
+    }
+
+    @PostMapping("/ai-chat/message")
+    public ResponseEntity<String> chatMessage(@RequestBody ChatMessageRequest request) {
+        return ResponseEntity.ok(chatService.savecChatMessage(request));
     }
 }
