@@ -1,4 +1,5 @@
 import BottomNavigation from '@/app/(app)/_components/BottomNavigation'
+import { ChatBot } from '@/app/(app)/_components/ChatBot'
 import Sidebar from '@/app/(app)/_components/Sidebar'
 import Loading from '@/app/(app)/loading'
 import { AuthGuard } from '@/components/AuthGuard'
@@ -23,6 +24,7 @@ export default function DashboardLayout({
 				<div className="lg:hidden">
 					<BottomNavigation />
 				</div>
+				<ChatBot />
 			</div>
 		</AuthGuard>
 	)
