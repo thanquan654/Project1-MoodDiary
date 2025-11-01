@@ -148,4 +148,9 @@ public class DiaryController {
         return ResponseEntity.ok(chatService.getContext());
     }
 
+    @PostMapping("/ai-chat/message")
+    public ResponseEntity<String> chatMessage(@RequestBody ChatMessageRequest request) {
+
+        return ResponseEntity.ok("");
+    }
 }
