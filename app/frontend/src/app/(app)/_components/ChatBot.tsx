@@ -8,32 +8,27 @@ import { Input } from '@/components/ui/input'
 import { MessageCircleMore, Send, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useMediaQuery } from '@/hooks/useMobile'
-
-interface Message {
-	id: string
-	type: 'user' | 'ai'
-	content: string
-	timestamp: Date
-}
+import { useChat } from '@ai-sdk/react'
+import { TextStreamChatTransport } from 'ai'
+import Markdown from 'markdown-to-jsx'
 
 export function ChatBot() {
 	const pathname = usePathname()
 	const isMobile = useMediaQuery('(max-width: 768px)')
 
 	const [isOpen, setIsOpen] = useState(false)
-	const [messages, setMessages] = useState<Message[]>([
-		{
-			id: '1',
-			type: 'ai',
-			content:
-				'Xin chào! 👋 Tôi là trợ lý AI của bạn. Tôi có thể giúp bạn viết nhật ký, trả lời câu hỏi về cảm xúc, hoặc chỉ đơn giản là lắng nghe. Bạn cảm thấy thế nào hôm nay?',
-			timestamp: new Date(),
-		},
-	])
 	const [inputValue, setInputValue] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 	const messagesEndRef = useRef<HTMLDivElement>(null)
 	const chatWindowRef = useRef<HTMLDivElement>(null)
+	const { messages, sendMessage, setMessages } = useChat({
+		transport: new TextStreamChatTransport({
+			api: '/api/chat',
+			body: {
+				journals: 'Hello',
+			},
+		}),
+	})
 
 	// Check if chat should be visible on current page
 	const shouldShowChat =
@@ -46,31 +41,10 @@ export function ChatBot() {
 
 	const handleSendMessage = async () => {
 		if (!inputValue.trim()) return
-
-		// Add user message
-		const userMessage: Message = {
-			id: Date.now().toString(),
-			type: 'user',
-			content: inputValue,
-			timestamp: new Date(),
-		}
-
-		setMessages((prev) => [...prev, userMessage])
-		setInputValue('')
 		setIsLoading(true)
-
-		// Simulate AI response delay
-		setTimeout(() => {
-			const aiResponse: Message = {
-				id: (Date.now() + 1).toString(),
-				type: 'ai',
-				content:
-					'Cảm ơn bạn đã chia sẻ. Đó là điều rất có ý nghĩa. Hãy tiếp tục viết nhật ký để theo dõi cảm xúc của mình. 💭',
-				timestamp: new Date(),
-			}
-			setMessages((prev) => [...prev, aiResponse])
-			setIsLoading(false)
-		}, 800)
+		sendMessage({ text: inputValue })
+		setInputValue('')
+		setIsLoading(false)
 	}
 
 	const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -111,7 +85,7 @@ export function ChatBot() {
 					className={`fixed z-50 flex flex-col transition-all duration-300 ${
 						isMobile
 							? 'inset-0 rounded-none'
-							: 'bottom-20 right-6 w-96 h-96 rounded-lg shadow-2xl border border-border'
+							: 'bottom-20 right-6 w-96 h-2/3 rounded-lg shadow-2xl border border-border'
 					} bg-card dark:bg-card`}
 				>
 					{/* Header */}
@@ -141,32 +115,43 @@ export function ChatBot() {
 							<div
 								key={message.id}
 								className={`flex ${
-									message.type === 'user'
+									message.role === 'user'
 										? 'justify-end'
 										: 'justify-start'
 								}`}
 							>
 								<div
 									className={`flex items-end gap-2 max-w-xs ${
-										message.type === 'user'
+										message.role === 'user'
 											? 'flex-row-reverse'
 											: 'flex-row'
 									}`}
 								>
-									{message.type === 'ai' && (
+									{message.role !== 'user' && (
 										<div className="w-7 h-7 rounded-full bg-diary-primary/30 dark:bg-primary/30 flex-shrink-0 flex items-center justify-center text-sm">
 											🤖
 										</div>
 									)}
 									<div
 										className={`px-3 py-2 rounded-lg ${
-											message.type === 'user'
+											message.role === 'user'
 												? 'bg-diary-primary dark:bg-primary text-white rounded-br-none'
 												: 'bg-muted text-foreground rounded-bl-none'
 										}`}
 									>
 										<p className="text-sm break-words">
-											{message.content}
+											{message.parts.map((part, i) => {
+												switch (part.type) {
+													case 'text':
+														return (
+															<Markdown
+																key={`${message.id}-${i}`}
+															>
+																{part.text}
+															</Markdown>
+														)
+												}
+											})}
 										</p>
 									</div>
 								</div>
