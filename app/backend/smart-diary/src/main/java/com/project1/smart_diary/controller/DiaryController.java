@@ -5,6 +5,7 @@ import com.project1.smart_diary.dto.request.DiarySearchByDateAndEmotionRequest;
 import com.project1.smart_diary.dto.request.DiarySearchRequest;
 import com.project1.smart_diary.dto.request.DiaryUpdateRequest;
 import com.project1.smart_diary.dto.response.ApiResponse;
+import com.project1.smart_diary.dto.response.ChatContextResponse;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.service.DiaryService;
 import lombok.RequiredArgsConstructor;
@@ -146,5 +147,10 @@ public class DiaryController {
                 .build();
 
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/ai-chat/start")
+    public ResponseEntity<ChatContextResponse> getContext(){
+        return null;
     }
 }
