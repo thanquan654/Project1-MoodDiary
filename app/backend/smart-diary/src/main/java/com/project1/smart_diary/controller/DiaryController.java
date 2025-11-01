@@ -1,9 +1,6 @@
 package com.project1.smart_diary.controller;
 
-import com.project1.smart_diary.dto.request.DiaryRequest;
-import com.project1.smart_diary.dto.request.DiarySearchByDateAndEmotionRequest;
-import com.project1.smart_diary.dto.request.DiarySearchRequest;
-import com.project1.smart_diary.dto.request.DiaryUpdateRequest;
+import com.project1.smart_diary.dto.request.*;
 import com.project1.smart_diary.dto.response.ApiResponse;
 import com.project1.smart_diary.dto.response.ChatContextResponse;
 import com.project1.smart_diary.dto.response.DiaryResponse;
@@ -150,4 +147,5 @@ public class DiaryController {
     public ResponseEntity<ChatContextResponse> getContext(){
         return ResponseEntity.ok(chatService.getContext());
     }
+
 }

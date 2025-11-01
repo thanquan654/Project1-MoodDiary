@@ -1,8 +1,11 @@
 package com.project1.smart_diary.service;
 
+import com.project1.smart_diary.dto.request.ChatMessageRequest;
 import com.project1.smart_diary.dto.response.ChatContextResponse;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.UserEntity;
+import com.project1.smart_diary.repository.ChatMessageRepository;
+import com.project1.smart_diary.repository.ChatSessionRepository;
 import com.project1.smart_diary.repository.DiaryRepository;
 import com.project1.smart_diary.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,8 @@ public class ChatService {
     private final DiaryRepository diaryRepository;
     private final GeminiAIService geminiAIService;
     private final UserRepository userRepository;
+    private final ChatMessageRepository chatMessageRepository;
+    private final ChatSessionRepository  chatSessionRepository;
 
     private String converterContext(List<DiaryEntity>  diaries) {
         StringBuilder contextBuilder = new StringBuilder();
@@ -37,4 +42,10 @@ public class ChatService {
         chatContextResponse.setContext(context);
         return chatContextResponse;
     }
+    public String savecChatMessage(ChatMessageRequest request){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return "jhj";
+    }
+
 }
