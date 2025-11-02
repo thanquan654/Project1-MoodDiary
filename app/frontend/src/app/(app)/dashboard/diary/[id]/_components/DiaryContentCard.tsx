@@ -76,7 +76,7 @@ export default function DiaryContentCard({ diary }: DiaryContentCardProps) {
 			{/* Content */}
 			<div className="p-6">
 				<div className="prose prose-gray max-w-none">
-					{diary.content.split('\n\n').map((paragraph, index) => (
+					{diary.content.split('\n').map((paragraph, index) => (
 						<p
 							key={index}
 							className="text-foreground leading-relaxed mb-4 last:mb-0"
