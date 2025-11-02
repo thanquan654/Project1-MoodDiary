@@ -36,7 +36,7 @@ export default function DiaryList({ initialData }: DiaryListProps) {
 		<div className="space-y-4">
 			<div className="flex justify-end">
 				<Link href="/dashboard/diary/new">
-					<Button className="bg-diary-primary hover:bg-diary-primary/90 text-diary-text-dark">
+					<Button className="bg-diary-primary hover:bg-diary-primary/90 text-white">
 						<BookPlus className="mr-2" />
 						<span>Thêm nhật ký mới</span>
 					</Button>

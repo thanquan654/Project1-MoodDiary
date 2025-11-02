@@ -1,15 +1,13 @@
 'use client'
 
-import type React from 'react'
-
-import { useState, useRef, useEffect, useId } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Info, MessageCircleMore, Send, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useMediaQuery } from '@/hooks/useMobile'
 import { useChat } from '@ai-sdk/react'
-import { TextStreamChatTransport, UIMessage } from 'ai'
+import { TextStreamChatTransport } from 'ai'
 import Markdown from 'markdown-to-jsx'
 import {
 	getChatbotContextApi,
@@ -27,7 +25,6 @@ export function ChatBot() {
 	const [isOpen, setIsOpen] = useState(false)
 	const [context, setContext] = useState('')
 	const [inputValue, setInputValue] = useState('')
-	const [isLoading, setIsLoading] = useState(false)
 	const messagesEndRef = useRef<HTMLDivElement>(null)
 	const chatWindowRef = useRef<HTMLDivElement>(null)
 	const [chatbotError, setChatbotErrors] = useState('')
@@ -79,7 +76,6 @@ export function ChatBot() {
 
 	const handleSendMessage = async () => {
 		if (!inputValue.trim()) return
-		setIsLoading(true)
 		sendMessage(
 			{ text: inputValue },
 			{
@@ -89,7 +85,6 @@ export function ChatBot() {
 			},
 		)
 		setInputValue('')
-		setIsLoading(false)
 	}
 
 	const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -112,7 +107,7 @@ export function ChatBot() {
 						: 'bg-diary-primary hover:bg-diary-primary/90 text-white w-14 h-14'
 				} ${
 					isMobile && 'bottom-20 right-2 w-10 h-10'
-				} bg-black dark:bg-white dark:hover:bg-primary/90`}
+				} bg-black hover:bg-diary-primary/90`}
 			>
 				<span
 					className={`transition-opacity duration-200 ${
@@ -173,14 +168,14 @@ export function ChatBot() {
 									}`}
 								>
 									{message.role !== 'user' && (
-										<div className="w-7 h-7 rounded-full bg-diary-primary/30 dark:bg-primary/30 flex-shrink-0 flex items-center justify-center text-sm">
+										<div className="w-7 h-7 rounded-full bg-diary-primary/30 flex-shrink-0 flex items-center justify-center text-sm">
 											🤖
 										</div>
 									)}
 									<div
 										className={`px-3 py-2 rounded-lg ${
 											message.role === 'user'
-												? 'bg-diary-primary dark:bg-primary text-white rounded-br-none'
+												? 'bg-diary-primary text-white rounded-br-none'
 												: 'bg-muted text-foreground rounded-bl-none'
 										}`}
 									>
@@ -202,32 +197,6 @@ export function ChatBot() {
 								</div>
 							</div>
 						))}
-						{isLoading && (
-							<div className="flex justify-start">
-								<div className="flex items-end gap-2">
-									<div className="w-7 h-7 rounded-full bg-diary-primary/30 dark:bg-primary/30 flex-shrink-0 flex items-center justify-center">
-										🤖
-									</div>
-									<div className="bg-muted text-foreground px-3 py-2 rounded-lg rounded-bl-none">
-										<div className="flex gap-1">
-											<div className="w-2 h-2 bg-foreground rounded-full animate-bounce"></div>
-											<div
-												className="w-2 h-2 bg-foreground rounded-full animate-bounce"
-												style={{
-													animationDelay: '0.2s',
-												}}
-											></div>
-											<div
-												className="w-2 h-2 bg-foreground rounded-full animate-bounce"
-												style={{
-													animationDelay: '0.4s',
-												}}
-											></div>
-										</div>
-									</div>
-								</div>
-							</div>
-						)}
 						<div ref={messagesEndRef} />
 					</div>
 
@@ -246,14 +215,13 @@ export function ChatBot() {
 								value={inputValue}
 								onChange={(e) => setInputValue(e.target.value)}
 								onKeyUp={handleKeyPress}
-								disabled={isLoading}
 								className="flex-1 bg-background dark:bg-background"
 							/>
 							<Button
 								onClick={handleSendMessage}
-								disabled={isLoading || !inputValue.trim()}
+								disabled={!inputValue.trim()}
 								size="icon"
-								className="bg-diary-primary hover:bg-diary-primary/90 dark:bg-primary dark:hover:bg-primary/90"
+								className="bg-diary-primary hover:bg-diary-primary/90"
 							>
 								<Send className="w-4 h-4" />
 							</Button>
