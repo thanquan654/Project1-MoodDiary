@@ -2,37 +2,75 @@
 
 import type React from 'react'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useId } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { MessageCircleMore, Send, X } from 'lucide-react'
+import { Info, MessageCircleMore, Send, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useMediaQuery } from '@/hooks/useMobile'
 import { useChat } from '@ai-sdk/react'
-import { TextStreamChatTransport } from 'ai'
+import { TextStreamChatTransport, UIMessage } from 'ai'
 import Markdown from 'markdown-to-jsx'
+import {
+	getChatbotContextApi,
+	getChatbotMessageApi,
+} from '@/lib/apis/chatbotApi'
+import { useAtomValue } from 'jotai'
+import { tokenAtom } from '@/store/userAtom'
 
 export function ChatBot() {
+	const token = useAtomValue(tokenAtom)
+
 	const pathname = usePathname()
 	const isMobile = useMediaQuery('(max-width: 768px)')
 
 	const [isOpen, setIsOpen] = useState(false)
+	const [context, setContext] = useState('')
 	const [inputValue, setInputValue] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 	const messagesEndRef = useRef<HTMLDivElement>(null)
 	const chatWindowRef = useRef<HTMLDivElement>(null)
+	const [chatbotError, setChatbotErrors] = useState('')
 	const { messages, sendMessage, setMessages } = useChat({
 		transport: new TextStreamChatTransport({
 			api: '/api/chat',
-			body: {
-				journals: 'Hello',
-			},
 		}),
 	})
 
 	// Check if chat should be visible on current page
 	const shouldShowChat =
 		pathname === '/dashboard' || pathname.startsWith('/dashboard/diary')
+
+	useEffect(() => {
+		const fetchData = async () => {
+			// Call to get message history
+			// const data = getChatbotMessageApi()
+
+			// console.log('🚀 ~ data:', data)
+
+			const contextData = await getChatbotContextApi(token || undefined)
+
+			if (contextData) {
+				setContext(contextData.context)
+
+				setMessages([
+					...messages,
+					{
+						id: '1',
+						role: 'assistant',
+						parts: [
+							{ type: 'text', text: contextData.initialMessage },
+						],
+					},
+				])
+			}
+
+			console.log('🚀 ~ data2:', contextData.context)
+		}
+
+		if (!messages.length) fetchData()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	// Scroll to bottom when new messages arrive
 	useEffect(() => {
@@ -42,7 +80,14 @@ export function ChatBot() {
 	const handleSendMessage = async () => {
 		if (!inputValue.trim()) return
 		setIsLoading(true)
-		sendMessage({ text: inputValue })
+		sendMessage(
+			{ text: inputValue },
+			{
+				body: {
+					journals: context,
+				},
+			},
+		)
 		setInputValue('')
 		setIsLoading(false)
 	}
@@ -188,6 +233,12 @@ export function ChatBot() {
 
 					{/* Input Area */}
 					<div className="p-4 border-t border-border bg-card dark:bg-card">
+						{chatbotError && (
+							<div className="flex justify-center gap-2 items-center mb-2 bg-gray-400/50 py-1 rounded-xl text-red-400 text-sm text-center">
+								<Info className="w-5 h-5 text-red-400" />{' '}
+								<p>{chatbotError}</p>
+							</div>
+						)}
 						<div className="flex gap-2">
 							<Input
 								type="text"
