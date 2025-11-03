@@ -160,7 +160,7 @@ public class DiaryController {
         return Collections.singletonMap("messages", messages);
     }
     @DeleteMapping("/ai-chat/message")
-    public ResponseEntity<?> resetConversation() {
+    public ResponseEntity<Map<String, String>> resetConversation() {
         String result = chatService.resetConversation();
         return ResponseEntity.ok(Collections.singletonMap("message", result));
     }

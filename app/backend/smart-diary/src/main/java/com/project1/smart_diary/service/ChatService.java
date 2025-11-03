@@ -7,6 +7,8 @@ import com.project1.smart_diary.entity.ChatMessage;
 import com.project1.smart_diary.entity.ChatSession;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.UserEntity;
+import com.project1.smart_diary.exception.ApplicationException;
+import com.project1.smart_diary.exception.ErrorCode;
 import com.project1.smart_diary.repository.ChatMessageRepository;
 import com.project1.smart_diary.repository.ChatSessionRepository;
 import com.project1.smart_diary.repository.DiaryRepository;
@@ -91,17 +93,15 @@ public class ChatService {
 
     @Transactional
     public String resetConversation() {
-        try {
-            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-            UserEntity user = userRepository.findByEmail(email);
-
-            chatMessageRepository.deleteBySessionUserId(user.getId());
-
-            return "Reset cuộc trò chuyện thành công";
-
-        } catch (Exception e) {
-            throw new RuntimeException("Không thể reset cuộc trò chuyện");
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new ApplicationException(ErrorCode.EMAIL_NOT_EXISTED);
         }
+        chatMessageRepository.deleteBySessionUserId(user.getId());
+
+        return "Reset cuộc trò chuyện thành công";
+
     }
 }
