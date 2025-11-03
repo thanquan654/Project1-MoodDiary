@@ -89,4 +89,19 @@ public class ChatService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public String resetConversation() {
+        try {
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+            UserEntity user = userRepository.findByEmail(email);
+
+            chatMessageRepository.deleteBySessionUserId(user.getId());
+
+            return "Reset cuộc trò chuyện thành công";
+
+        } catch (Exception e) {
+            throw new RuntimeException("Không thể reset cuộc trò chuyện");
+        }
+    }
 }
