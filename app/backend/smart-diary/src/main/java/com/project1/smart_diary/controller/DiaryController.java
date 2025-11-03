@@ -159,4 +159,9 @@ public class DiaryController {
         List<ChatMessageResponse> messages = chatService.getMessages();
         return Collections.singletonMap("messages", messages);
     }
+    @DeleteMapping("/ai-chat/message")
+    public ResponseEntity<Map<String, String>> resetConversation() {
+        String result = chatService.resetConversation();
+        return ResponseEntity.ok(Collections.singletonMap("message", result));
+    }
 }
