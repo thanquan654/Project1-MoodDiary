@@ -7,7 +7,7 @@ import { Info, MessageCircleMore, RotateCcw, Send, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useMediaQuery } from '@/hooks/useMobile'
 import { useChat } from '@ai-sdk/react'
-import { TextStreamChatTransport, UIMessage } from 'ai'
+import { TextStreamChatTransport } from 'ai'
 import Markdown from 'markdown-to-jsx'
 import {
 	getChatbotContextApi,
@@ -36,9 +36,10 @@ export function ChatBot() {
 			api: '/api/chat',
 		}),
 		onFinish: ({ message }) => {
+			const lastPart = message.parts.at(-1)
 			const savedMessageToBE = {
 				isUserMessage: false,
-				message: message.parts.at(-1)?.text || '',
+				message: lastPart?.type === 'text' ? lastPart.text : '',
 			}
 			saveChatbotMessageApi(savedMessageToBE, token || undefined)
 		},
