@@ -3,18 +3,21 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Info, MessageCircleMore, Send, X } from 'lucide-react'
+import { Info, MessageCircleMore, RotateCcw, Send, X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useMediaQuery } from '@/hooks/useMobile'
 import { useChat } from '@ai-sdk/react'
-import { TextStreamChatTransport } from 'ai'
+import { TextStreamChatTransport, UIMessage } from 'ai'
 import Markdown from 'markdown-to-jsx'
 import {
 	getChatbotContextApi,
 	getChatbotMessageApi,
+	resetChatbotConversationApi,
+	saveChatbotMessageApi,
 } from '@/lib/apis/chatbotApi'
 import { useAtomValue } from 'jotai'
 import { tokenAtom } from '@/store/userAtom'
+import { v4 as uuidv4 } from 'uuid'
 
 export function ChatBot() {
 	const token = useAtomValue(tokenAtom)
@@ -32,6 +35,13 @@ export function ChatBot() {
 		transport: new TextStreamChatTransport({
 			api: '/api/chat',
 		}),
+		onFinish: ({ message }) => {
+			const savedMessageToBE = {
+				isUserMessage: false,
+				message: message.parts.at(-1)?.text || '',
+			}
+			saveChatbotMessageApi(savedMessageToBE, token || undefined)
+		},
 	})
 
 	// Check if chat should be visible on current page
@@ -41,28 +51,52 @@ export function ChatBot() {
 	useEffect(() => {
 		const fetchData = async () => {
 			// Call to get message history
-			// const data = getChatbotMessageApi()
+			const data = await getChatbotMessageApi(token || undefined)
 
-			// console.log('🚀 ~ data:', data)
-
-			const contextData = await getChatbotContextApi(token || undefined)
-
-			if (contextData) {
-				setContext(contextData.context)
-
-				setMessages([
-					...messages,
-					{
-						id: '1',
-						role: 'assistant',
+			if (data.messages.length) {
+				const convertedMessages = data.messages.map(
+					(message: { message: string; isUserMessage: boolean }) => ({
+						id: uuidv4(),
+						role: message.isUserMessage ? 'user' : 'assistant',
 						parts: [
-							{ type: 'text', text: contextData.initialMessage },
+							{
+								type: 'text',
+								text: message.message,
+							},
 						],
-					},
-				])
-			}
+					}),
+				)
 
-			console.log('🚀 ~ data2:', contextData.context)
+				setMessages(convertedMessages)
+			} else {
+				const contextData = await getChatbotContextApi(
+					token || undefined,
+				)
+				if (contextData) {
+					setContext(contextData.context)
+					if (!messages.length) {
+						saveChatbotMessageApi(
+							{
+								isUserMessage: false,
+								message: contextData.initialMessage,
+							},
+							token || undefined,
+						)
+						setMessages([
+							{
+								id: '1',
+								role: 'assistant',
+								parts: [
+									{
+										type: 'text',
+										text: contextData.initialMessage,
+									},
+								],
+							},
+						])
+					}
+				}
+			}
 		}
 
 		if (!messages.length) fetchData()
@@ -76,6 +110,14 @@ export function ChatBot() {
 
 	const handleSendMessage = async () => {
 		if (!inputValue.trim()) return
+		saveChatbotMessageApi(
+			{
+				isUserMessage: true,
+				message: inputValue.trim(),
+			},
+			token || undefined,
+		)
+
 		sendMessage(
 			{ text: inputValue },
 			{
@@ -140,13 +182,33 @@ export function ChatBot() {
 								Chat với AI
 							</h3>
 						</div>
-						<button
-							onClick={() => setIsOpen(false)}
-							className="p-1 hover:bg-muted rounded-md transition-colors"
-							aria-label="Close chat"
-						>
-							<X className="w-5 h-5 text-foreground" />
-						</button>
+						<div>
+							<button
+								className="p-1 hover:bg-muted rounded-md transition-colors"
+								onClick={async () => {
+									const data =
+										await resetChatbotConversationApi(
+											token || undefined,
+										)
+									if (
+										data.message ===
+										'Reset cuộc trò chuyện thành công'
+									) {
+										setMessages([])
+									}
+								}}
+								aria-label="Reset chat"
+							>
+								<RotateCcw className="w-5 h-5 text-foreground scale-95" />
+							</button>
+							<button
+								onClick={() => setIsOpen(false)}
+								className="p-1 hover:bg-muted rounded-md transition-colors"
+								aria-label="Close chat"
+							>
+								<X className="w-5 h-5 text-foreground" />
+							</button>
+						</div>
 					</div>
 
 					{/* Messages Area */}
