@@ -27,8 +27,9 @@ export default function DiaryHeader({ onDelete, diaryId }: DiaryHeaderProps) {
 					</div>
 					<div className="flex items-center gap-1">
 						<Button
-							className="p-2 rounded-lg hover:bg-muted"
+							className="p-2 rounded-lg hover:bg-muted font-bold"
 							title="Chỉnh sửa"
+							variant={'ghost'}
 							asChild
 						>
 							<Link href={`/dashboard/diary/${diaryId}/edit`}>
@@ -56,6 +57,7 @@ export default function DiaryHeader({ onDelete, diaryId }: DiaryHeaderProps) {
 				<div className="flex items-center gap-2">
 					<Button
 						asChild
+						variant={'outline'}
 						className="px-4 py-2 rounded-lg border border-border transition-colors flex items-center gap-2"
 					>
 						<Link href={`/dashboard/diary/${diaryId}/edit`}>

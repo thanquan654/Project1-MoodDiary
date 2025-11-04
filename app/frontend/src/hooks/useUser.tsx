@@ -32,13 +32,11 @@ export function useUser() {
 						const userData = await response.json()
 						setUser(userData)
 					} else {
-						// FIXME: Enable this when backend is ready
-						// performLogout()
+						performLogout()
 					}
 				} catch (error) {
-					// FIXME: Enable this when backend is ready
 					console.error('Failed to fetch user info:', error)
-					// performLogout()
+					performLogout()
 				}
 			}
 			setIsLoading(false)
