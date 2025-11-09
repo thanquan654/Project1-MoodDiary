@@ -396,4 +396,9 @@ public class DiaryService {
         return diaryRepository.existsByUser_EmailAndCreatedAtBetween(
                 email, startOfDay, endOfDay);
     }
+
+    public Map<LocalDate, Emotion> getEmotionByMonth(int year, int month){
+
+        return null;
+    }
 }
