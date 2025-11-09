@@ -5,6 +5,7 @@ import com.project1.smart_diary.dto.request.DiaryRequest;
 import com.project1.smart_diary.dto.request.DiarySearchByDateAndEmotionRequest;
 import com.project1.smart_diary.dto.request.DiarySearchRequest;
 import com.project1.smart_diary.dto.request.DiaryUpdateRequest;
+import com.project1.smart_diary.dto.response.CanlendarEmotionResponse;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.DiaryMedia;
@@ -398,7 +399,7 @@ public class DiaryService {
                 email, startOfDay, endOfDay);
     }
 
-    public Map<LocalDate, Emotion> getEmotionByMonth(int year, int month){
+    public List<CanlendarEmotionResponse> getEmotionByMonth(int year, int month){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         LocalDate from = LocalDate.of(year, month, 1);
         LocalDateTime fromDate = from.atStartOfDay();
@@ -431,6 +432,16 @@ public class DiaryService {
             }
             res.put(entry.getKey(), emotion);
         }
-        return res;
+
+        List<CanlendarEmotionResponse> list = res
+                .entrySet()
+                .stream()
+                .map(e-> CanlendarEmotionResponse
+                        .builder()
+                        .date(e.getKey())
+                        .emotion(e.getValue())
+                        .build())
+                .toList();
+        return list;
     }
 }
