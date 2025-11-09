@@ -5,6 +5,7 @@ import com.project1.smart_diary.dto.response.ApiResponse;
 import com.project1.smart_diary.dto.response.ChatContextResponse;
 import com.project1.smart_diary.dto.response.ChatMessageResponse;
 import com.project1.smart_diary.dto.response.DiaryResponse;
+import com.project1.smart_diary.enums.Emotion;
 import com.project1.smart_diary.service.ChatService;
 import com.project1.smart_diary.service.DiaryService;
 import lombok.RequiredArgsConstructor;
@@ -164,4 +165,13 @@ public class DiaryController {
         String result = chatService.resetConversation();
         return ResponseEntity.ok(Collections.singletonMap("message", result));
     }
+    @GetMapping("/canlendar")
+    public ResponseEntity<ApiResponse<Map<LocalDate, Emotion>>> canlendarEmotion(
+            @RequestParam int year,
+            @RequestParam int month
+    ) {
+
+        return null;
+    }
+
 }
