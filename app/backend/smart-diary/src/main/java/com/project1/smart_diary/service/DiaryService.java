@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -403,6 +404,10 @@ public class DiaryService {
         LocalDateTime fromDate = from.atStartOfDay();
         LocalDateTime toDate = from.plusMonths(1).atStartOfDay();
         List<DiaryEntity> diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBetween(email, fromDate, toDate);
+        Map<LocalDate, List<DiaryEntity>> diariesByDay = diaryEntityList
+                .stream()
+                .collect(Collectors.groupingBy(d -> d.getCreatedAt().toLocalDate()));
+
         return null;
     }
 }
