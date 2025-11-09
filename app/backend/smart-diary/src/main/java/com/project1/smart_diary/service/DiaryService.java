@@ -407,7 +407,30 @@ public class DiaryService {
         Map<LocalDate, List<DiaryEntity>> diariesByDay = diaryEntityList
                 .stream()
                 .collect(Collectors.groupingBy(d -> d.getCreatedAt().toLocalDate()));
-
-        return null;
+        Map<LocalDate, Emotion> res = new HashMap<>();
+        for (Map.Entry<LocalDate, List<DiaryEntity>> entry : diariesByDay.entrySet()) {
+            Map<Emotion, Long> countMap = entry.getValue()
+                    .stream()
+                    .collect(Collectors.groupingBy(DiaryEntity::getEmotion, Collectors.counting()));
+            if (countMap.isEmpty()) {
+                res.put(entry.getKey(), null);
+                continue;
+            }
+            long maxCnt = countMap.values().stream().mapToLong(Long::longValue).max().orElse(0);
+            List<Emotion> listEmotions = countMap
+                    .entrySet()
+                    .stream()
+                    .filter(e -> e.getValue() == maxCnt)
+                    .map(Map.Entry::getKey)
+                    .toList();
+            Emotion emotion;
+            if (listEmotions.size() == 1) {
+                emotion = listEmotions.get(0);
+            } else {
+                emotion = Emotion.NEUTRAL;
+            }
+            res.put(entry.getKey(), emotion);
+        }
+        return res;
     }
 }
