@@ -432,7 +432,6 @@ public class DiaryService {
             }
             res.put(entry.getKey(), emotion);
         }
-
         List<CanlendarEmotionResponse> list = res
                 .entrySet()
                 .stream()
