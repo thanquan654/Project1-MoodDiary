@@ -398,7 +398,11 @@ public class DiaryService {
     }
 
     public Map<LocalDate, Emotion> getEmotionByMonth(int year, int month){
-
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        LocalDate from = LocalDate.of(year, month, 1);
+        LocalDateTime fromDate = from.atStartOfDay();
+        LocalDateTime toDate = from.plusMonths(1).atStartOfDay();
+        List<DiaryEntity> diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBetween(email, fromDate, toDate);
         return null;
     }
 }
