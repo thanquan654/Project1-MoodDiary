@@ -5,6 +5,7 @@ import com.project1.smart_diary.dto.request.DiaryRequest;
 import com.project1.smart_diary.dto.request.DiarySearchByDateAndEmotionRequest;
 import com.project1.smart_diary.dto.request.DiarySearchRequest;
 import com.project1.smart_diary.dto.request.DiaryUpdateRequest;
+import com.project1.smart_diary.dto.response.CanlendarEmotionResponse;
 import com.project1.smart_diary.dto.response.DiaryResponse;
 import com.project1.smart_diary.entity.DiaryEntity;
 import com.project1.smart_diary.entity.DiaryMedia;
@@ -30,6 +31,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -395,5 +397,51 @@ public class DiaryService {
 
         return diaryRepository.existsByUser_EmailAndCreatedAtBetween(
                 email, startOfDay, endOfDay);
+    }
+
+    public List<CanlendarEmotionResponse> getEmotionByMonth(int year, int month){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        LocalDate from = LocalDate.of(year, month, 1);
+        LocalDateTime fromDate = from.atStartOfDay();
+        LocalDateTime toDate = from.plusMonths(1).atStartOfDay();
+        List<DiaryEntity> diaryEntityList = diaryRepository.findByUser_EmailAndCreatedAtBetween(email, fromDate, toDate);
+        Map<LocalDate, List<DiaryEntity>> diariesByDay = diaryEntityList
+                .stream()
+                .collect(Collectors.groupingBy(d -> d.getCreatedAt().toLocalDate()));
+        Map<LocalDate, Emotion> res = new HashMap<>();
+        for (Map.Entry<LocalDate, List<DiaryEntity>> entry : diariesByDay.entrySet()) {
+            Map<Emotion, Long> countMap = entry.getValue()
+                    .stream()
+                    .collect(Collectors.groupingBy(DiaryEntity::getEmotion, Collectors.counting()));
+            if (countMap.isEmpty()) {
+                res.put(entry.getKey(), null);
+                continue;
+            }
+            long maxCnt = countMap.values().stream().mapToLong(Long::longValue).max().orElse(0);
+            List<Emotion> listEmotions = countMap
+                    .entrySet()
+                    .stream()
+                    .filter(e -> e.getValue() == maxCnt)
+                    .map(Map.Entry::getKey)
+                    .toList();
+            Emotion emotion;
+            if (listEmotions.size() == 1) {
+                emotion = listEmotions.get(0);
+            } else {
+                emotion = Emotion.NEUTRAL;
+            }
+            res.put(entry.getKey(), emotion);
+        }
+        List<CanlendarEmotionResponse> list = res
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(e-> CanlendarEmotionResponse
+                        .builder()
+                        .date(e.getKey())
+                        .emotion(e.getValue())
+                        .build())
+                .toList();
+        return list;
     }
 }
