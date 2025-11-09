@@ -435,6 +435,7 @@ public class DiaryService {
         List<CanlendarEmotionResponse> list = res
                 .entrySet()
                 .stream()
+                .sorted(Map.Entry.comparingByKey())
                 .map(e-> CanlendarEmotionResponse
                         .builder()
                         .date(e.getKey())
