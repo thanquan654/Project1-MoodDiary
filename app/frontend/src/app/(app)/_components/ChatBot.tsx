@@ -51,6 +51,7 @@ export function ChatBot() {
 
 	useEffect(() => {
 		const fetchData = async () => {
+			if (!token) return
 			// Call to get message history
 			const data = await getChatbotMessageApi(token || undefined)
 
@@ -85,7 +86,7 @@ export function ChatBot() {
 						)
 						setMessages([
 							{
-								id: '1',
+								id: uuidv4(),
 								role: 'assistant',
 								parts: [
 									{
@@ -102,7 +103,7 @@ export function ChatBot() {
 
 		if (!messages.length) fetchData()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [token])
 
 	// Scroll to bottom when new messages arrive
 	useEffect(() => {
