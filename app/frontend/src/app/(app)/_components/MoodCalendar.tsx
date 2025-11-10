@@ -1,44 +1,40 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Calendar from 'react-calendar'
 import { format } from 'date-fns'
 import './MoodCalendar.css'
-import {
-	Angry,
-	ChevronLeft,
-	ChevronRight,
-	Frown,
-	Laugh,
-	Meh,
-	SquircleDashed,
-	Star,
-} from 'lucide-react'
+import { ChevronLeft, ChevronRight, SquircleDashed } from 'lucide-react'
+import { useCalendar } from '@/hooks/useCalendar'
 
-const moodIcons = {
-	happy: <Laugh />,
-	normal: <Meh />,
-	sad: <Frown />,
-	angry: <Angry />,
-	playful: <Star />,
-}
-
-// Dữ liệu cảm xúc của người dùng (ví dụ)
-const userMoodData = {
-	'2025-09-01': 'happy',
-	'2025-09-02': 'happy',
-	'2025-09-03': 'playful',
-	'2025-09-04': 'happy',
-	'2025-09-05': 'playful',
-	'2025-09-06': 'sad',
+const emotionIconMap: { [key: string]: string } = {
+	Vui: '😄',
+	'Lo lắng': '😑',
+	Buồn: '😢',
+	'Tức giận': '😡',
+	'Trung tính': '😐',
+	'Không thể xác định cảm xúc. Vui lòng viết thêm chi tiết.': '😵‍💫',
 }
 
 type ValuePiece = Date | null
 
 type Value = ValuePiece | [ValuePiece, ValuePiece]
 
-function MoodCalendar() {
+type Props = {
+	calendarData: {
+		date: string
+		emotion: string
+	}[]
+}
+
+function MoodCalendar({ calendarData }: Props) {
 	const [date, setDate] = useState<Value>(new Date())
+	const { calendar, setCalendarFormData } = useCalendar()
+
+	useEffect(() => {
+		setCalendarFormData(calendarData)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [calendarData])
 
 	const renderTileContent = ({
 		date,
@@ -47,19 +43,15 @@ function MoodCalendar() {
 		date: Date
 		view: string
 	}) => {
-		// Chỉ áp dụng cho chế độ xem tháng (month view)
 		if (view === 'month') {
-			// Định dạng ngày thành 'YYYY-MM-DD' để khớp với key trong dữ liệu
 			const dateString = format(date, 'yyyy-MM-dd')
 
-			// Lấy cảm xúc của ngày đó từ dữ liệu
-			const mood = userMoodData[dateString]
+			const mood = calendar[dateString]
 
-			// Nếu có cảm xúc cho ngày này, trả về icon tương ứng
 			if (mood) {
 				return (
 					<div className="mood-icon-wrapper text-diary-text-light dark:text-diary-text-dark w-4 h-4">
-						{moodIcons[mood]}
+						<span className="text-3xl">{emotionIconMap[mood]}</span>
 						<span>{date.getDate()}</span>
 					</div>
 				)

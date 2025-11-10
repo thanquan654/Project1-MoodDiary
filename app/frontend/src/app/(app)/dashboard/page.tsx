@@ -28,13 +28,9 @@ export default async function Dashboard() {
 	const date = new Date()
 	const token = (await cookieStore).get('auth_token')?.value
 	const checkInData = await getQuickCheckInData(token)
-	const calendarData = await getCalendarData(
-		date.getMonth() + 1,
-		date.getFullYear(),
-		token,
-	)
-
-	console.log('🚀 ~ calendarData:', calendarData)
+	const calendarData =
+		(await getCalendarData(date.getMonth() + 1, date.getFullYear(), token))
+			?.data || []
 
 	return (
 		<div className="min-h-screen bg-background">
@@ -58,8 +54,7 @@ export default async function Dashboard() {
 				)}
 
 				<div>
-					<div>Lịch cảm xúc</div>
-					<MoodCalendar />
+					<MoodCalendar calendarData={calendarData} />
 				</div>
 			</main>
 		</div>
