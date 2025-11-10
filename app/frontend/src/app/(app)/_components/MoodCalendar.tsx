@@ -7,6 +7,9 @@ import './MoodCalendar.css'
 import { ChevronLeft, ChevronRight, SquircleDashed } from 'lucide-react'
 import { useCalendar } from '@/hooks/useCalendar'
 import { useRouter } from 'next/navigation'
+import { getCalendarData } from '@/lib/apis/dashboard'
+import { tokenAtom } from '@/store/userAtom'
+import { useAtom } from 'jotai'
 
 const emotionIconMap: { [key: string]: string } = {
 	Vui: '😄',
@@ -30,6 +33,7 @@ type Props = {
 
 function MoodCalendar({ calendarData }: Props) {
 	const router = useRouter()
+	const token = localStorage.getItem('user_token')
 	const [date, setDate] = useState<Value>(new Date())
 	const { calendar, setCalendarFormData } = useCalendar()
 
@@ -45,6 +49,17 @@ function MoodCalendar({ calendarData }: Props) {
 		router.push(
 			`/dashboard/diary?fromDate=${chooseDate}&toDate=${chooseDate}`,
 		)
+	}
+	const handleClickMonth = async (value: Date) => {
+		const newCalendarData =
+			(
+				await getCalendarData(
+					value.getMonth() + 1,
+					value.getFullYear(),
+					token?.replaceAll('"', '') || undefined,
+				)
+			)?.data || []
+		setCalendarFormData(newCalendarData)
 	}
 
 	const renderTileContent = ({
@@ -91,6 +106,7 @@ function MoodCalendar({ calendarData }: Props) {
 				nextLabel={<ChevronRight />}
 				prevLabel={<ChevronLeft />}
 				onClickDay={handleClickDate}
+				onClickMonth={handleClickMonth}
 			/>
 		</div>
 	)
