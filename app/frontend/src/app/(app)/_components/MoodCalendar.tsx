@@ -8,8 +8,6 @@ import { ChevronLeft, ChevronRight, SquircleDashed } from 'lucide-react'
 import { useCalendar } from '@/hooks/useCalendar'
 import { useRouter } from 'next/navigation'
 import { getCalendarData } from '@/lib/apis/dashboard'
-import { tokenAtom } from '@/store/userAtom'
-import { useAtom } from 'jotai'
 
 const emotionIconMap: { [key: string]: string } = {
 	Vui: '😄',
@@ -50,16 +48,25 @@ function MoodCalendar({ calendarData }: Props) {
 			`/dashboard/diary?fromDate=${chooseDate}&toDate=${chooseDate}`,
 		)
 	}
-	const handleClickMonth = async (value: Date) => {
-		const newCalendarData =
-			(
-				await getCalendarData(
-					value.getMonth() + 1,
-					value.getFullYear(),
-					token?.replaceAll('"', '') || undefined,
-				)
-			)?.data || []
-		setCalendarFormData(newCalendarData)
+
+	const handleChangeMonth = async ({
+		activeStartDate,
+		view,
+	}: {
+		activeStartDate: Date | null
+		view: string
+	}) => {
+		if (view === 'month' && activeStartDate) {
+			const newCalendarData =
+				(
+					await getCalendarData(
+						activeStartDate.getMonth() + 1,
+						activeStartDate.getFullYear(),
+						token?.replaceAll('"', '') || undefined,
+					)
+				)?.data || []
+			setCalendarFormData(newCalendarData)
+		}
 	}
 
 	const renderTileContent = ({
@@ -106,7 +113,7 @@ function MoodCalendar({ calendarData }: Props) {
 				nextLabel={<ChevronRight />}
 				prevLabel={<ChevronLeft />}
 				onClickDay={handleClickDate}
-				onClickMonth={handleClickMonth}
+				onActiveStartDateChange={handleChangeMonth}
 			/>
 		</div>
 	)
