@@ -6,6 +6,7 @@ import { format } from 'date-fns'
 import './MoodCalendar.css'
 import { ChevronLeft, ChevronRight, SquircleDashed } from 'lucide-react'
 import { useCalendar } from '@/hooks/useCalendar'
+import { useRouter } from 'next/navigation'
 
 const emotionIconMap: { [key: string]: string } = {
 	Vui: '😄',
@@ -28,6 +29,7 @@ type Props = {
 }
 
 function MoodCalendar({ calendarData }: Props) {
+	const router = useRouter()
 	const [date, setDate] = useState<Value>(new Date())
 	const { calendar, setCalendarFormData } = useCalendar()
 
@@ -35,6 +37,15 @@ function MoodCalendar({ calendarData }: Props) {
 		setCalendarFormData(calendarData)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [calendarData])
+
+	// Handler
+	const handleClickDate = (value: Date) => {
+		const chooseDate = format(value, 'yyyy-MM-dd')
+
+		router.push(
+			`/dashboard/diary?fromDate=${chooseDate}&toDate=${chooseDate}`,
+		)
+	}
 
 	const renderTileContent = ({
 		date,
@@ -79,6 +90,7 @@ function MoodCalendar({ calendarData }: Props) {
 				minDetail="year"
 				nextLabel={<ChevronRight />}
 				prevLabel={<ChevronLeft />}
+				onClickDay={handleClickDate}
 			/>
 		</div>
 	)
