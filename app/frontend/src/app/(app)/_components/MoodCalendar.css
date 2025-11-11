@@ -1,0 +1,88 @@
+/* MoodCalendar.css */
+
+.calendar-container {
+	border: 1px solid #ccc;
+	border-radius: 16px;
+	max-width: 400px;
+	/* margin: ; */
+	padding: 8px;
+}
+
+/* Tùy chỉnh chung cho lịch */
+.react-calendar {
+	width: 100%;
+	border: none;
+	background-color: transparent;
+}
+
+/* Ẩn số ngày mặc định đi */
+.react-calendar__tile.react-calendar__month-view__days__day abbr {
+	display: none;
+}
+
+/* Làm mờ những ngày không thuộc tháng đó */
+.react-calendar__tile.react-calendar__month-view__days__day.react-calendar__month-view__days__day--weekend.react-calendar__month-view__days__day--neighboringMonth
+	div,
+.react-calendar__tile.react-calendar__month-view__days__day.react-calendar__month-view__days__day--neighboringMonth
+	div {
+	opacity: 0.3;
+}
+
+/* Tùy chỉnh ô ngày */
+.react-calendar__tile {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 60px; /* Điều chỉnh chiều cao ô */
+	padding: 0;
+	background: none !important; /* Xóa nền mặc định khi hover/active */
+	border: none !important;
+}
+
+/* Đảm bảo icon nằm giữa ô */
+.mood-icon-wrapper {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.mood-icon-wrapper svg {
+	/* Nếu bạn dùng SVG */
+	width: 36px;
+	height: 36px;
+}
+
+/* Tùy chỉnh phần tiêu đề (Tháng, Năm, các nút điều hướng) */
+.react-calendar__navigation {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+
+.react-calendar__navigation button {
+	color: #8a6d46; /* Màu chữ nâu */
+	font-weight: bold;
+	padding: 4px;
+	font-size: 1.2em;
+	border-radius: 8px;
+	background-color: transparent;
+}
+
+/* Tùy chỉnh tiêu đề các ngày trong tuần (SU, MO, TU...) */
+.react-calendar__month-view__weekdays__weekday {
+	text-decoration: none;
+	text-align: center;
+	font-weight: bold;
+	color: #8a6d46;
+	font-size: 0.9em;
+	margin: 2px 0;
+	height: 100%;
+}
+
+.react-calendar__navigation__arrow.react-calendar__navigation__prev2-button,
+.react-calendar__navigation__arrow.react-calendar__navigation__next2-button {
+	display: none;
+}

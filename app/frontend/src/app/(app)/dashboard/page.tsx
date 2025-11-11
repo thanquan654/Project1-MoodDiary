@@ -1,7 +1,8 @@
 import DashboardHeader from '@/app/(app)/_components/DashboardHeader'
+import MoodCalendar from '@/app/(app)/_components/MoodCalendar'
 import { MoodSelector } from '@/app/(app)/_components/MoodSelector'
 import { QuickQuestion } from '@/app/(app)/_components/QuickQuestion'
-import { getQuickCheckInData } from '@/lib/apis/dashboard'
+import { getCalendarData, getQuickCheckInData } from '@/lib/apis/dashboard'
 import { cookies } from 'next/headers'
 import React from 'react'
 
@@ -24,8 +25,12 @@ const isNowAfter8PM = () => {
 
 export default async function Dashboard() {
 	const cookieStore = cookies()
+	const date = new Date()
 	const token = (await cookieStore).get('auth_token')?.value
 	const checkInData = await getQuickCheckInData(token)
+	const calendarData =
+		(await getCalendarData(date.getMonth() + 1, date.getFullYear(), token))
+			?.data || []
 
 	return (
 		<div className="min-h-screen bg-background">
@@ -48,7 +53,9 @@ export default async function Dashboard() {
 					</div>
 				)}
 
-				<div>Lịch cảm xúc</div>
+				<div>
+					<MoodCalendar calendarData={calendarData} />
+				</div>
 			</main>
 		</div>
 	)
