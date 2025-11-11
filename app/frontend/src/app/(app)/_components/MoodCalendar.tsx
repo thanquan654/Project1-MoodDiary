@@ -31,14 +31,17 @@ type Props = {
 
 function MoodCalendar({ calendarData }: Props) {
 	const router = useRouter()
-	const token = localStorage.getItem('user_token')
+	const [token, setToken] = useState<string | null>(null)
 	const [date, setDate] = useState<Value>(new Date())
 	const { calendar, setCalendarFormData } = useCalendar()
 
 	useEffect(() => {
+		setToken(localStorage.getItem('user_token'))
+	}, [])
+
+	useEffect(() => {
 		setCalendarFormData(calendarData)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [calendarData])
+	}, [calendarData, setCalendarFormData])
 
 	// Handler
 	const handleClickDate = (value: Date) => {

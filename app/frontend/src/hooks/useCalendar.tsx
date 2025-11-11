@@ -1,23 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 export function useCalendar() {
 	const [calendar, setCalendar] = useState<{ [key: string]: string }>({})
 
-	const setCalendarFormData = (
-		calendarData: { date: string; emotion: string }[],
-	) => {
-		const newCalendar: { [key: string]: string } = calendarData.reduce(
-			(acc: { [key: string]: string }, data) => {
-				acc[data.date] = data.emotion
-				return acc
-			},
-			{},
-		)
+	const setCalendarFormData = useCallback(
+		(calendarData: { date: string; emotion: string }[]) => {
+			const newCalendar = Object.fromEntries(
+				calendarData.map((data) => [data.date, data.emotion]),
+			)
 
-		setCalendar({ ...calendar, ...newCalendar })
-	}
+			setCalendar((prevCalendar) => ({ ...prevCalendar, ...newCalendar }))
+		},
+		[],
+	)
 
 	return {
 		calendar,
