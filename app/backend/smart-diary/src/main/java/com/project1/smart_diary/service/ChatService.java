@@ -1,0 +1,107 @@
+package com.project1.smart_diary.service;
+
+import com.project1.smart_diary.dto.request.ChatMessageRequest;
+import com.project1.smart_diary.dto.response.ChatContextResponse;
+import com.project1.smart_diary.dto.response.ChatMessageResponse;
+import com.project1.smart_diary.entity.ChatMessage;
+import com.project1.smart_diary.entity.ChatSession;
+import com.project1.smart_diary.entity.DiaryEntity;
+import com.project1.smart_diary.entity.UserEntity;
+import com.project1.smart_diary.exception.ApplicationException;
+import com.project1.smart_diary.exception.ErrorCode;
+import com.project1.smart_diary.repository.ChatMessageRepository;
+import com.project1.smart_diary.repository.ChatSessionRepository;
+import com.project1.smart_diary.repository.DiaryRepository;
+import com.project1.smart_diary.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class ChatService {
+    private final DiaryRepository diaryRepository;
+    private final GeminiAIService geminiAIService;
+    private final UserRepository userRepository;
+    private final ChatMessageRepository chatMessageRepository;
+    private final ChatSessionRepository chatSessionRepository;
+
+    private String converterContext(List<DiaryEntity> diaries) {
+        StringBuilder contextBuilder = new StringBuilder();
+        for (DiaryEntity diary : diaries) {
+            contextBuilder.append("- Tiêu đề: ").append(diary.getTitle()).append("\n")
+                    .append("  Nội dung: ").append(diary.getContent()).append("\n")
+                    .append("  Ngày tạo: ").append(diary.getCreatedAt()).append("\n\n");
+        }
+        return contextBuilder.toString();
+    }
+
+    public ChatContextResponse getContext() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<DiaryEntity> diaries = diaryRepository.findTop5ByUser_EmailOrderByCreatedAtDesc(email);
+        String context = converterContext(diaries);
+        String initialMessage = geminiAIService.genInitialMessage(context);
+        ChatContextResponse chatContextResponse = new ChatContextResponse();
+        chatContextResponse.setInitialMessage(initialMessage);
+        chatContextResponse.setContext(context);
+        return chatContextResponse;
+    }
+
+    public String savecChatMessage(ChatMessageRequest request) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity user = userRepository.findByEmail(email);
+        ChatSession chatSession = chatSessionRepository.findByUser_Email(email);
+        ChatMessage  chatMessage;
+        boolean isUser = request.isUserMessage();
+        if (chatSession == null) {
+            chatSession = new ChatSession();
+            chatSession.setTitle("Cuộc trò chuyện gần đây");
+            chatSession.setUser(user);
+            chatMessage = new ChatMessage();
+            chatMessage.setSession(chatSessionRepository.save(chatSession));
+            chatMessage.setMessage(request.getMessage());
+            chatMessage.setUserMessage(isUser);
+            chatMessageRepository.save(chatMessage);
+        } else {
+            chatMessage = new ChatMessage();
+            chatMessage.setSession(chatSession);
+            chatMessage.setMessage(request.getMessage());
+            chatMessage.setUserMessage(isUser);
+            chatMessageRepository.save(chatMessage);
+        }
+        return "Lưu tin nhắn thành công";
+    }
+    @Transactional(readOnly = true)
+    public List<ChatMessageResponse> getMessages() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        UserEntity user = userRepository.findByEmail(email);
+
+        List<ChatMessage> messages = chatMessageRepository.findBySessionUserIdOrderByIdAsc(user.getId());
+
+        return messages.stream()
+                .map(msg -> ChatMessageResponse.builder()
+                        .isUserMessage(msg.isUserMessage())
+                        .message(msg.getMessage())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public String resetConversation() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new ApplicationException(ErrorCode.EMAIL_NOT_EXISTED);
+        }
+        chatMessageRepository.deleteBySessionUserId(user.getId());
+
+        return "Reset cuộc trò chuyện thành công";
+
+    }
+}

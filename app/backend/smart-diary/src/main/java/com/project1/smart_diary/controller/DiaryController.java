@@ -1,0 +1,178 @@
+package com.project1.smart_diary.controller;
+
+import com.project1.smart_diary.dto.request.*;
+import com.project1.smart_diary.dto.response.*;
+import com.project1.smart_diary.enums.Emotion;
+import com.project1.smart_diary.service.ChatService;
+import com.project1.smart_diary.service.DiaryService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/diaries")
+@RequiredArgsConstructor
+public class DiaryController {
+    private final DiaryService diaryService;
+    private final ChatService chatService;
+    @PostMapping
+    public ResponseEntity<ApiResponse<DiaryResponse>> createDiary(@ModelAttribute DiaryRequest request) {
+        DiaryResponse response = diaryService.createDiary(request);
+        ApiResponse<DiaryResponse> apiResponse = ApiResponse.<DiaryResponse>builder()
+                .message("Lưu thành công!")
+                .data(response)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    //    @GetMapping("/search/date")
+//    public ResponseEntity<List<DiaryResponse>> searchDiaryByDate(
+//            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+//            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+//        DiarySearchByDateRequest diarySearchByDateRequest = new DiarySearchByDateRequest();
+//        diarySearchByDateRequest.setFromDate(fromDate);
+//        diarySearchByDateRequest.setToDate(toDate);
+//        return ResponseEntity.ok(diaryService.searchDiaryByDate(diarySearchByDateRequest));
+//    }
+//    @GetMapping("/search/emotion")
+//    public ResponseEntity<List<DiaryResponse>> searchDiaryByEmotion(@RequestParam(value = "emotion", required = false) String emotion){
+//        return  ResponseEntity.ok(diaryService.searchDiaryByEmotion(emotion));
+//    }
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<DiaryResponse>>> getUserDiaries() {
+        List<DiaryResponse> responses = diaryService.getUserDiaries();
+        String message = responses.isEmpty()
+                ? "Bạn chưa có nhật ký nào"
+                : "Lấy danh sách nhật ký thành công";
+        ApiResponse<List<DiaryResponse>> apiResponse = ApiResponse.<List<DiaryResponse>>builder()
+                .message(message)
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<DiaryResponse>> getDiaryDetail(@PathVariable Long id) {
+        DiaryResponse response = diaryService.getDiaryDetail(id);
+
+        ApiResponse<DiaryResponse> apiResponse = ApiResponse.<DiaryResponse>builder()
+                .message("Lấy thông tin nhật ký thành công")
+                .data(response)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    //    @GetMapping("/search")
+//    public ResponseEntity<ApiResponse<List<DiaryResponse>>> searchDiary(
+//            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+//            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+//            @RequestParam(value = "emotion", required = false) String emotion) {
+//        DiarySearchByDateAndEmotionRequest diarySearchRequest = new DiarySearchByDateAndEmotionRequest();
+//        diarySearchRequest.setFromDate(fromDate);
+//        diarySearchRequest.setToDate(toDate);
+//        diarySearchRequest.setEmotion(emotion);
+//        ApiResponse<List<DiaryResponse>> res = ApiResponse.<List<DiaryResponse>>builder()
+//                .message("Tìm kiếm thành công")
+//                .data(diaryService.searchDiaryByDateAndEmotion(diarySearchRequest))
+//                .build();
+//        return ResponseEntity.ok(res);
+//    }
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<DiaryResponse>>> searchDiary(
+//            @ModelAttribute DiarySearchRequest diarySearchRequest
+            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(value = "toDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @RequestParam(value = "emotion", required = false) String emotion,
+            @RequestParam(value = "keyword", required = false) String keyword){
+        DiarySearchRequest diarySearchRequest = DiarySearchRequest.builder()
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .emotion(emotion)
+                .keyword(keyword)
+                .build();
+        ApiResponse<List<DiaryResponse>> res = ApiResponse.<List<DiaryResponse>>builder()
+                .message("Tìm kiếm thành công")
+                .data(diaryService.searchDiary(diarySearchRequest))
+                .build();
+        return ResponseEntity.ok(res);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<DiaryResponse>> updateDiary(
+            @PathVariable Long id,
+            @ModelAttribute DiaryUpdateRequest request) {
+        DiaryResponse response = diaryService.updateDiary(id, request);
+
+        ApiResponse<DiaryResponse> apiResponse = ApiResponse.<DiaryResponse>builder()
+                .message("Cập nhật thành công!")
+                .data(response)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteDiary(@PathVariable Long id) {
+        diaryService.deleteDiary(id);
+
+        ApiResponse<String> apiResponse = ApiResponse.<String>builder()
+                .message("Xóa thành công")
+                .data(null)
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+    @GetMapping("/quick-checkin")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getTodayPrompt() {
+        Map<String, Object> response = diaryService.getTodayPrompt();
+        String message = Boolean.TRUE.equals(response.get("hasRecordedToday"))
+                ? "Hôm nay đã có nhật ký rồi"
+                : "Câu hỏi gợi mở hôm nay";
+        ApiResponse<Map<String, Object>> apiResponse = ApiResponse.<Map<String, Object>>builder()
+                .message(message)
+                .data(response)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+    @GetMapping("/ai-chat/start")
+    public ResponseEntity<ChatContextResponse> getContext(){
+        return ResponseEntity.ok(chatService.getContext());
+    }
+
+    @PostMapping("/ai-chat/message")
+    public ResponseEntity<String> chatMessage(@RequestBody ChatMessageRequest request) {
+        return ResponseEntity.ok(chatService.savecChatMessage(request));
+    }
+    @GetMapping("/ai-chat/message")
+    public Map<String, Object> getChatMessages() {
+        List<ChatMessageResponse> messages = chatService.getMessages();
+        return Collections.singletonMap("messages", messages);
+    }
+    @DeleteMapping("/ai-chat/message")
+    public ResponseEntity<Map<String, String>> resetConversation() {
+        String result = chatService.resetConversation();
+        return ResponseEntity.ok(Collections.singletonMap("message", result));
+    }
+    @GetMapping("/canlendar")
+    public ResponseEntity<ApiResponse<List<CanlendarEmotionResponse>>> canlendarEmotion(
+            @RequestParam int year,
+            @RequestParam int month
+    ) {
+        List<CanlendarEmotionResponse> responses = diaryService.getEmotionByMonth(year, month);
+        ApiResponse<List<CanlendarEmotionResponse>> res = ApiResponse.<List<CanlendarEmotionResponse>>builder()
+                .message("Lịch cảm xúc tháng "+year+"/"+month)
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(res);
+    }
+
+}
