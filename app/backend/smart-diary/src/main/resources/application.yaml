@@ -62,4 +62,4 @@ gemini:
     key: "${GEMINI_API_KEY}"
     url: "https://generativelanguage.googleapis.com/v1"
     endpoints:
-      text-generation: "${gemini.api.url}/models/gemini-2.5-flash:generateContent"
+      text-generation: "${gemini.api.url}/models/gemini-2.5-flash-lite:generateContent"
