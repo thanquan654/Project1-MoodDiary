@@ -23,7 +23,7 @@ export default async function LandingPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-[#fcfcfa] text-[#4a4a4a] font-sans selection:bg-[#e9967a] selection:text-white overflow-x-hidden">
+		<div className="min-h-screen bg-diary-bg-light text-diary-text-light font-sans selection:bg-diary-accent selection:text-white overflow-x-hidden">
 			{/* --- INJECT CSS ANIMATIONS --- */}
 			<style>{`
         @keyframes float {
