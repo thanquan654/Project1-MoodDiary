@@ -15,7 +15,7 @@ public class LoginRequest {
     @NotBlank(message = "Email không được để trống")
     @Pattern(
             regexp = "^[A-Za-z0-9._%+-]+@gmail\\.com$",
-            message = "Email không đúng định dạng -> example@gmail.com"
+            message = "Email hoặc mật khẩu không chính xác"
     )
     private String email;
     @NotBlank(message = "Mật khẩu không được để trống")
