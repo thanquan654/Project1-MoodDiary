@@ -12,7 +12,7 @@ export default function Sidebar() {
 	const { toggleTheme, theme } = useTheme()
 	const pathname = usePathname()
 
-	const { user } = useUser()
+	const { user, logout } = useUser()
 
 	const getActiveTab = () => {
 		if (pathname === '/dashboard') return 'home'
@@ -61,12 +61,7 @@ export default function Sidebar() {
 				</Button>
 			</div>
 
-			{/* Diary List */}
-			{getActiveTab() !== 'diaries' ? (
-				<SideBarDiaryList />
-			) : (
-				<div className="flex-1 p-6 overflow-y-auto">Carlendar</div>
-			)}
+			<div className="flex-1 p-6 overflow-y-auto"></div>
 
 			{/* Bottom Section */}
 			<div className="p-6 border-t border-border">
@@ -75,14 +70,18 @@ export default function Sidebar() {
 						<div className="w-10 h-10 bg-diary-accent rounded-full flex items-center justify-center">
 							<User className="w-5 h-5 text-white" />
 						</div>
-						<Link href="/dashboard/user" className="flex-1 ">
+						<div className="flex-1 gap-1 ">
 							<p className="text-sm font-medium text-foreground">
 								{user?.fullName}
 							</p>
-							<p className="text-xs text-muted-foreground">
-								Xem hồ sơ
-							</p>
-						</Link>
+							<Button
+								className="text-xs text-muted-foreground"
+								onClick={logout}
+								variant={'ghost'}
+							>
+								Đăng xuất
+							</Button>
+						</div>
 					</div>
 					<Button
 						onClick={toggleTheme}

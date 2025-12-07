@@ -1,3 +1,6 @@
+const BACKEND_URL =
+	process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL
+
 const loginUserApi = async (email: string, password: string) => {
 	const response = await fetch('/api/auth/login', {
 		method: 'POST',
@@ -61,7 +64,7 @@ const resetPasswordApi = async (
 }
 
 const logoutApi = async (token: string) => {
-	const response = await fetch('/api/auth/logout', {
+	const response = await fetch(`${BACKEND_URL}/auth/logout`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
